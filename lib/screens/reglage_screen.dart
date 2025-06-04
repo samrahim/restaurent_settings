@@ -1,0 +1,147 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurent/consts.dart';
+
+import '../blocs/settings/settings_bloc.dart';
+
+class DepanageScreen extends StatelessWidget {
+  const DepanageScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Dépannage Screen'));
+  }
+}
+
+class ReglageScreen extends StatelessWidget {
+  const ReglageScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create:
+          (context) =>
+              SettingsBloc(initialSettings: routes)..add(const LoadSettings()),
+      child: const ReglageView(),
+    );
+  }
+}
+
+class ReglageView extends StatefulWidget {
+  const ReglageView({super.key});
+
+  @override
+  State<ReglageView> createState() => _ReglageViewState();
+}
+
+class _ReglageViewState extends State<ReglageView>
+    with TickerProviderStateMixin {
+  TabController? _mainTabController;
+  List<TabController>? _subTabControllers;
+
+  void _initializeControllers(Map<String, Map<String, dynamic>> settings) {
+    // Dispose existing controllers if they exist
+    _mainTabController?.dispose();
+    _subTabControllers?.forEach((controller) => controller.dispose());
+
+    // Create new controllers
+    _mainTabController = TabController(length: settings.length, vsync: this);
+
+    _subTabControllers = List.generate(
+      settings.length,
+      (index) => TabController(
+        length: settings.values.elementAt(index).length,
+        vsync: this,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _mainTabController?.dispose();
+    _subTabControllers?.forEach((controller) => controller.dispose());
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<SettingsBloc, SettingsState>(
+      listener: (context, state) {
+        if (state is SettingsLoaded) {
+          _initializeControllers(state.settings);
+          _mainTabController?.animateTo(state.selectedMainTab);
+          _subTabControllers?[state.selectedMainTab].animateTo(
+            state.selectedSubTab,
+          );
+        }
+      },
+      builder: (context, state) {
+        if (state is! SettingsLoaded ||
+            _mainTabController == null ||
+            _subTabControllers == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final mainCategories = state.settings.keys.toList();
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Réglages'),
+            bottom: TabBar(
+              controller: _mainTabController,
+              isScrollable: false,
+              tabs:
+                  mainCategories
+                      .map((category) => Tab(text: category))
+                      .toList(),
+              onTap: (index) {
+                context.read<SettingsBloc>().add(ChangeMainTab(index));
+              },
+            ),
+          ),
+          body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: _mainTabController,
+            children: List.generate(mainCategories.length, (mainIndex) {
+              final category = mainCategories[mainIndex];
+              final categoryOptions = state.settings[category]!;
+              final subTabs = categoryOptions.entries.toList();
+
+              return Column(
+                children: [
+                  Material(
+                    child: TabBar(
+                      controller: _subTabControllers![mainIndex],
+                      isScrollable: false,
+
+                      tabs:
+                          subTabs.map((entry) {
+                            final label = entry.value['label'] ?? entry.key;
+                            return Tab(text: label.toString());
+                          }).toList(),
+                      onTap: (index) {
+                        context.read<SettingsBloc>().add(
+                          ChangeSubTab(mainIndex, index),
+                        );
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
+                      controller: _subTabControllers![mainIndex],
+                      children:
+                          subTabs.map((entry) {
+                            return entry.value['content'] as Widget;
+                          }).toList(),
+                    ),
+                  ),
+                ],
+              );
+            }),
+          ),
+        );
+      },
+    );
+  }
+}
