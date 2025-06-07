@@ -48,3 +48,12 @@ class SelectUtilisateur extends UtilisateurEvent {
   @override
   List<Object> get props => [utilisateurModel];
 }
+
+class GetUtilisateurs extends UtilisateurEvent {
+  final List<UtilisateurModel> utilisateurs;
+
+  GetUtilisateurs({required this.utilisateurs});
+
+  @override
+  List<Object?> get props => [utilisateurs];
+}

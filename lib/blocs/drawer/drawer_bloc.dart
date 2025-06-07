@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:restaurent/models/moyen_de_paiement_model.dart';
-import 'package:restaurent/models/utlisateur_model.dart';
+import 'package:restaurent/models/utilisateur_model.dart';
 
 part 'drawer_event.dart';
 part 'drawer_state.dart';

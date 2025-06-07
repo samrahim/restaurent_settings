@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:restaurent/models/utlisateur_model.dart';
+import 'package:restaurent/models/utilisateur_model.dart';
 
 part 'etulisateur_event.dart';
 part 'etulisateur_state.dart';

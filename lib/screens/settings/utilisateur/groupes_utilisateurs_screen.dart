@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/blocs/utilisateur/etulisateur_bloc.dart';
 import 'package:restaurent/consts.dart';
-import 'package:restaurent/models/utlisateur_model.dart';
+import 'package:restaurent/models/utilisateur_model.dart';
 import 'package:restaurent/screens/widgets/widgets.dart';
 
 class GroupesUtilisateursScreen extends StatelessWidget {
