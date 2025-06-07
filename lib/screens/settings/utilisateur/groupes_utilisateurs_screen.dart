@@ -38,7 +38,7 @@ class _GroupesUtilisateursScreenViewState
   TextEditingController motPasseSchema = TextEditingController();
   TextEditingController motPasseChiffre = TextEditingController();
   TextEditingController qrCode = TextEditingController();
-  EtulisateurRole role = EtulisateurRole.Administrateur;
+  String role = roleList[0];
   @override
   void dispose() {
     nom.dispose();
@@ -76,10 +76,7 @@ class _GroupesUtilisateursScreenViewState
                               ),
                             ),
                             ...state.utilisateurs!
-                                .where(
-                                  (u) =>
-                                      u.role == EtulisateurRole.Administrateur,
-                                )
+                                .where((u) => u.role == roleList[0])
                                 .map(
                                   (utilisateur) => ListTile(
                                     selectedTileColor: Colors.grey.shade300,
@@ -114,7 +111,42 @@ class _GroupesUtilisateursScreenViewState
                               ),
                             ),
                             ...state.utilisateurs!
-                                .where((u) => u.role == EtulisateurRole.Serveur)
+                                .where((u) => u.role == roleList[0])
+                                .map(
+                                  (utilisateur) => ListTile(
+                                    selectedTileColor: Colors.grey.shade300,
+                                    title: Text(
+                                      utilisateur.nom,
+                                      style: AppTextStyle.indingosubHeading,
+                                    ),
+                                    trailing: Icon(Icons.arrow_forward_ios),
+                                    selected:
+                                        utilisateur.nom ==
+                                        (context.read<UtilisateurBloc>().state
+                                                as UtilisateurInitial)
+                                            .selectedEtulisateur!
+                                            .nom,
+                                    onTap: () {
+                                      context.read<UtilisateurBloc>().add(
+                                        SelectUtilisateur(
+                                          utilisateurModel: utilisateur,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Responsable de salle',
+                                style: AppTextStyle.greyHeading.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            ...state.utilisateurs!
+                                .where((u) => u.role == roleList[2])
                                 .map(
                                   (utilisateur) => ListTile(
                                     selectedTileColor: Colors.grey.shade300,
@@ -178,6 +210,7 @@ class _GroupesUtilisateursScreenViewState
                                           utilisateur: utilisateur,
                                         ),
                                       );
+
                                       _scaffoldKey.currentState
                                           ?.openEndDrawer();
                                     },
@@ -283,7 +316,7 @@ class _GroupesUtilisateursScreenViewState
                       );
                     }
                     return const Center(
-                      child: Text('Sélectionnez un moyen de paiement'),
+                      child: Text('Sélectionnez un utlisateur '),
                     );
                   },
                 ),
@@ -318,7 +351,7 @@ class _GroupesUtilisateursScreenViewState
           motPasseChiffre.clear();
           motPasseSchema.clear();
           qrCode.clear();
-          role = EtulisateurRole.Administrateur;
+          role = roleList[0];
         } else if (state is DrawerUpdateUtilisateurState) {
           // Pre-fill data for update
           nom.text = state.utilisateur.nom;
@@ -375,9 +408,6 @@ class _GroupesUtilisateursScreenViewState
                 filled: true,
                 fillColor: Colors.grey[50],
               ),
-              onChanged: (String value) {
-                nom.text = value;
-              },
             ),
             const SizedBox(height: 16),
             TextField(
@@ -390,9 +420,6 @@ class _GroupesUtilisateursScreenViewState
                 filled: true,
                 fillColor: Colors.grey[50],
               ),
-              onChanged: (String value) {
-                prenom.text = value;
-              },
             ),
             const SizedBox(height: 16),
             TextField(
@@ -405,9 +432,6 @@ class _GroupesUtilisateursScreenViewState
                 filled: true,
                 fillColor: Colors.grey[50],
               ),
-              onChanged: (String value) {
-                groupe.text = value;
-              },
             ),
             const SizedBox(height: 16),
             TextField(
@@ -432,9 +456,6 @@ class _GroupesUtilisateursScreenViewState
                 filled: true,
                 fillColor: Colors.grey[50],
               ),
-              onChanged: (String value) {
-                motPasseChiffre.text = value;
-              },
             ),
             const SizedBox(height: 16),
             Container(
@@ -450,16 +471,13 @@ class _GroupesUtilisateursScreenViewState
                   labelText: 'Rôle',
                   border: InputBorder.none,
                 ),
-                items: [
-                  DropdownMenuItem(
-                    value: EtulisateurRole.Administrateur,
-                    child: Text('Administrateur'),
-                  ),
-                  DropdownMenuItem(
-                    value: EtulisateurRole.Serveur,
-                    child: Text('Serveur'),
-                  ),
-                ],
+                items:
+                    roleList
+                        .map(
+                          (role) =>
+                              DropdownMenuItem(value: role, child: Text(role)),
+                        )
+                        .toList(),
                 onChanged: (value) {
                   setState(() {
                     role = value!;
@@ -588,7 +606,6 @@ class _GroupesUtilisateursScreenViewState
                 filled: true,
                 fillColor: Colors.grey[50],
               ),
-              onChanged: (value) => motPasseSchema.text = value,
             ),
             const SizedBox(height: 16),
             TextField(
@@ -617,16 +634,10 @@ class _GroupesUtilisateursScreenViewState
                   labelText: 'Rôle',
                   border: InputBorder.none,
                 ),
-                items: [
-                  DropdownMenuItem(
-                    value: EtulisateurRole.Administrateur,
-                    child: Text('Administrateur'),
-                  ),
-                  DropdownMenuItem(
-                    value: EtulisateurRole.Serveur,
-                    child: Text('Serveur'),
-                  ),
-                ],
+                items:
+                    roleList
+                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                        .toList(),
                 onChanged: (value) {
                   setState(() {
                     role = value!;
@@ -643,16 +654,29 @@ class _GroupesUtilisateursScreenViewState
                   context.read<UtilisateurBloc>().add(
                     UpdateUtilisateur(
                       utilisateurModel: user.copyWith(
-                        nom: nom.text,
-                        prenom: prenom.text,
-                        groupe: groupe.text,
-                        motPasseChiffre: motPasseChiffre.text,
-                        motPasseSchema: motPasseSchema.text,
-                        qrCode: qrCode.text,
+                        nom: nom.text.isEmpty ? user.nom : nom.text,
+                        prenom: prenom.text.isEmpty ? user.prenom : prenom.text,
+                        groupe: groupe.text.isEmpty ? user.groupe : groupe.text,
+                        motPasseChiffre:
+                            motPasseChiffre.text.isEmpty
+                                ? user.motPasseChiffre
+                                : motPasseChiffre.text,
+                        motPasseSchema:
+                            motPasseSchema.text.isEmpty
+                                ? user.motPasseSchema
+                                : motPasseSchema.text,
+                        qrCode: qrCode.text.isEmpty ? user.qrCode : qrCode.text,
                         role: role,
                       ),
                     ),
                   );
+                  nom.clear();
+                  prenom.clear();
+                  groupe.clear();
+                  motPasseChiffre.clear();
+                  motPasseSchema.clear();
+                  qrCode.clear();
+                  role = roleList[0];
                   _scaffoldKey.currentState?.closeEndDrawer();
                 },
                 style: ElevatedButton.styleFrom(

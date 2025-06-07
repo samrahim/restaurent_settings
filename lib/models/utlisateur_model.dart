@@ -8,8 +8,8 @@ class UtilisateurModel extends Equatable {
   final String motPasseSchema;
   final String motPasseChiffre;
   final String qrCode;
-  EtulisateurRole role;
-  UtilisateurModel({
+  final String role;
+  const UtilisateurModel({
     required this.id,
     required this.nom,
     required this.prenom,
@@ -28,7 +28,7 @@ class UtilisateurModel extends Equatable {
     String? motPasseSchema,
     String? motPasseChiffre,
     String? qrCode,
-    EtulisateurRole? role,
+    String? role,
   }) {
     return UtilisateurModel(
       id: id ?? this.id,
@@ -56,7 +56,7 @@ class UtilisateurModel extends Equatable {
 }
 
 // ignore: constant_identifier_names
-enum EtulisateurRole { Administrateur, Serveur }
+List<String> roleList = ['Administrateur', 'Serveur', 'Responsable de salle'];
 
 List<UtilisateurModel> utilisateurList = [
   UtilisateurModel(
@@ -67,7 +67,7 @@ List<UtilisateurModel> utilisateurList = [
     motPasseSchema: '123456',
     motPasseChiffre: '123456',
     qrCode: '123456',
-    role: EtulisateurRole.Administrateur,
+    role: roleList[0],
   ),
   UtilisateurModel(
     id: '2',
@@ -77,6 +77,16 @@ List<UtilisateurModel> utilisateurList = [
     motPasseSchema: '123456',
     motPasseChiffre: '123456',
     qrCode: '123456',
-    role: EtulisateurRole.Serveur,
+    role: roleList[1],
+  ),
+  UtilisateurModel(
+    id: '3',
+    nom: 'karim',
+    prenom: 'karim',
+    groupe: 'Groupe 3',
+    motPasseSchema: '123456',
+    motPasseChiffre: '123456',
+    qrCode: '123456',
+    role: roleList[2],
   ),
 ];

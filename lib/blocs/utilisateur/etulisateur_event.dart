@@ -9,7 +9,7 @@ class CreateUtilisateur extends UtilisateurEvent {
   final String? motPasseSchema;
   final String? motPasseChiffre;
   final String? qrCode;
-  final EtulisateurRole role;
+  final String role;
   CreateUtilisateur({
     required this.nom,
     required this.prenom,
