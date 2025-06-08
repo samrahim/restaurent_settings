@@ -5,6 +5,7 @@ import 'package:restaurent/screens/settings/fabrication/fabrication_screen.dart'
 import 'package:restaurent/screens/settings/organisation/organisation.dart';
 import 'package:restaurent/screens/settings/reservations/configuration_reservations_screen.dart';
 import 'package:restaurent/screens/settings/tickets/impression_ticket_screen.dart';
+import 'package:restaurent/screens/settings/tickets/rapport_screen.dart';
 import 'package:restaurent/screens/settings/utilisateur/utilisateur.dart';
 
 import 'screens/settings/encaissement/encaissemenet.dart';
@@ -122,7 +123,7 @@ Map<String, Map<String, dynamic>> routes = {
       'label': 'En-tête et pied de page du ticket',
       'content': DepannageScreen(),
     },
-    'option-4': {'label': 'Rapports X et Z', 'content': DepannageScreen()},
+    'option-4': {'label': 'Rapports X et Z', 'content': RapportScreen()},
     'option-5': {'label': 'Tags de commande', 'content': DepannageScreen()},
   },
   'Fabrication': {
@@ -175,4 +176,14 @@ class AppTextStyle {
     fontSize: 20,
     color: Colors.red,
   );
+}
+
+class AppColors {
+  static const Color primary = Colors.blue;
+  static const Color secondary = Color(0xFF000000);
+  static const Color tertiary = Color(0xFF000000);
+  static const Color quaternary = Color(0xFF000000);
+  static const Color quinary = Color(0xFF000000);
+  static const Color senary = Color(0xFF000000);
+  static const Color septenary = Color(0xFF000000);
 }

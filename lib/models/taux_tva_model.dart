@@ -12,7 +12,7 @@ class TauxTvaModel extends Equatable {
   });
 
   @override
-  List<Object?> get props => [tauxTva, elementsInclus];
+  List<Object?> get props => [tauxTva, elementsInclus, id];
 
   TauxTvaModel copyWith({double? tauxTva, int? elementsInclus, String? id}) {
     return TauxTvaModel(

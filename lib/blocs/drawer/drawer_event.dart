@@ -47,3 +47,28 @@ class CloseCreateCategoriePrixDrawer extends DrawerEvent {
   @override
   List<Object?> get props => [];
 }
+
+class OpenCreateTauxTvaDrawer extends DrawerEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class CloseCreateTauxTvaDrawer extends DrawerEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class OpenUpdateUtilisateurAttributeDrawer extends DrawerEvent {
+  final UtilisateurModel utilisateur;
+  final String attributeName;
+  final dynamic currentValue;
+
+  OpenUpdateUtilisateurAttributeDrawer({
+    required this.utilisateur,
+    required this.attributeName,
+    required this.currentValue,
+  });
+
+  @override
+  List<Object?> get props => [utilisateur, attributeName, currentValue];
+}

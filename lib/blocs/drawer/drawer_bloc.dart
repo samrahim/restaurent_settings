@@ -24,6 +24,15 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
       if (event is OpenUpdateUtilisateurDrawer) {
         emit(DrawerUpdateUtilisateurState(utilisateur: event.utilisateur));
       }
+      if (event is OpenUpdateUtilisateurAttributeDrawer) {
+        emit(
+          DrawerUpdateUtilisateurAttributeState(
+            utilisateur: event.utilisateur,
+            attributeName: event.attributeName,
+            currentValue: event.currentValue,
+          ),
+        );
+      }
       if (event is OpenUpdatePaiementMethodeDrawer) {
         emit(
           DrawerUpdatePaiementMethodeState(
@@ -36,6 +45,12 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
       }
       if (event is CloseCreateCategoriePrixDrawer) {
         emit(DrawerCreateCategoriePrix(isOpen: false));
+      }
+      if (event is OpenCreateTauxTvaDrawer) {
+        emit(DrawerCreateTauxTva(isOpen: true));
+      }
+      if (event is CloseCreateTauxTvaDrawer) {
+        emit(DrawerCreateTauxTva(isOpen: false));
       }
     });
   }

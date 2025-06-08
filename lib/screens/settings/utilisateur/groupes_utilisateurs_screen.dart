@@ -39,6 +39,7 @@ class _GroupesUtilisateursScreenViewState
   TextEditingController motPasseChiffre = TextEditingController();
   TextEditingController qrCode = TextEditingController();
   String role = roleList[0];
+  String group = groupeList[0];
   @override
   void dispose() {
     nom.dispose();
@@ -189,135 +190,83 @@ class _GroupesUtilisateursScreenViewState
                   builder: (context, state) {
                     if (state is UtilisateurInitial) {
                       final utilisateur = state.selectedEtulisateur;
+                      if (utilisateur == null) {
+                        return const Center(
+                          child: Text('Sélectionnez un utilisateur'),
+                        );
+                      }
                       return Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.white,
-                              ),
+                            Card(
                               child: Column(
-                                mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  InkWell(
-                                    onTap: () {
-                                      context.read<DrawerBloc>().add(
-                                        OpenUpdateUtilisateurDrawer(
-                                          utilisateur: utilisateur,
-                                        ),
-                                      );
-
-                                      _scaffoldKey.currentState
-                                          ?.openEndDrawer();
-                                    },
-                                    child: CustomListTile(
-                                      trailingwidget: Text(
-                                        utilisateur!.nom,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                      title: Text(
-                                        "Nom",
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      leading: null,
-                                      trailing: null,
-                                    ),
+                                  _buildUserDetailTile(
+                                    title: 'Nom',
+                                    value: utilisateur.nom,
+                                    user: utilisateur,
+                                    attributeName: 'nom',
                                   ),
-
-                                  Divider(),
-                                  CustomListTile(
-                                    trailingwidget: Text(
-                                      utilisateur.prenom,
-                                      style: AppTextStyle.indingosubHeading,
-                                    ),
-                                    title: Text(
-                                      "Prenom",
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    leading: null,
-                                    trailing: null,
+                                  const Divider(),
+                                  _buildUserDetailTile(
+                                    title: 'Prénom',
+                                    value: utilisateur.prenom,
+                                    user: utilisateur,
+                                    attributeName: 'prenom',
                                   ),
                                 ],
                               ),
                             ),
-
-                            SizedBox(height: 16),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.white,
-                              ),
-                              child: CustomListTile(
-                                trailingwidget: Text(
-                                  utilisateur.groupe,
-                                  style: AppTextStyle.greysubHeading,
-                                ),
-                                title: null,
-                                leading: 'Groupe',
-                                trailing: null,
+                            const SizedBox(height: 16),
+                            Card(
+                              child: _buildUserDetailTile(
+                                title: 'Groupe',
+                                value: utilisateur.groupe,
+                                user: utilisateur,
+                                attributeName: 'groupe',
                               ),
                             ),
-                            SizedBox(height: 16),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.white,
-                              ),
+                            const SizedBox(height: 16),
+                            Card(
                               child: Column(
-                                mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  CustomListTile(
-                                    trailingwidget: Text(
-                                      "****",
-                                      style: AppTextStyle.indingosubHeading,
-                                    ),
-                                    title: Text(
-                                      "Mot de passe Schema",
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    leading: null,
-                                    trailing: null,
+                                  _buildUserDetailTile(
+                                    title: 'Mot de passe Schema',
+                                    value: utilisateur.motPasseSchema,
+                                    user: utilisateur,
+                                    attributeName: 'motPasseSchema',
                                   ),
-
-                                  Divider(),
-                                  CustomListTile(
-                                    trailingwidget: Text(
-                                      "****",
-                                      style: AppTextStyle.indingosubHeading,
-                                    ),
-                                    title: Text(
-                                      "Mot de passe chiffre",
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    leading: null,
-                                    trailing: null,
+                                  const Divider(),
+                                  _buildUserDetailTile(
+                                    title: 'Mot de passe chiffre',
+                                    value: utilisateur.motPasseChiffre,
+                                    user: utilisateur,
+                                    attributeName: 'motPasseChiffre',
                                   ),
-                                  Divider(),
-                                  CustomListTile(
-                                    trailingwidget: null,
-                                    title: Text(
-                                      "QR Code",
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    leading: null,
-                                    trailing: null,
+                                  const Divider(),
+                                  _buildUserDetailTile(
+                                    title: 'QR Code',
+                                    value: utilisateur.qrCode,
+                                    user: utilisateur,
+                                    attributeName: 'qrCode',
+                                  ),
+                                  const Divider(),
+                                  _buildUserDetailTile(
+                                    title: 'Rôle',
+                                    value: utilisateur.role,
+                                    user: utilisateur,
+                                    attributeName: 'role',
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(height: 16),
-                            ButtonSupprimer(onTap: () {}),
                           ],
                         ),
                       );
                     }
-                    return const Center(
-                      child: Text('Sélectionnez un utlisateur '),
-                    );
+                    return const Center(child: CircularProgressIndicator());
                   },
                 ),
               ),
@@ -327,6 +276,11 @@ class _GroupesUtilisateursScreenViewState
       ),
 
       appBar: AppBar(
+        title: Text(
+          "Groupe d'utilisateurs",
+          style: AppTextStyle.largeindingotext,
+        ),
+        centerTitle: true,
         actions: [
           ActionButton(
             onPressed: () {
@@ -352,15 +306,15 @@ class _GroupesUtilisateursScreenViewState
           motPasseSchema.clear();
           qrCode.clear();
           role = roleList[0];
-        } else if (state is DrawerUpdateUtilisateurState) {
+        } else if (state is DrawerUpdateUtilisateurAttributeState) {
           // Pre-fill data for update
-          nom.text = state.utilisateur.nom;
-          prenom.text = state.utilisateur.prenom;
-          groupe.text = state.utilisateur.groupe;
-          motPasseChiffre.text = state.utilisateur.motPasseChiffre;
-          motPasseSchema.text = state.utilisateur.motPasseSchema ?? '';
-          qrCode.text = state.utilisateur.qrCode ?? '';
-          role = state.utilisateur.role;
+          nom.text = state.currentValue.toString();
+          prenom.text = state.currentValue.toString();
+          groupe.text = state.currentValue.toString();
+          motPasseChiffre.text = state.currentValue.toString();
+          motPasseSchema.text = state.currentValue.toString();
+          qrCode.text = state.currentValue.toString();
+          role = state.currentValue.toString();
         }
       },
       child: Drawer(
@@ -377,8 +331,8 @@ class _GroupesUtilisateursScreenViewState
   Widget _buildDrawerContent(BuildContext context, DrawerState state) {
     if (state is DrawerCreateUtilisateur) {
       return _buildCreateUtilisateurDrawer(context);
-    } else if (state is DrawerUpdateUtilisateurState) {
-      return _buildUpdateUtilisateurDrawer(context, state.utilisateur);
+    } else if (state is DrawerUpdateUtilisateurAttributeState) {
+      return _buildUpdateAttributeDrawer(context, state);
     }
     return Container(); // Default empty drawer
   }
@@ -422,17 +376,34 @@ class _GroupesUtilisateursScreenViewState
               ),
             ),
             const SizedBox(height: 16),
-            TextField(
-              controller: groupe,
-              decoration: InputDecoration(
-                labelText: 'Groupe',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade400),
+                color: Colors.grey[50],
+              ),
+              child: DropdownButtonFormField(
+                value: group,
+                decoration: const InputDecoration(
+                  labelText: 'Rôle',
+                  border: InputBorder.none,
                 ),
-                filled: true,
-                fillColor: Colors.grey[50],
+                items:
+                    groupeList
+                        .map(
+                          (grp) =>
+                              DropdownMenuItem(value: grp, child: Text(grp)),
+                        )
+                        .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    group = value!;
+                  });
+                },
               ),
             ),
+
             const SizedBox(height: 16),
             TextField(
               controller: motPasseSchema,
@@ -485,6 +456,7 @@ class _GroupesUtilisateursScreenViewState
                 },
               ),
             ),
+
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
@@ -526,101 +498,25 @@ class _GroupesUtilisateursScreenViewState
     );
   }
 
-  Widget _buildUpdateUtilisateurDrawer(
+  Widget _buildUpdateAttributeDrawer(
     BuildContext context,
-    UtilisateurModel user,
+    DrawerUpdateUtilisateurAttributeState state,
   ) {
+    final TextEditingController controller = TextEditingController(
+      text: state.currentValue.toString(),
+    );
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Text(
-                'Modifier l\'utilisateur',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: TextEditingController(text: user.nom),
-              decoration: InputDecoration(
-                labelText: 'Nom',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
-              onChanged: (value) => nom.text = value,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: TextEditingController(text: user.prenom),
-              decoration: InputDecoration(
-                labelText: 'Prénom',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
-              onChanged: (value) => prenom.text = value,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: TextEditingController(text: user.groupe),
-              decoration: InputDecoration(
-                labelText: 'Groupe',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
-              onChanged: (value) => groupe.text = value,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: TextEditingController(text: user.motPasseChiffre),
-              decoration: InputDecoration(
-                labelText: 'Mot de passe chiffre',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
-              onChanged: (value) => motPasseChiffre.text = value,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: TextEditingController(text: user.motPasseSchema),
-              decoration: InputDecoration(
-                labelText: 'Mot de passe Schema',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: TextEditingController(text: user.qrCode),
-              decoration: InputDecoration(
-                labelText: 'QR Code',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
-              onChanged: (value) => qrCode.text = value,
-            ),
-            const SizedBox(height: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Modifier ${state.attributeName}',
+            style: AppTextStyle.indingoHeading,
+          ),
+          const SizedBox(height: 24),
+          if (state.attributeName == 'role')
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -628,75 +524,147 @@ class _GroupesUtilisateursScreenViewState
                 border: Border.all(color: Colors.grey.shade400),
                 color: Colors.grey[50],
               ),
-              child: DropdownButtonFormField(
-                value: user.role,
-                decoration: const InputDecoration(
-                  labelText: 'Rôle',
-                  border: InputBorder.none,
-                ),
+              child: DropdownButtonFormField<String>(
+                value: state.currentValue,
+                decoration: const InputDecoration(border: InputBorder.none),
                 items:
                     roleList
-                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                        .map(
+                          (role) =>
+                              DropdownMenuItem(value: role, child: Text(role)),
+                        )
                         .toList(),
                 onChanged: (value) {
-                  setState(() {
-                    role = value!;
-                  });
+                  if (value != null) {
+                    controller.text = value;
+                  }
                 },
               ),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  context.read<UtilisateurBloc>().add(
-                    UpdateUtilisateur(
-                      utilisateurModel: user.copyWith(
-                        nom: nom.text.isEmpty ? user.nom : nom.text,
-                        prenom: prenom.text.isEmpty ? user.prenom : prenom.text,
-                        groupe: groupe.text.isEmpty ? user.groupe : groupe.text,
-                        motPasseChiffre:
-                            motPasseChiffre.text.isEmpty
-                                ? user.motPasseChiffre
-                                : motPasseChiffre.text,
-                        motPasseSchema:
-                            motPasseSchema.text.isEmpty
-                                ? user.motPasseSchema
-                                : motPasseSchema.text,
-                        qrCode: qrCode.text.isEmpty ? user.qrCode : qrCode.text,
-                        role: role,
-                      ),
-                    ),
-                  );
-                  nom.clear();
-                  prenom.clear();
-                  groupe.clear();
-                  motPasseChiffre.clear();
-                  motPasseSchema.clear();
-                  qrCode.clear();
-                  role = roleList[0];
-                  _scaffoldKey.currentState?.closeEndDrawer();
+            )
+          else if (state.attributeName == 'groupe')
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade400),
+                color: Colors.grey[50],
+              ),
+              child: DropdownButtonFormField<String>(
+                value: state.currentValue,
+                decoration: const InputDecoration(border: InputBorder.none),
+                items:
+                    groupeList
+                        .map(
+                          (groupe) => DropdownMenuItem(
+                            value: groupe,
+                            child: Text(groupe),
+                          ),
+                        )
+                        .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    controller.text = value;
+                  }
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+              ),
+            )
+          else
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: state.attributeName,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Text(
-                  'Mettre à jour',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                filled: true,
+                fillColor: Colors.grey[50],
+              ),
+            ),
+          const Spacer(),
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton(
+              onPressed: () {
+                final updatedUser = state.utilisateur.copyWith(
+                  nom:
+                      state.attributeName == 'nom'
+                          ? controller.text
+                          : state.utilisateur.nom,
+                  prenom:
+                      state.attributeName == 'prenom'
+                          ? controller.text
+                          : state.utilisateur.prenom,
+                  groupe:
+                      state.attributeName == 'groupe'
+                          ? controller.text
+                          : state.utilisateur.groupe,
+                  motPasseSchema:
+                      state.attributeName == 'motPasseSchema'
+                          ? controller.text
+                          : state.utilisateur.motPasseSchema,
+                  motPasseChiffre:
+                      state.attributeName == 'motPasseChiffre'
+                          ? controller.text
+                          : state.utilisateur.motPasseChiffre,
+                  qrCode:
+                      state.attributeName == 'qrCode'
+                          ? controller.text
+                          : state.utilisateur.qrCode,
+                  role:
+                      state.attributeName == 'role'
+                          ? controller.text
+                          : state.utilisateur.role,
+                );
+
+                context.read<UtilisateurBloc>().add(
+                  UpdateUtilisateur(utilisateurModel: updatedUser),
+                );
+                _scaffoldKey.currentState?.closeEndDrawer();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Enregistrer',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUserDetailTile({
+    required String title,
+    required String value,
+    required UtilisateurModel user,
+    required String attributeName,
+  }) {
+    return InkWell(
+      onTap: () {
+        context.read<DrawerBloc>().add(
+          OpenUpdateUtilisateurAttributeDrawer(
+            utilisateur: user,
+            attributeName: attributeName,
+            currentValue: value,
+          ),
+        );
+        _scaffoldKey.currentState?.openEndDrawer();
+      },
+      child: CustomListTile(
+        title: Text(title, style: AppTextStyle.greyHeading),
+        trailingwidget: Text(value, style: AppTextStyle.indingosubHeading),
+        leading: null,
+        trailing: null,
       ),
     );
   }

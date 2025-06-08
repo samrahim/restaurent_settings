@@ -46,3 +46,26 @@ class DrawerCreateCategoriePrix extends DrawerState {
   @override
   List<Object?> get props => [isOpen];
 }
+
+class DrawerCreateTauxTva extends DrawerState {
+  final bool isOpen;
+  DrawerCreateTauxTva({required this.isOpen});
+
+  @override
+  List<Object?> get props => [isOpen];
+}
+
+class DrawerUpdateUtilisateurAttributeState extends DrawerState {
+  final UtilisateurModel utilisateur;
+  final String attributeName;
+  final dynamic currentValue;
+
+  DrawerUpdateUtilisateurAttributeState({
+    required this.utilisateur,
+    required this.attributeName,
+    required this.currentValue,
+  });
+
+  @override
+  List<Object?> get props => [utilisateur, attributeName, currentValue];
+}
