@@ -17,8 +17,6 @@ class MoyenDePaiementModel extends Equatable {
     'Scanner de Ticket Restaurant',
   ];
 
-  static const salles = ['Toutes', 'Salle principale', 'Terrasse', 'Bar'];
-
   final String? name;
   final String? icon;
   final String? modeEncaissement;

@@ -180,10 +180,12 @@ class AppTextStyle {
 
 class AppColors {
   static const Color primary = Colors.blue;
-  static const Color secondary = Color(0xFF000000);
+  static final grey = Colors.grey[50];
   static const Color tertiary = Color(0xFF000000);
   static const Color quaternary = Color(0xFF000000);
   static const Color quinary = Color(0xFF000000);
   static const Color senary = Color(0xFF000000);
   static const Color septenary = Color(0xFF000000);
 }
+
+const salles = ['Toutes', 'Salle principale', 'Terrasse', 'Bar'];

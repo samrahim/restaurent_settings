@@ -7,8 +7,7 @@ import '../../widgets/widgets.dart';
 class ModificateurDetails extends StatefulWidget {
   final String categoryName;
 
-  const ModificateurDetails({Key? key, required this.categoryName})
-    : super(key: key);
+  const ModificateurDetails({super.key, required this.categoryName});
 
   @override
   State<ModificateurDetails> createState() => _ModificateurDetailsState();
@@ -63,270 +62,250 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey.shade100,
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    decoration: BoxDecoration(color: Colors.grey.shade100),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+            flex: 3,
+            child: Container(
+              decoration: BoxDecoration(color: Colors.grey.shade100),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'CATÉGORIE DE MODIFICATEURS',
-                                  style: AppTextStyle.greysubHeading,
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          Container(
-                            color: Colors.grey.shade400,
-                            child: ListTile(
-                              title: Text(
-                                'Informations générales',
-                                style: AppTextStyle.indingoHeading,
-                              ),
-                              trailing: Icon(Icons.chevron_right),
-                            ),
-                          ),
-                          // MODIFICATEURS / SUPPLÉMENTS section
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'MODIFICATEURS / SUPPLÉMENTS',
-                                  style: AppTextStyle.greysubHeading,
-                                ),
-                                Icon(Icons.add, color: Colors.red),
-                              ],
-                            ),
-                          ),
-
-                          Container(
-                            color: Colors.white,
-                            child: ListView.builder(
-                              shrinkWrap:
-                                  true, // Important for letting the list be as tall as its children
-                              physics:
-                                  NeverScrollableScrollPhysics(), // To prevent nested scroll issues
-                              itemCount: 5,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    _buildModifierTile(modifiers[index]),
-                                    if (index != 4) Divider(),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-
-                          Container(
-                            padding: EdgeInsets.all(16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'PRODUITS',
-                                  style: AppTextStyle.greysubHeading,
-                                ),
-                                Icon(Icons.add, color: Colors.red),
-                              ],
-                            ),
-                          ),
-
-                          // List of products
-                          Container(
-                            color: Colors.white,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-
-                              itemCount: 5,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    _buildModifierTile(modifiers[index]),
-                                    if (index != 4) Divider(),
-                                  ],
-                                );
-                              },
-                            ),
+                          Text(
+                            'CATÉGORIE DE MODIFICATEURS',
+                            style: AppTextStyle.greysubHeading,
                           ),
                         ],
                       ),
                     ),
-                  ),
+
+                    Container(
+                      color: Colors.grey.shade400,
+                      child: ListTile(
+                        title: Text(
+                          'Informations générales',
+                          style: AppTextStyle.indingoHeading,
+                        ),
+                        trailing: Icon(Icons.chevron_right),
+                      ),
+                    ),
+                    // MODIFICATEURS / SUPPLÉMENTS section
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'MODIFICATEURS / SUPPLÉMENTS',
+                            style: AppTextStyle.greysubHeading,
+                          ),
+                          Icon(Icons.add, color: Colors.red),
+                        ],
+                      ),
+                    ),
+
+                    Container(
+                      color: Colors.white,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics:
+                            NeverScrollableScrollPhysics(), // To prevent nested scroll issues
+                        itemCount: 5,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              _buildModifierTile(modifiers[index]),
+                              if (index != 4) Divider(),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('PRODUITS', style: AppTextStyle.greysubHeading),
+                          Icon(Icons.add, color: Colors.red),
+                        ],
+                      ),
+                    ),
+
+                    // List of products
+                    Container(
+                      color: Colors.white,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+
+                        itemCount: 5,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              _buildModifierTile(modifiers[index]),
+                              if (index != 4) Divider(),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(width: 24),
-                // Right panel - Form
-                Expanded(
-                  flex: 5,
+              ),
+            ),
+          ),
+          SizedBox(width: 24),
+          // Right panel - Form
+          Expanded(
+            flex: 5,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.white,
+                  ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: Colors.white,
+                      CustomListTile(
+                        trailingwidget: null,
+                        title: Text('Nom', style: AppTextStyle.greyHeading),
+                        leading: null,
+                        trailing: widget.categoryName,
+                      ),
+                      Divider(),
+                      CustomListTile(
+                        trailingwidget: Icon(
+                          Icons.restaurant,
+                          color: Colors.indigo.shade400,
                         ),
-                        child: Column(
-                          children: [
-                            CustomListTile(
-                              trailingwidget: null,
-                              title: Text(
-                                'Nom',
-                                style: AppTextStyle.greyHeading,
-                              ),
-                              leading: null,
-                              trailing: widget.categoryName,
-                            ),
-                            Divider(),
-                            CustomListTile(
-                              trailingwidget: Icon(
-                                Icons.restaurant,
-                                color: Colors.indigo.shade400,
-                              ),
-                              title: Text(
-                                'Icone',
-                                style: AppTextStyle.greyHeading,
-                              ),
-                              leading: null,
-                              trailing: null,
-                            ),
-                            Divider(),
+                        title: Text('Icone', style: AppTextStyle.greyHeading),
+                        leading: null,
+                        trailing: null,
+                      ),
+                      Divider(),
 
-                            CustomListTile(
-                              title: Text(
-                                'Afficher dans les salles et comptoirs',
-                                style: AppTextStyle.greyHeading,
-                              ),
-                              leading: null,
-                              trailing: null,
-                              trailingwidget: DropdownButton<String>(
-                                underline: SizedBox(),
-                                style: AppTextStyle.indingosubHeading,
-                                value: _selectedValue,
-                                onChanged: (String? newValue) {
-                                  if (newValue != null) {
-                                    setState(() {
-                                      _selectedValue = newValue;
-                                    });
-                                  }
-                                },
-                                items:
-                                    _options.map<DropdownMenuItem<String>>((
-                                      String value,
-                                    ) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                              ),
-                            ),
-                            Divider(),
-                            CustomListTile(
-                              leading: null,
-                              trailing: null,
-                              title: Text(
-                                "Couleur",
-                                style: AppTextStyle.greyHeading,
-                              ),
-                              trailingwidget: GestureDetector(
-                                onTap: _openColorPicker,
-                                child: Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: _currentColor,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.black26),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                      CustomListTile(
+                        title: Text(
+                          'Afficher dans les salles et comptoirs',
+                          style: AppTextStyle.greyHeading,
+                        ),
+                        leading: null,
+                        trailing: null,
+                        trailingwidget: DropdownButton<String>(
+                          underline: SizedBox(),
+                          style: AppTextStyle.indingosubHeading,
+                          value: _selectedValue,
+                          onChanged: (String? newValue) {
+                            if (newValue != null) {
+                              setState(() {
+                                _selectedValue = newValue;
+                              });
+                            }
+                          },
+                          items:
+                              _options.map<DropdownMenuItem<String>>((
+                                String value,
+                              ) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
                         ),
                       ),
-                      SizedBox(height: 32),
-                      Container(
-                        margin: EdgeInsets.only(top: 4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: Colors.white,
-                        ),
-                        child: Column(
-                          children: [
-                            CustomListTile(
-                              leading: null,
-                              trailing: null,
-                              title: Text(
-                                'Type de sélection',
-                                style: AppTextStyle.greyHeading,
-                              ),
-                              trailingwidget: DropdownButton<String>(
-                                underline: SizedBox(),
-                                style: AppTextStyle.indingosubHeading,
-                                value: _typeSelection,
-                                onChanged: (String? newValue) {
-                                  if (newValue != null) {
-                                    setState(() {
-                                      _typeSelection = newValue;
-                                    });
-                                  }
-                                },
-                                items:
-                                    _optiontypeDeSelection
-                                        .map<DropdownMenuItem<String>>((
-                                          String value,
-                                        ) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        })
-                                        .toList(),
-                              ),
+                      Divider(),
+                      CustomListTile(
+                        leading: null,
+                        trailing: null,
+                        title: Text("Couleur", style: AppTextStyle.greyHeading),
+                        trailingwidget: GestureDetector(
+                          onTap: _openColorPicker,
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: _currentColor,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.black26),
                             ),
-                            Divider(),
-                            CustomListTile(
-                              leading: 'Obligatoire',
-                              trailing: null,
-                              title: null,
-                              trailingwidget: Switch(
-                                activeColor: Colors.blueAccent,
-                                value: isObligatoire,
-                                onChanged: (value) {
-                                  setState(() {
-                                    isObligatoire = value;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                      SizedBox(height: 24),
-
-                      ButtonSupprimer(onTap: () {}),
                     ],
                   ),
                 ),
+                SizedBox(height: 32),
+                Container(
+                  margin: EdgeInsets.only(top: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    children: [
+                      CustomListTile(
+                        leading: null,
+                        trailing: null,
+                        title: Text(
+                          'Type de sélection',
+                          style: AppTextStyle.greyHeading,
+                        ),
+                        trailingwidget: DropdownButton<String>(
+                          underline: SizedBox(),
+                          style: AppTextStyle.indingosubHeading,
+                          value: _typeSelection,
+                          onChanged: (String? newValue) {
+                            if (newValue != null) {
+                              setState(() {
+                                _typeSelection = newValue;
+                              });
+                            }
+                          },
+                          items:
+                              _optiontypeDeSelection
+                                  .map<DropdownMenuItem<String>>((
+                                    String value,
+                                  ) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  })
+                                  .toList(),
+                        ),
+                      ),
+                      Divider(),
+                      CustomListTile(
+                        leading: 'Obligatoire',
+                        trailing: null,
+                        title: null,
+                        trailingwidget: Switch(
+                          activeColor: Colors.blueAccent,
+                          value: isObligatoire,
+                          onChanged: (value) {
+                            setState(() {
+                              isObligatoire = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 24),
+
+                ButtonSupprimer(onTap: () {}),
               ],
             ),
           ),

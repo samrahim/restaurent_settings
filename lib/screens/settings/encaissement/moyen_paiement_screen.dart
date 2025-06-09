@@ -429,15 +429,13 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                                       style: AppTextStyle.indingosubHeading,
                                       underline: SizedBox(),
                                       value:
-                                          MoyenDePaiementModel.salles.contains(
+                                          salles.contains(
                                                 method.typeDeSalleDisponible,
                                               )
                                               ? method.typeDeSalleDisponible
-                                              : MoyenDePaiementModel
-                                                  .salles
-                                                  .first,
+                                              : salles.first,
                                       items:
-                                          MoyenDePaiementModel.salles
+                                          salles
                                               .map(
                                                 (value) => DropdownMenuItem(
                                                   value: value,

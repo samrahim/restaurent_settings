@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/screens/settings/carte/modificteur_details.dart';
 import 'package:restaurent/screens/widgets/action_button.dart';
+import 'package:restaurent/screens/widgets/widgets.dart';
 
 class ModificateursSupplementsScreen extends StatefulWidget {
   const ModificateursSupplementsScreen({super.key});
@@ -80,11 +81,46 @@ class _ModificateursSupplementsScreenState
                   hintText: "Nom de la catégorie",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.indigo),
+                    borderSide: BorderSide(color: AppColors.grey!),
                   ),
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DropdownButtonFormField(
+                decoration: InputDecoration(
+                  hintText: "Disponibilité",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: AppColors.grey!),
+                  ),
+                ),
+                items:
+                    salles
+                        .map((e) => DropdownMenuItem(child: Text(e), value: e))
+                        .toList(),
+                onChanged: (value) {},
+              ),
+            ),
+
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.grey!),
+              ),
+              child: CustomListTile(
+                leading: null,
+                trailing: null,
+                title: Text("Obligatoire"),
+                trailingwidget: Switch(
+                  activeColor: AppColors.primary,
+                  value: true,
+                  onChanged: (value) {},
+                ),
+              ),
+            ),
+
             ElevatedButton(
               onPressed: () {
                 setState(() {
@@ -103,86 +139,44 @@ class _ModificateursSupplementsScreenState
         child: Column(
           children: [
             selectedCategory != null
-                ? Container(
-                  height: MediaQuery.of(context).size.height * .05,
-                  color: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          onPressed: () {
-                            setState(() {
-                              selectedCategory = null;
-                            });
-                          },
-                        ),
-                        Center(
-                          child: Text(
-                            selectedCategory!,
-                            style: AppTextStyle.indingoHeading,
-                          ),
-                        ),
-                        Center(
-                          child: Text(
-                            selectedCategory!,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
+                ? AppBar(
+                  backgroundColor: Colors.white,
+                  centerTitle: true,
+                  title: Text(
+                    selectedCategory!,
+                    style: AppTextStyle.indingoHeading,
+                  ),
+                  actions: [SizedBox()],
+                  leading: IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      setState(() {
+                        selectedCategory = null;
+                      });
+                    },
                   ),
                 )
-                : Container(
-                  height: MediaQuery.of(context).size.height * .05,
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(width: 50),
-                        if (selectedCategory == null)
-                          Center(
-                            child: Text(
-                              'Categories de modificateurs / Supplements ',
-                              style: AppTextStyle.largeindingotext,
-                            ),
-                          ),
-                        Row(
-                          children: [
-                            if (selectedCategory == null) ...[
-                              ActionButton(
-                                onPressed: () {},
-                                text: 'Reorganiser',
-                              ),
-                              ActionButton(
-                                onPressed: () {
-                                  _scaffoldKey.currentState?.openEndDrawer();
-                                },
-                                text: 'Nouveau',
-                              ),
-                            ],
-                          ],
-                        ),
-                      ],
+                : AppBar(
+                  actions: [
+                    ActionButton(onPressed: () {}, text: 'Reorganiser'),
+                    ActionButton(
+                      onPressed: () {
+                        _scaffoldKey.currentState?.openEndDrawer();
+                      },
+                      text: 'Nouveau',
                     ),
+                  ],
+                  centerTitle: true,
+                  title: Text(
+                    'Categories de modificateurs / Supplements ',
+                    style: AppTextStyle.largeindingotext,
                   ),
                 ),
-
             Expanded(
               child:
                   selectedCategory == null
                       ? _buildCategoriesList()
-                      : Container(
-                        color: Colors.white,
-                        padding: const EdgeInsets.all(8.0),
-                        child: ModificateurDetails(
-                          categoryName: selectedCategory!,
-                        ),
-                      ),
+                      : ModificateurDetails(categoryName: selectedCategory!),
             ),
           ],
         ),

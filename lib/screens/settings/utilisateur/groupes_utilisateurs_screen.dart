@@ -87,11 +87,9 @@ class _GroupesUtilisateursScreenViewState
                                     ),
                                     trailing: Icon(Icons.arrow_forward_ios),
                                     selected:
-                                        utilisateur.nom ==
-                                        (context.read<UtilisateurBloc>().state
-                                                as UtilisateurInitial)
-                                            .selectedEtulisateur!
-                                            .nom,
+                                        state.selectedEtulisateur != null &&
+                                        utilisateur.id ==
+                                            state.selectedEtulisateur!.id,
                                     onTap: () {
                                       context.read<UtilisateurBloc>().add(
                                         SelectUtilisateur(
@@ -112,7 +110,7 @@ class _GroupesUtilisateursScreenViewState
                               ),
                             ),
                             ...state.utilisateurs!
-                                .where((u) => u.role == roleList[0])
+                                .where((u) => u.role == roleList[1])
                                 .map(
                                   (utilisateur) => ListTile(
                                     selectedTileColor: Colors.grey.shade300,
@@ -122,11 +120,9 @@ class _GroupesUtilisateursScreenViewState
                                     ),
                                     trailing: Icon(Icons.arrow_forward_ios),
                                     selected:
-                                        utilisateur.nom ==
-                                        (context.read<UtilisateurBloc>().state
-                                                as UtilisateurInitial)
-                                            .selectedEtulisateur!
-                                            .nom,
+                                        state.selectedEtulisateur != null &&
+                                        utilisateur.id ==
+                                            state.selectedEtulisateur!.id,
                                     onTap: () {
                                       context.read<UtilisateurBloc>().add(
                                         SelectUtilisateur(
@@ -157,11 +153,9 @@ class _GroupesUtilisateursScreenViewState
                                     ),
                                     trailing: Icon(Icons.arrow_forward_ios),
                                     selected:
-                                        utilisateur.nom ==
-                                        (context.read<UtilisateurBloc>().state
-                                                as UtilisateurInitial)
-                                            .selectedEtulisateur!
-                                            .nom,
+                                        state.selectedEtulisateur != null &&
+                                        utilisateur.id ==
+                                            state.selectedEtulisateur!.id,
                                     onTap: () {
                                       context.read<UtilisateurBloc>().add(
                                         SelectUtilisateur(
@@ -234,14 +228,14 @@ class _GroupesUtilisateursScreenViewState
                                 children: [
                                   _buildUserDetailTile(
                                     title: 'Mot de passe Schema',
-                                    value: utilisateur.motPasseSchema,
+                                    value: "****",
                                     user: utilisateur,
                                     attributeName: 'motPasseSchema',
                                   ),
                                   const Divider(),
                                   _buildUserDetailTile(
                                     title: 'Mot de passe chiffre',
-                                    value: utilisateur.motPasseChiffre,
+                                    value: '****',
                                     user: utilisateur,
                                     attributeName: 'motPasseChiffre',
                                   ),
@@ -262,6 +256,9 @@ class _GroupesUtilisateursScreenViewState
                                 ],
                               ),
                             ),
+                            SizedBox(height: 16),
+
+                            ButtonSupprimer(onTap: () {}),
                           ],
                         ),
                       );
