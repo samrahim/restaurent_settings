@@ -40,11 +40,8 @@ class DrawerUpdatePaiementMethodeState extends DrawerState {
 }
 
 class DrawerCreateCategoriePrix extends DrawerState {
-  final bool isOpen;
-  DrawerCreateCategoriePrix({required this.isOpen});
-
   @override
-  List<Object?> get props => [isOpen];
+  List<Object?> get props => [];
 }
 
 class DrawerCreateTauxTva extends DrawerState {

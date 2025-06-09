@@ -40,11 +40,12 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
           ),
         );
       }
+
       if (event is OpenCreateCategoriePrixDrawer) {
-        emit(DrawerCreateCategoriePrix(isOpen: true));
+        emit(DrawerCreateCategoriePrix());
       }
       if (event is CloseCreateCategoriePrixDrawer) {
-        emit(DrawerCreateCategoriePrix(isOpen: false));
+        emit(DrawerCreateCategoriePrix());
       }
       if (event is OpenCreateTauxTvaDrawer) {
         emit(DrawerCreateTauxTva(isOpen: true));
