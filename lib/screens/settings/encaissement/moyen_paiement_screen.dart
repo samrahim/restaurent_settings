@@ -460,6 +460,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                                       },
                                     ),
                                   ),
+
                                   Divider(),
                                   SwitchListTile(
                                     activeColor: Colors.blue,

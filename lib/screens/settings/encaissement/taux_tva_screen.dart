@@ -176,7 +176,7 @@ class _TauxTVAScreenViewState extends State<TauxTVAScreenView> {
       tauxTVAValue.clear();
       return _buildCreateTVADrawer(context);
     }
-    return Container(); // Default empty drawer
+    return Container(); 
   }
 
   Widget _buildCreateTVADrawer(BuildContext context) {

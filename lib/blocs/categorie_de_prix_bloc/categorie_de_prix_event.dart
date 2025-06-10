@@ -33,50 +33,9 @@ class SelectCategoriDePrix extends CategorieDePrixEvent {
 }
 
 class UpdateCategorieDePrix extends CategorieDePrixEvent {
-  final String? nom;
-  final String nomCourt;
-  final bool? status;
+  final CategorieDePrixModel model;
 
-  final bool? afficherNomCourtEnCommande;
-  final bool? afficherNomCourtEnEncaissement;
-  final bool? afficherNomCourtEnFabrication;
-  final bool? actifDansTouteLaJournee;
-  final bool? categorieDePrixActive;
-  final List<String>? joursDactivite;
-  final String? salle;
-  final TimeOfDay? heureDebut;
-  final TimeOfDay? heureFin;
-  final List<ProduitsModel>? produits;
-
-  UpdateCategorieDePrix({
-    required this.nom,
-    required this.nomCourt,
-    required this.status,
-    required this.afficherNomCourtEnCommande,
-    required this.afficherNomCourtEnEncaissement,
-    required this.afficherNomCourtEnFabrication,
-    required this.actifDansTouteLaJournee,
-    required this.categorieDePrixActive,
-    required this.joursDactivite,
-    required this.salle,
-    required this.heureDebut,
-    required this.heureFin,
-    required this.produits,
-  });
+  UpdateCategorieDePrix({required this.model});
   @override
-  List<Object?> get props => [
-    nom,
-    nomCourt,
-    status,
-    afficherNomCourtEnCommande,
-    afficherNomCourtEnEncaissement,
-    afficherNomCourtEnFabrication,
-    actifDansTouteLaJournee,
-    categorieDePrixActive,
-    joursDactivite,
-    salle,
-    heureDebut,
-    heureFin,
-    produits,
-  ];
+  List<Object?> get props => [model];
 }

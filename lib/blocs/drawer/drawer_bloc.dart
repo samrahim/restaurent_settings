@@ -1,5 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:restaurent/blocs/categorie_de_prix_bloc/categorie_de_prix_bloc.dart';
+import 'package:restaurent/consts.dart';
+import 'package:restaurent/models/categorie_de_prix_model.dart';
 import 'package:restaurent/models/moyen_de_paiement_model.dart';
 import 'package:restaurent/models/utilisateur_model.dart';
 
@@ -42,16 +46,17 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
       }
 
       if (event is OpenCreateCategoriePrixDrawer) {
-        emit(DrawerCreateCategoriePrix());
+        emit(DrawerCreateCategoriePrix(model: event.model));
       }
-      if (event is CloseCreateCategoriePrixDrawer) {
-        emit(DrawerCreateCategoriePrix());
-      }
+
       if (event is OpenCreateTauxTvaDrawer) {
         emit(DrawerCreateTauxTva(isOpen: true));
       }
       if (event is CloseCreateTauxTvaDrawer) {
         emit(DrawerCreateTauxTva(isOpen: false));
+      }
+      if (event is UpdateCreateCategoriePrixModel) {
+        emit(DrawerCreateCategoriePrix(model: event.model));
       }
     });
   }

@@ -40,8 +40,11 @@ class DrawerUpdatePaiementMethodeState extends DrawerState {
 }
 
 class DrawerCreateCategoriePrix extends DrawerState {
+  final CategorieDePrixModel model;
+
+  DrawerCreateCategoriePrix({required this.model});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [model];
 }
 
 class DrawerCreateTauxTva extends DrawerState {

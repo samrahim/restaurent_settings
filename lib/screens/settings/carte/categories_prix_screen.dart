@@ -5,6 +5,7 @@ import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
 import 'package:restaurent/screens/widgets/action_button.dart';
+import 'package:restaurent/screens/widgets/custom_list_tile.dart';
 
 class CategoriesPrixScreen extends StatelessWidget {
   const CategoriesPrixScreen({super.key});
@@ -31,124 +32,276 @@ class CategoriesPrixScreenView extends StatefulWidget {
 
 class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  String? nom, nomCourt, salle;
-  bool status = true;
-  bool afficherCommande = false;
-  bool afficherEncaissement = false;
-  bool afficherFabrication = false;
-  bool actifJour = true, actifNuit = false, categorieActive = true;
-  List<String> jours = [];
-  TimeOfDay? debut, fin;
+
+  CategorieDePrixModel model = CategorieDePrixModel(
+    produits: [],
+    id: categoriesPrix.length.toString(),
+    nom: '',
+    nomCourt: '',
+    status: false,
+    afficherNomCourtEnCommande: false,
+    afficherNomCourtEnEncaissement: false,
+    afficherNomCourtEnFabrication: false,
+    actifDansTouteLaJournee: false,
+    categorieDePrixActive: false,
+    joursDactivite: [],
+    salle: salles.first,
+    heureDebut: TimeOfDay(hour: 12, minute: 00),
+    heureFin: TimeOfDay(hour: 12, minute: 00),
+  );
+  TextEditingController nom = TextEditingController();
+  TextEditingController nomCourt = TextEditingController();
+  String salle = salles.first;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: BlocBuilder<DrawerBloc, DrawerState>(
         builder: (context, state) {
-          if (state is DrawerCreateCategoriePrix) {
-            return Drawer(
-              width: MediaQuery.of(context).size.width * 0.3,
-              child: Column(
-                children: [
-                  // Name inputs
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Nom *',
-                      hintText: 'Entrer le nom',
-                    ),
-                    validator:
-                        (v) => (v?.isEmpty ?? true) ? 'Champ requis' : null,
-                    onSaved: (v) => nom = v,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Nom court'),
-                    onSaved: (v) => nomCourt = v,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Salle'),
-                    onSaved: (v) => salle = v,
-                  ),
-                  const SizedBox(height: 16),
+          if (state is! DrawerCreateCategoriePrix)
+            return const SizedBox.shrink();
+          final m = state.model;
 
-                  // Toggles
-                  ..._buildSwitch(
-                    "Activer catégorie",
-                    status,
-                    (v) => setState(() => status = v),
-                  ),
-                  ..._buildSwitch(
-                    "Afficher nom court (Commande)",
-                    afficherCommande,
-                    (v) => setState(() => afficherCommande = v),
-                  ),
-                  ..._buildSwitch(
-                    "Afficher nom court (Encaissement)",
-                    afficherEncaissement,
-                    (v) => setState(() => afficherEncaissement = v),
-                  ),
-                  ..._buildSwitch(
-                    "Afficher nom court (Fabrication)",
-                    afficherFabrication,
-                    (v) => setState(() => afficherFabrication = v),
-                  ),
-                  ..._buildSwitch(
-                    "Actif toute la journée",
-                    actifJour,
-                    (v) => setState(() {
-                      actifJour = v;
-                      if (v) {
-                        actifNuit = false;
-                        debut = fin = null;
-                      }
-                    }),
-                  ),
-                  ..._buildSwitch(
-                    "Actif toute la nuit",
-                    actifNuit,
-                    (v) => setState(() {
-                      actifNuit = v;
-                      if (v) {
-                        actifJour = false;
-                        debut = fin = null;
-                      }
-                    }),
-                  ),
-                  ..._buildSwitch(
-                    "Catégorie active",
-                    categorieActive,
-                    (v) => setState(() => categorieActive = v),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Time selection
-                  if (!(actifJour || actifNuit)) ...[
-                    _buildTimePicker(
-                      'Heure début',
-                      debut,
-                      (time) => setState(() => debut = time),
+          return Drawer(
+            width: MediaQuery.of(context).size.width * 0.3,
+            child: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Nouvelle catégorie de prix',
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    _buildTimePicker(
-                      'Heure fin',
-                      fin,
-                      (time) => setState(() => fin = time),
+                    const SizedBox(height: 24),
+
+                    // Nom
+                    TextFormField(
+                      initialValue: m.nom,
+                      decoration: const InputDecoration(
+                        labelText: 'Nom *',
+                        hintText: 'Entrer le nom',
+                      ),
+                      onChanged: (v) {
+                        context.read<DrawerBloc>().add(
+                          UpdateCreateCategoriePrixModel(m.copyWith(nom: v)),
+                        );
+                      },
                     ),
                     const SizedBox(height: 16),
+
+                    // Nom court
+                    TextFormField(
+                      initialValue: m.nomCourt,
+                      decoration: const InputDecoration(labelText: 'Nom court'),
+                      onChanged: (v) {
+                        context.read<DrawerBloc>().add(
+                          UpdateCreateCategoriePrixModel(
+                            m.copyWith(nomCourt: v),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Salle
+                    CustomListTile(
+                      title: const Text('Disponible dans les salles'),
+                      trailingwidget: DropdownButton<String>(
+                        value: m.salle,
+                        underline: const SizedBox(),
+                        items:
+                            salles
+                                .map(
+                                  (s) => DropdownMenuItem(
+                                    value: s,
+                                    child: Text(s),
+                                  ),
+                                )
+                                .toList(),
+                        onChanged: (v) {
+                          if (v == null) return;
+                          context.read<DrawerBloc>().add(
+                            UpdateCreateCategoriePrixModel(
+                              m.copyWith(salle: v),
+                            ),
+                          );
+                        },
+                      ),
+                      leading: null,
+                      trailing: null,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Switches
+                    ...[
+                      [
+                        'Activer catégorie',
+                        m.status,
+                        (bool v) => m.copyWith(status: v),
+                      ],
+                      [
+                        'Afficher nom court (Commande)',
+                        m.afficherNomCourtEnCommande,
+                        (bool v) => m.copyWith(afficherNomCourtEnCommande: v),
+                      ],
+                      [
+                        'Afficher nom court (Encaissement)',
+                        m.afficherNomCourtEnEncaissement,
+                        (bool v) =>
+                            m.copyWith(afficherNomCourtEnEncaissement: v),
+                      ],
+                      [
+                        'Afficher nom court (Fabrication)',
+                        m.afficherNomCourtEnFabrication,
+                        (bool v) =>
+                            m.copyWith(afficherNomCourtEnFabrication: v),
+                      ],
+                      [
+                        'Catégorie active',
+                        m.categorieDePrixActive,
+                        (bool v) => m.copyWith(categorieDePrixActive: v),
+                      ],
+                      [
+                        'Actif toute la journée',
+                        m.actifDansTouteLaJournee,
+                        (bool v) => m.copyWith(actifDansTouteLaJournee: v),
+                      ],
+                    ].map((entry) {
+                      final label = entry[0] as String;
+                      final value = entry[1] as bool;
+                      final copy =
+                          entry[2] as CategorieDePrixModel Function(bool);
+                      return Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(label),
+                              Switch(
+                                value: value,
+                                onChanged: (v) {
+                                  context.read<DrawerBloc>().add(
+                                    UpdateCreateCategoriePrixModel(copy(v)),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                      );
+                    }),
+
+                    const SizedBox(height: 16),
+
+                    // Plages horaires si ni journée ni nuit
+                    if (!m.actifDansTouteLaJournee) ...[
+                      ListTile(
+                        title: const Text('Heure début'),
+                        trailing: Text(
+                          m.heureDebut?.format(context) ?? '--:--',
+                        ),
+                        onTap: () async {
+                          final t = await showTimePicker(
+                            context: context,
+                            initialTime: m.heureDebut ?? TimeOfDay.now(),
+                          );
+                          if (t != null) {
+                            context.read<DrawerBloc>().add(
+                              UpdateCreateCategoriePrixModel(
+                                m.copyWith(heureDebut: t),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Heure fin'),
+                        trailing: Text(m.heureFin?.format(context) ?? '--:--'),
+                        onTap: () async {
+                          final t = await showTimePicker(
+                            context: context,
+                            initialTime: m.heureFin ?? TimeOfDay.now(),
+                          );
+                          if (t != null) {
+                            context.read<DrawerBloc>().add(
+                              UpdateCreateCategoriePrixModel(
+                                m.copyWith(heureFin: t),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+
+                    // Jours d'activité (chips scrollables)
+                    const Text('Jours d’activité'),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      height: 40,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount:
+                            const [
+                              'Lundi',
+                              'Mardi',
+                              'Mercredi',
+                              'Jeudi',
+                              'Vendredi',
+                              'Samedi',
+                              'Dimanche',
+                            ].length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 8),
+                        itemBuilder: (_, i) {
+                          final d =
+                              const [
+                                'Lundi',
+                                'Mardi',
+                                'Mercredi',
+                                'Jeudi',
+                                'Vendredi',
+                                'Samedi',
+                                'Dimanche',
+                              ][i];
+                          final selected = m.joursDactivite.contains(d);
+                          return ChoiceChip(
+                            label: Text(d),
+                            selected: selected,
+                            onSelected: (sel) {
+                              final jours = List<String>.from(m.joursDactivite);
+                              sel ? jours.add(d) : jours.remove(d);
+                              context.read<DrawerBloc>().add(
+                                UpdateCreateCategoriePrixModel(
+                                  m.copyWith(joursDactivite: jours),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Bouton de validation
+                    ElevatedButton(
+                      onPressed: () {
+                        // Dispatch un event pour sauvegarder la catégorie
+                        // context.read<CategorieDePrixBloc>().add(
+                        //   SaveCategorieDePrix(m),
+                        // );
+                        Navigator.of(context).pop(); // ferme la drawer
+                      },
+                      child: const Text('Créer la catégorie'),
+                    ),
                   ],
-
-                  // Days selector
-                  _buildDaysChips(),
-
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text('Créer la catégorie'),
-                  ),
-                ],
+                ),
               ),
-            );
-          }
-
-          return SizedBox.shrink();
+            ),
+          );
         },
       ),
       body: BlocBuilder<CategorieDePrixBloc, CategorieDePrixState>(
@@ -170,7 +323,7 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
     );
   }
 
-  Widget _buildDaysChips() {
+  Widget _buildDaysChips(DrawerCreateCategoriePrix state) {
     const days = [
       'Lundi',
       'Mardi',
@@ -180,20 +333,31 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
       'Samedi',
       'Dimanche',
     ];
-    return Wrap(
-      spacing: 8,
-      children:
-          days.map((d) {
-            final selected = jours.contains(d);
-            return ChoiceChip(
-              label: Text(d),
-              selected: selected,
-              onSelected:
-                  (sel) => setState(() {
-                    sel ? jours.add(d) : jours.remove(d);
-                  }),
-            );
-          }).toList(),
+    return SizedBox(
+      height: 50,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children:
+              days.map((d) {
+                final selected = state.model.joursDactivite.contains(d);
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: ChoiceChip(
+                    label: Text(d),
+                    selected: selected,
+
+                    // onSelected:
+                    //     (sel) => setState(() {
+                    //       sel
+                    //           ? context.read<DrawerBloc>().add(OpenCreateCategoriePrixDrawer(model: model.copyWith(joursDactivite: model.joursDactivite.add(d))))
+                    //           : joursDactivite.remove(d);
+                    //     }),
+                  ),
+                );
+              }).toList(),
+        ),
+      ),
     );
   }
 
@@ -271,7 +435,7 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
               ActionButton(
                 onPressed: () {
                   context.read<DrawerBloc>().add(
-                    OpenCreateCategoriePrixDrawer(),
+                    OpenCreateCategoriePrixDrawer(model: model),
                   );
                   _scaffoldKey.currentState?.openEndDrawer();
                 },

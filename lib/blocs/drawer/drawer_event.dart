@@ -39,13 +39,19 @@ class OpenUpdatePaiementMethodeDrawer extends DrawerEvent {
 }
 
 class OpenCreateCategoriePrixDrawer extends DrawerEvent {
+  final CategorieDePrixModel model;
+
+  OpenCreateCategoriePrixDrawer({required this.model});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [model];
 }
 
-class CloseCreateCategoriePrixDrawer extends DrawerEvent {
+class UpdateCreateCategoriePrixModel extends DrawerEvent {
+  final CategorieDePrixModel model;
+  UpdateCreateCategoriePrixModel(this.model);
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [model];
 }
 
 class OpenCreateTauxTvaDrawer extends DrawerEvent {
