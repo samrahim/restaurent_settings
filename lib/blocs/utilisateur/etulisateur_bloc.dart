@@ -42,7 +42,6 @@ class UtilisateurBloc extends Bloc<UtilisateurEvent, UtilisateurState> {
         );
       }
       if (event is UpdateUtilisateur) {
-        print(event.utilisateurModel.nom);
         final updatedUser = event.utilisateurModel;
 
         final updatedList =

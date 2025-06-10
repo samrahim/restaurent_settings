@@ -181,7 +181,10 @@ class AppTextStyle {
 class AppColors {
   static const Color primary = Colors.blue;
   static final grey = Colors.grey[50];
-  static const Color tertiary = Color(0xFF000000);
+  static final greyaccent = Colors.grey[300];
+
+  static Color? indingo200 = Colors.indigo[200];
+  static Color? indingo500 = Colors.indigo[500];
   static const Color quaternary = Color(0xFF000000);
   static const Color quinary = Color(0xFF000000);
   static const Color senary = Color(0xFF000000);

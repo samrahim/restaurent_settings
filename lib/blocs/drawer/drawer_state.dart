@@ -69,3 +69,11 @@ class DrawerUpdateUtilisateurAttributeState extends DrawerState {
   @override
   List<Object?> get props => [utilisateur, attributeName, currentValue];
 }
+
+class DrawerDeAttacheProduitsToCategorie extends DrawerState {
+  final List<ProduitsModel> produits;
+
+  DrawerDeAttacheProduitsToCategorie({required this.produits});
+  @override
+  List<Object?> get props => [produits];
+}

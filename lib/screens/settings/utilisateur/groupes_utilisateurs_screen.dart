@@ -4,6 +4,7 @@ import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/blocs/utilisateur/etulisateur_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/utilisateur_model.dart';
+import 'package:restaurent/screens/widgets/create_button.dart';
 import 'package:restaurent/screens/widgets/widgets.dart';
 
 class GroupesUtilisateursScreen extends StatelessWidget {
@@ -175,7 +176,7 @@ class _GroupesUtilisateursScreenViewState
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 4,
             child: SizedBox(
               height: MediaQuery.of(context).size.height,
               child: Card(
@@ -228,14 +229,14 @@ class _GroupesUtilisateursScreenViewState
                                 children: [
                                   _buildUserDetailTile(
                                     title: 'Mot de passe Schema',
-                                    value: "****",
+                                    value: utilisateur.motPasseSchema,
                                     user: utilisateur,
                                     attributeName: 'motPasseSchema',
                                   ),
                                   const Divider(),
                                   _buildUserDetailTile(
                                     title: 'Mot de passe chiffre',
-                                    value: '****',
+                                    value: utilisateur.motPasseChiffre,
                                     user: utilisateur,
                                     attributeName: 'motPasseChiffre',
                                   ),
@@ -455,39 +456,22 @@ class _GroupesUtilisateursScreenViewState
             ),
 
             const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  context.read<UtilisateurBloc>().add(
-                    CreateUtilisateur(
-                      groupe: groupe.text,
-                      motPasseChiffre: motPasseChiffre.text,
-                      nom: nom.text,
-                      prenom: prenom.text,
-                      qrCode: qrCode.text,
-                      role: role,
-                      motPasseSchema: motPasseSchema.text,
-                    ),
-                  );
-                  _scaffoldKey.currentState?.closeEndDrawer();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+            CreateButton(
+              onPressed: () {
+                context.read<UtilisateurBloc>().add(
+                  CreateUtilisateur(
+                    groupe: groupe.text,
+                    motPasseChiffre: motPasseChiffre.text,
+                    nom: nom.text,
+                    prenom: prenom.text,
+                    qrCode: qrCode.text,
+                    role: role,
+                    motPasseSchema: motPasseSchema.text,
                   ),
-                ),
-                child: const Text(
-                  "Ajouter",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+                );
+                _scaffoldKey.currentState?.closeEndDrawer();
+              },
+              buttonText: "Ajouter",
             ),
           ],
         ),
@@ -659,7 +643,13 @@ class _GroupesUtilisateursScreenViewState
       },
       child: CustomListTile(
         title: Text(title, style: AppTextStyle.greyHeading),
-        trailingwidget: Text(value, style: AppTextStyle.indingosubHeading),
+        trailingwidget: Text(
+          attributeName != 'motPasseSchema' &&
+                  attributeName != 'motPasseChiffre'
+              ? value
+              : "****",
+          style: AppTextStyle.indingosubHeading,
+        ),
         leading: null,
         trailing: null,
       ),

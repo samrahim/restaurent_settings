@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:restaurent/blocs/categorie_de_prix_bloc/categorie_de_prix_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
+import 'package:restaurent/models/models.dart';
 import 'package:restaurent/models/moyen_de_paiement_model.dart';
 import 'package:restaurent/models/utilisateur_model.dart';
 
@@ -57,6 +58,10 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
       }
       if (event is UpdateCreateCategoriePrixModel) {
         emit(DrawerCreateCategoriePrix(model: event.model));
+      }
+      if (event is OpenProduitsAttachementDrawer) {
+        // FIXME: need to fetch data from server her
+        emit(DrawerDeAttacheProduitsToCategorie(produits: []));
       }
     });
   }

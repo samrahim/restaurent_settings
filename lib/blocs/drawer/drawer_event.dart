@@ -78,3 +78,12 @@ class OpenUpdateUtilisateurAttributeDrawer extends DrawerEvent {
   @override
   List<Object?> get props => [utilisateur, attributeName, currentValue];
 }
+
+class OpenProduitsAttachementDrawer extends DrawerEvent {
+  final String categorieId;
+
+  OpenProduitsAttachementDrawer({required this.categorieId});
+
+  @override
+  List<Object?> get props => [categorieId];
+}

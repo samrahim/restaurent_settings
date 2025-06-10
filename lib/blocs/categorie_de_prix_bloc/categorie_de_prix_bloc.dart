@@ -29,6 +29,13 @@ class CategorieDePrixBloc
           (state as CategorieDePrixInitial).copyWith(selectedCategorie: null),
         );
       }
+      if (event is CreateCategorieDePrix) {
+        emit(
+          (state as CategorieDePrixInitial).copyWith(
+            categories: [...categoriesPrix, event.categorieDePrixModel],
+          ),
+        );
+      }
     });
   }
 }

@@ -5,6 +5,8 @@ import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
 import 'package:restaurent/screens/widgets/action_button.dart';
+import 'package:restaurent/screens/widgets/button_supprimer.dart';
+import 'package:restaurent/screens/widgets/create_button.dart';
 import 'package:restaurent/screens/widgets/custom_list_tile.dart';
 
 class CategoriesPrixScreen extends StatelessWidget {
@@ -79,9 +81,13 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
                     // Nom
                     TextFormField(
                       initialValue: m.nom,
-                      decoration: const InputDecoration(
-                        labelText: 'Nom *',
-                        hintText: 'Entrer le nom',
+                      decoration: InputDecoration(
+                        labelText: 'Nom',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[50],
                       ),
                       onChanged: (v) {
                         context.read<DrawerBloc>().add(
@@ -94,7 +100,14 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
                     // Nom court
                     TextFormField(
                       initialValue: m.nomCourt,
-                      decoration: const InputDecoration(labelText: 'Nom court'),
+                      decoration: InputDecoration(
+                        labelText: 'Nom court',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
                       onChanged: (v) {
                         context.read<DrawerBloc>().add(
                           UpdateCreateCategoriePrixModel(
@@ -106,31 +119,37 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
                     const SizedBox(height: 16),
 
                     // Salle
-                    CustomListTile(
-                      title: const Text('Disponible dans les salles'),
-                      trailingwidget: DropdownButton<String>(
-                        value: m.salle,
-                        underline: const SizedBox(),
-                        items:
-                            salles
-                                .map(
-                                  (s) => DropdownMenuItem(
-                                    value: s,
-                                    child: Text(s),
-                                  ),
-                                )
-                                .toList(),
-                        onChanged: (v) {
-                          if (v == null) return;
-                          context.read<DrawerBloc>().add(
-                            UpdateCreateCategoriePrixModel(
-                              m.copyWith(salle: v),
-                            ),
-                          );
-                        },
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey),
                       ),
-                      leading: null,
-                      trailing: null,
+                      child: ListTile(
+                        title: const Text('Disponible dans les salles'),
+                        trailing: DropdownButton<String>(
+                          style: AppTextStyle.indingosubHeading,
+                          value: m.salle,
+                          underline: const SizedBox(),
+                          items:
+                              salles
+                                  .map(
+                                    (s) => DropdownMenuItem(
+                                      value: s,
+                                      child: Text(s),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (v) {
+                            if (v == null) return;
+                            context.read<DrawerBloc>().add(
+                              UpdateCreateCategoriePrixModel(
+                                m.copyWith(salle: v),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 16),
 
@@ -175,11 +194,17 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
                           entry[2] as CategorieDePrixModel Function(bool);
                       return Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(label),
-                              Switch(
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.grey),
+                            ),
+                            child: CustomListTile(
+                              leading: null,
+                              trailing: null,
+                              title: Text(label),
+                              trailingwidget: Switch(
                                 value: value,
                                 onChanged: (v) {
                                   context.read<DrawerBloc>().add(
@@ -187,52 +212,73 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
                                   );
                                 },
                               ),
-                            ],
+                            ),
                           ),
                           const SizedBox(height: 8),
                         ],
                       );
                     }),
 
-                    const SizedBox(height: 16),
-
                     // Plages horaires si ni journée ni nuit
                     if (!m.actifDansTouteLaJournee) ...[
-                      ListTile(
-                        title: const Text('Heure début'),
-                        trailing: Text(
-                          m.heureDebut?.format(context) ?? '--:--',
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey),
                         ),
-                        onTap: () async {
-                          final t = await showTimePicker(
-                            context: context,
-                            initialTime: m.heureDebut ?? TimeOfDay.now(),
-                          );
-                          if (t != null) {
-                            context.read<DrawerBloc>().add(
-                              UpdateCreateCategoriePrixModel(
-                                m.copyWith(heureDebut: t),
-                              ),
+                        child: ListTile(
+                          title: Text(
+                            'Heure début',
+                            style: AppTextStyle.greysubHeading,
+                          ),
+                          trailing: Text(
+                            m.heureDebut?.format(context) ?? '--:--',
+                          ),
+                          onTap: () async {
+                            final t = await showTimePicker(
+                              context: context,
+                              initialTime: m.heureDebut ?? TimeOfDay.now(),
                             );
-                          }
-                        },
+                            if (t != null) {
+                              context.read<DrawerBloc>().add(
+                                UpdateCreateCategoriePrixModel(
+                                  m.copyWith(heureDebut: t),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                       ),
-                      ListTile(
-                        title: const Text('Heure fin'),
-                        trailing: Text(m.heureFin?.format(context) ?? '--:--'),
-                        onTap: () async {
-                          final t = await showTimePicker(
-                            context: context,
-                            initialTime: m.heureFin ?? TimeOfDay.now(),
-                          );
-                          if (t != null) {
-                            context.read<DrawerBloc>().add(
-                              UpdateCreateCategoriePrixModel(
-                                m.copyWith(heureFin: t),
-                              ),
+                      const SizedBox(height: 8),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            'Heure fin',
+                            style: AppTextStyle.greysubHeading,
+                          ),
+                          trailing: Text(
+                            m.heureFin?.format(context) ?? '--:--',
+                          ),
+                          onTap: () async {
+                            final t = await showTimePicker(
+                              context: context,
+                              initialTime: m.heureFin ?? TimeOfDay.now(),
                             );
-                          }
-                        },
+                            if (t != null) {
+                              context.read<DrawerBloc>().add(
+                                UpdateCreateCategoriePrixModel(
+                                  m.copyWith(heureFin: t),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                       ),
                       const SizedBox(height: 16),
                     ],
@@ -270,6 +316,7 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
                           return ChoiceChip(
                             label: Text(d),
                             selected: selected,
+                            selectedColor: AppColors.indingo200,
                             onSelected: (sel) {
                               final jours = List<String>.from(m.joursDactivite);
                               sel ? jours.add(d) : jours.remove(d);
@@ -285,17 +332,14 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
                     ),
 
                     const SizedBox(height: 24),
-
-                    // Bouton de validation
-                    ElevatedButton(
+                    CreateButton(
                       onPressed: () {
-                        // Dispatch un event pour sauvegarder la catégorie
-                        // context.read<CategorieDePrixBloc>().add(
-                        //   SaveCategorieDePrix(m),
-                        // );
-                        Navigator.of(context).pop(); // ferme la drawer
+                        context.read<CategorieDePrixBloc>().add(
+                          CreateCategorieDePrix(categorieDePrixModel: m),
+                        );
+                        _scaffoldKey.currentState?.closeEndDrawer();
                       },
-                      child: const Text('Créer la catégorie'),
+                      buttonText: "Créer la catégorie",
                     ),
                   ],
                 ),
@@ -308,7 +352,10 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
         builder: (context, state) {
           if (state is CategorieDePrixInitial &&
               state.selectedCategorie == null) {
-            return _buildCategorieDePrixList(context: context);
+            return _buildCategorieDePrixList(
+              context: context,
+              data: state.categories,
+            );
           }
           if (state is CategorieDePrixInitial &&
               state.selectedCategorie != null) {
@@ -323,85 +370,9 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
     );
   }
 
-  Widget _buildDaysChips(DrawerCreateCategoriePrix state) {
-    const days = [
-      'Lundi',
-      'Mardi',
-      'Mercredi',
-      'Jeudi',
-      'Vendredi',
-      'Samedi',
-      'Dimanche',
-    ];
-    return SizedBox(
-      height: 50,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children:
-              days.map((d) {
-                final selected = state.model.joursDactivite.contains(d);
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: ChoiceChip(
-                    label: Text(d),
-                    selected: selected,
-
-                    // onSelected:
-                    //     (sel) => setState(() {
-                    //       sel
-                    //           ? context.read<DrawerBloc>().add(OpenCreateCategoriePrixDrawer(model: model.copyWith(joursDactivite: model.joursDactivite.add(d))))
-                    //           : joursDactivite.remove(d);
-                    //     }),
-                  ),
-                );
-              }).toList(),
-        ),
-      ),
-    );
-  }
-
-  Iterable<Widget> _buildSwitch(
-    String label,
-    bool value,
-    ValueChanged<bool> onChanged,
-  ) {
-    return [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label),
-          Switch(
-            value: value,
-            onChanged: onChanged,
-            activeColor: AppColors.primary,
-          ),
-        ],
-      ),
-      const SizedBox(height: 8),
-    ];
-  }
-
-  Widget _buildTimePicker(
-    String label,
-    TimeOfDay? time,
-    ValueChanged<TimeOfDay> onPicked,
-  ) {
-    return ListTile(
-      title: Text(label),
-      trailing: Text(time != null ? time.format(context) : '--:--'),
-      onTap: () async {
-        final t = await showTimePicker(
-          context: context,
-          initialTime: TimeOfDay.now(),
-        );
-        if (t != null) onPicked(t);
-      },
-    );
-  }
-
   _buildCategorieDePrixDetails({required CategorieDePrixModel model}) {
     return Column(
+      mainAxisSize: MainAxisSize.max,
       children: [
         AppBar(
           leading: IconButton(
@@ -414,11 +385,239 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
           centerTitle: true,
           actions: [SizedBox()],
         ),
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Catégorie de prix',
+                          style: AppTextStyle.greyHeading,
+                        ),
+                      ),
+
+                      ListTile(
+                        trailing: Icon(Icons.arrow_forward_ios),
+                        tileColor: AppColors.greyaccent,
+                        leading: Text(
+                          "Information generale",
+                          style: AppTextStyle.indingosubHeading.copyWith(
+                            color: AppColors.indingo500,
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 32),
+
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Produits',
+                          style: AppTextStyle.greyHeading,
+                        ),
+                      ),
+
+                      ListTile(
+                        onTap: () {
+                          // context.read<DrawerBloc>().add(
+                          //   OpenCreateCategoriePrixDrawer(model: model),
+                          // );
+                          // _scaffoldKey.currentState?.openEndDrawer();
+                        },
+                        trailing: Icon(Icons.arrow_forward_ios),
+
+                        leading: Text(
+                          "Produits associés",
+                          style: AppTextStyle.indingosubHeading.copyWith(
+                            color: AppColors.indingo500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 4,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 4, right: 4),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 16),
+                                Card(
+                                  color: Colors.white,
+                                  child: Column(
+                                    children: [
+                                      CustomListTile(
+                                        trailingwidget: null,
+                                        title: null,
+                                        leading: 'nom',
+                                        trailing: model.nom,
+                                      ),
+                                      const Divider(),
+                                      CustomListTile(
+                                        trailingwidget: null,
+                                        leading: 'Nom court',
+                                        title: null,
+                                        trailing: model.nomCourt,
+                                      ),
+                                      const Divider(),
+                                      CustomListTile(
+                                        trailingwidget: Switch(
+                                          activeColor: AppColors.primary,
+                                          value: model.status,
+                                          onChanged: (v) {},
+                                        ),
+                                        title: null,
+                                        leading: 'Categorie de prix active',
+                                        trailing: null,
+                                      ),
+                                      const Divider(),
+                                      CustomListTile(
+                                        trailingwidget: Switch(
+                                          activeColor: AppColors.primary,
+                                          value:
+                                              model.afficherNomCourtEnCommande,
+                                          onChanged: (v) {},
+                                        ),
+                                        title: null,
+                                        leading:
+                                            'Afficher nom court en commande',
+                                        trailing: null,
+                                      ),
+
+                                      const Divider(),
+                                      CustomListTile(
+                                        trailingwidget: Switch(
+                                          activeColor: AppColors.primary,
+                                          value:
+                                              model
+                                                  .afficherNomCourtEnEncaissement,
+                                          onChanged: (v) {},
+                                        ),
+                                        title: null,
+                                        leading:
+                                            'Afficher nom court a l\'encaisement',
+                                        trailing: null,
+                                      ),
+                                      const Divider(),
+                                      CustomListTile(
+                                        trailingwidget: Switch(
+                                          activeColor: AppColors.primary,
+                                          value:
+                                              model
+                                                  .afficherNomCourtEnFabrication,
+                                          onChanged: (v) {},
+                                        ),
+                                        title: null,
+                                        leading:
+                                            'Afficher nom court a en fabrication',
+                                        trailing: null,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                SizedBox(height: 16),
+                                Card(
+                                  color: Colors.white,
+                                  child: Column(
+                                    children: [
+                                      CustomListTile(
+                                        trailingwidget: Switch(
+                                          activeColor: AppColors.primary,
+                                          value: model.actifDansTouteLaJournee,
+                                          onChanged: (v) {},
+                                        ),
+                                        leading: 'Actif toute la journée',
+                                        title: null,
+                                        trailing: null,
+                                      ),
+                                      const Divider(),
+                                      CustomListTile(
+                                        title: null,
+                                        trailing: null,
+                                        leading:
+                                            'Jours d\'activite de la categorie de prix',
+                                        trailingwidget: Text(
+                                          style: AppTextStyle.indingosubHeading,
+                                          model.joursDactivite
+                                              .map((e) => e)
+                                              .toString(),
+                                        ),
+                                      ),
+
+                                      const Divider(),
+                                      CustomListTile(
+                                        trailingwidget: null,
+                                        title: null,
+                                        leading:
+                                            'Salles Consernees par la cetegorie de prix',
+                                        trailing: model.salle,
+                                      ),
+                                      if (!model.actifDansTouteLaJournee)
+                                        const Divider(),
+
+                                      if (!model.actifDansTouteLaJournee)
+                                        Column(
+                                          children: [
+                                            CustomListTile(
+                                              trailingwidget: null,
+                                              title: null,
+                                              leading: "Horaire de debut",
+                                              trailing:
+                                                  '${model.heureDebut!.hour.toString()}:${model.heureDebut!.minute}',
+                                            ),
+                                            Divider(),
+                                          ],
+                                        ),
+
+                                      if (!model.actifDansTouteLaJournee)
+                                        CustomListTile(
+                                          trailingwidget: null,
+                                          title: null,
+                                          leading: "Horaire de fin",
+                                          trailing:
+                                              '${model.heureFin!.hour.toString()}:${model.heureFin!.minute}',
+                                        ),
+                                    ],
+                                  ),
+                                ),
+
+                                ButtonSupprimer(onTap: () {}),
+                                SizedBox(height: 17),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  _buildCategorieDePrixList({required BuildContext context}) {
+  _buildCategorieDePrixList({
+    required BuildContext context,
+    required List<CategorieDePrixModel> data,
+  }) {
     return Container(
       color: Colors.grey.shade200,
       margin: EdgeInsets.all(6),
@@ -452,15 +651,15 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
             margin: EdgeInsets.all(18),
             child: Column(
               children: [
-                ...categoriesPrix.map(
-                  (e) => Column(
+                ...data.map(
+                  (categorie) => Column(
                     children: [
                       InkWell(
                         child: ListTile(
                           hoverColor: Colors.grey.shade200,
 
                           title: Text(
-                            e.nom,
+                            categorie.nom,
                             style: AppTextStyle.indingoHeading,
                           ),
                           trailing: Icon(
@@ -470,11 +669,11 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
                         ),
                         onTap: () {
                           context.read<CategorieDePrixBloc>().add(
-                            SelectCategoriDePrix(model: e),
+                            SelectCategoriDePrix(model: categorie),
                           );
                         },
                       ),
-                      e != categoriesPrix.last ? Divider() : SizedBox(),
+                      categorie != data.last ? Divider() : SizedBox(),
                     ],
                   ),
                 ),

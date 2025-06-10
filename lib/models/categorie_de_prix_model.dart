@@ -16,8 +16,8 @@ class CategorieDePrixModel extends Equatable {
   final bool categorieDePrixActive;
   final List<String> joursDactivite;
   final String salle;
-  final TimeOfDay heureDebut;
-  final TimeOfDay heureFin;
+  final TimeOfDay? heureDebut;
+  final TimeOfDay? heureFin;
   final List<ProduitsModel>? produits;
 
   const CategorieDePrixModel({
@@ -107,8 +107,8 @@ List<CategorieDePrixModel> categoriesPrix = [
     actifDansTouteLaJournee: true,
     categorieDePrixActive: true,
     salle: salles[0],
-    heureDebut: TimeOfDay(hour: 17, minute: 0),
-    heureFin: TimeOfDay(hour: 19, minute: 0),
+    heureDebut: null,
+    heureFin: null,
     produits: [],
     joursDactivite: ['Lundi', 'Mardi'],
   ),
