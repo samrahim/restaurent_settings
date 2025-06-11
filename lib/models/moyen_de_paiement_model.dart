@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class MoyenDePaiementModel extends Equatable {
   final String? id;
-  final String? name;
+  final String? nom;
   final String? icon;
   final String? modeEncaissement;
   final String? getsionDuTropPercu;
@@ -16,7 +16,7 @@ class MoyenDePaiementModel extends Equatable {
 
   const MoyenDePaiementModel({
     required this.id,
-    required this.name,
+    required this.nom,
     required this.icon,
     required this.modeEncaissement,
     required this.getsionDuTropPercu,
@@ -32,7 +32,7 @@ class MoyenDePaiementModel extends Equatable {
   @override
   List<Object?> get props => [
     id,
-    name,
+    nom,
     icon,
     modeEncaissement,
     getsionDuTropPercu,
@@ -45,7 +45,7 @@ class MoyenDePaiementModel extends Equatable {
     actif,
   ];
   MoyenDePaiementModel copyWith({
-    String? name,
+    String? nom,
     String? icon,
     String? id,
     String? modeEncaissement,
@@ -60,7 +60,7 @@ class MoyenDePaiementModel extends Equatable {
   }) {
     return MoyenDePaiementModel(
       id: id ?? this.id,
-      name: name ?? this.name,
+      nom: nom ?? this.nom,
       icon: icon ?? this.icon,
       modeEncaissement: modeEncaissement ?? this.modeEncaissement,
       getsionDuTropPercu: getsionDuTropPercu ?? this.getsionDuTropPercu,
@@ -84,7 +84,7 @@ class MoyenDePaiementModel extends Equatable {
 List<MoyenDePaiementModel> moyenPaiementList = [
   MoyenDePaiementModel(
     id: '1',
-    name: 'Carte de crédit',
+    nom: 'Carte de crédit',
     icon: null,
     modeEncaissement: 'Encaissement',
     getsionDuTropPercu: 'Gestion du trop perçu',
@@ -98,7 +98,7 @@ List<MoyenDePaiementModel> moyenPaiementList = [
   ),
   MoyenDePaiementModel(
     id: '2',
-    name: 'Espèces',
+    nom: 'Espèces',
     icon: null,
     modeEncaissement: 'Encaissement',
     getsionDuTropPercu: 'Gestion du trop perçu',
@@ -112,7 +112,7 @@ List<MoyenDePaiementModel> moyenPaiementList = [
   ),
   MoyenDePaiementModel(
     id: '3',
-    name: 'Ticket Restaurant',
+    nom: 'Ticket Restaurant',
     icon: null,
     modeEncaissement: 'Encaissement',
     getsionDuTropPercu: 'Gestion du trop perçu',

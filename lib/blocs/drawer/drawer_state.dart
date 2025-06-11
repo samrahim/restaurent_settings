@@ -31,14 +31,6 @@ class DrawerUpdateUtilisateurState extends DrawerState {
   List<Object?> get props => [utilisateur];
 }
 
-class DrawerUpdatePaiementMethodeState extends DrawerState {
-  final MoyenDePaiementModel paiementMethode;
-  DrawerUpdatePaiementMethodeState({required this.paiementMethode});
-
-  @override
-  List<Object?> get props => [paiementMethode];
-}
-
 class DrawerCreateCategoriePrix extends DrawerState {
   final CategorieDePrixModel model;
 
@@ -76,4 +68,19 @@ class DrawerDeAttacheProduitsToCategorie extends DrawerState {
   DrawerDeAttacheProduitsToCategorie({required this.produits});
   @override
   List<Object?> get props => [produits];
+}
+
+class DrawerUpdateMoyenDePaiement extends DrawerState {
+  final MoyenDePaiementModel model;
+  final String attributeName;
+  final dynamic currentValue;
+
+  DrawerUpdateMoyenDePaiement({
+    required this.model,
+    required this.attributeName,
+    required this.currentValue,
+  });
+
+  @override
+  List<Object?> get props => [model, attributeName, currentValue];
 }

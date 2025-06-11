@@ -351,7 +351,6 @@ class _GroupesUtilisateursScreenViewState
               ),
             ),
 
-            // --- TES CHAMPS AVEC DES SIZEDBOX ENTRE ---
             TextField(
               controller: nom,
               decoration: InputDecoration(

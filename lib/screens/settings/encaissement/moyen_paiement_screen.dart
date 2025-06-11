@@ -33,8 +33,8 @@ class MoyenPaiementView extends StatefulWidget {
 class _MoyenPaiementViewState extends State<MoyenPaiementView> {
   final MoyenDePaiementModel _emptyModel = MoyenDePaiementModel(
     id: null,
-    name: '',
-    icon: '',
+    nom: '',
+    icon: null,
     modeEncaissement: modeEncaissementList.first,
     getsionDuTropPercu: gestionDuTropPercuList.first,
     ouvertureDeTiroirCaisse: true,
@@ -86,7 +86,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                           ),
                         ),
                         child: TextFormField(
-                          controller: nameController..text = m.name ?? '',
+                          controller: nameController,
                           decoration: InputDecoration(
                             labelText: 'Nom de la catégorie',
                             border: OutlineInputBorder(
@@ -94,7 +94,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                             ),
                           ),
                           onChanged: (value) {
-                            final updated = m.copyWith(name: value);
+                            final updated = m.copyWith(nom: value);
                             context.read<DrawerBloc>().add(
                               OpenCreatePaiementMethodeDrawer(model: updated),
                             );
@@ -102,7 +102,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                         ),
                       ),
 
-                      // 2. Mode d'encaissement
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 4.0),
                         decoration: BoxDecoration(
@@ -144,7 +143,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                         ),
                       ),
 
-                      // 3. Gestion du trop-perçu
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 4.0),
                         decoration: BoxDecoration(
@@ -187,7 +185,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                         ),
                       ),
 
-                      // 4. Ouverture du tiroir caisse
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 4.0),
                         decoration: BoxDecoration(
@@ -199,6 +196,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                           ),
                         ),
                         child: SwitchListTile(
+                          activeColor: AppColors.primary,
                           title: Text('Ouverture du tiroir caisse'),
                           value: m.ouvertureDeTiroirCaisse ?? false,
                           onChanged: (v) {
@@ -212,7 +210,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                         ),
                       ),
 
-                      // 5. Disponible en mode express
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 4.0),
                         decoration: BoxDecoration(
@@ -238,7 +235,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                         ),
                       ),
 
-                      // 6. Variation du moyen de paiement
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 4.0),
                         decoration: BoxDecoration(
@@ -283,7 +279,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                         ),
                       ),
 
-                      // 7. Compter à la fin du service
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 4.0),
                         decoration: BoxDecoration(
@@ -309,7 +304,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                         ),
                       ),
 
-                      // 8. Renseigner le fond de caisse
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 4.0),
                         decoration: BoxDecoration(
@@ -335,7 +329,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                         ),
                       ),
 
-                      // 9. Type de salle disponible
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 4.0),
                         decoration: BoxDecoration(
@@ -380,7 +373,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                         ),
                       ),
 
-                      // 10. Actif
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 4.0),
                         decoration: BoxDecoration(
@@ -424,39 +416,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
           } else {
             return SizedBox.shrink();
           }
-          // return Drawer(
-          //   width: MediaQuery.of(context).size.width * .25,
-          //   child: Column(
-          //     children: [
-          //       SizedBox(height: 10),
-          //       Padding(
-          //         padding: const EdgeInsets.all(8.0),
-          //         child: TextFormField(
-          //           controller: name,
-          //           decoration: InputDecoration(
-          //             hintText: "Nom de la catégorie",
-          //             border: OutlineInputBorder(
-          //               borderRadius: BorderRadius.circular(8),
-          //               borderSide: BorderSide(color: Colors.indigo),
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //       ElevatedButton(
-          //         onPressed: () {
-          //           context.read<MoyenDePaiementBloc>().add(
-          //             CreateMoyenDePaiementEvent(
-          //               moyenDePaiementName: name.text,
-          //             ),
-          //           );
-          //           name.clear();
-          //           Navigator.pop(context);
-          //         },
-          //         child: Text("Ajouter"),
-          //       ),
-          //     ],
-          //   ),
-          // );
         },
       ),
 
@@ -494,7 +453,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                             selectedTileColor: Colors.grey.shade300,
 
                             title: Text(
-                              method.name ?? '',
+                              method.nom ?? '',
                               style: AppTextStyle.indingosubHeading,
                             ),
                             trailing: Icon(Icons.arrow_forward_ios),
@@ -503,11 +462,11 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                                     ? Image.asset(method.icon!)
                                     : const Icon(Icons.payment),
                             selected:
-                                method.name ==
+                                method.nom ==
                                 (context.read<MoyenDePaiementBloc>().state
                                         as MoyenDePaiementInitial)
                                     .selectedModel
-                                    .name,
+                                    .nom,
                             onTap: () {
                               context.read<MoyenDePaiementBloc>().add(
                                 SelectMoyenDePaiement(moyenDePaiement: method),
@@ -549,7 +508,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                                 children: [
                                   CustomListTile(
                                     trailingwidget: Text(
-                                      method.name!,
+                                      method.nom!,
                                       style: AppTextStyle.indingosubHeading,
                                     ),
                                     title: Text(
