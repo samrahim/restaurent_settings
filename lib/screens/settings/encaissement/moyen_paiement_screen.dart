@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/blocs/moyen_de_paiement/moyen_de_paiement_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/moyen_de_paiement_model.dart';
@@ -11,8 +12,11 @@ class MoyenPaiementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => MoyenDePaiementBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => MoyenDePaiementBloc()),
+        BlocProvider(create: (context) => DrawerBloc()),
+      ],
       child: MoyenPaiementView(),
     );
   }
@@ -26,43 +30,256 @@ class MoyenPaiementView extends StatefulWidget {
 }
 
 class _MoyenPaiementViewState extends State<MoyenPaiementView> {
+  final MoyenDePaiementModel _emptyModel = MoyenDePaiementModel(
+    name: '',
+    icon: '',
+    modeEncaissement: modeEncaissementList.first,
+    getsionDuTropPercu: gestionDuTropPercuList.first,
+    ouvertureDeTiroirCaisse: true,
+    disponibleEnModeExpress: true,
+    variationDuMoyenDePaiement: moyenDePaiementList.first,
+    compterAlaFinDuService: true,
+    rensignerleFondDeCaisee: true,
+    typeDeSalleDisponible: salles.first,
+    actif: true,
+  );
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TextEditingController name = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: Drawer(
-        width: MediaQuery.of(context).size.width * .25,
-        child: Column(
-          children: [
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: name,
-                decoration: InputDecoration(
-                  hintText: "Nom de la catégorie",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.indigo),
+      endDrawer: BlocBuilder<DrawerBloc, DrawerState>(
+        builder: (context, state) {
+          if (state is DrawerCreatePaiementMethode) {
+            final m = state.model;
+
+            return Drawer(
+              width: MediaQuery.of(context).size.width * .25,
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  // 1. Nom
+                  TextFormField(
+                    controller: nameController..text = m.name ?? '',
+                    decoration: InputDecoration(
+                      labelText: 'Nom de la catégorie',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      final updated = m.copyWith(name: value);
+                      context.read<DrawerBloc>().add(
+                        OpenCreatePaiementMethodeDrawer(model: updated),
+                      );
+                    },
                   ),
-                ),
+                  const SizedBox(height: 16),
+
+                  // 2. Mode d'encaissement
+                  DropdownButtonFormField<String>(
+                    value: m.modeEncaissement,
+                    decoration: InputDecoration(
+                      labelText: 'Mode d’encaissement',
+                    ),
+                    items:
+                        modeEncaissementList
+                            .map(
+                              (v) => DropdownMenuItem(value: v, child: Text(v)),
+                            )
+                            .toList(),
+                    onChanged: (v) {
+                      if (v != null) {
+                        final updated = m.copyWith(modeEncaissement: v);
+                        context.read<DrawerBloc>().add(
+                          OpenCreatePaiementMethodeDrawer(model: updated),
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // 3. Gestion du trop-perçu
+                  DropdownButtonFormField<String>(
+                    value: m.getsionDuTropPercu,
+                    decoration: InputDecoration(
+                      labelText: 'Gestion du trop-perçu',
+                    ),
+                    items:
+                        gestionDuTropPercuList
+                            .map(
+                              (v) => DropdownMenuItem(value: v, child: Text(v)),
+                            )
+                            .toList(),
+                    onChanged: (v) {
+                      if (v != null) {
+                        final updated = m.copyWith(getsionDuTropPercu: v);
+                        context.read<DrawerBloc>().add(
+                          OpenCreatePaiementMethodeDrawer(model: updated),
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // 4. Ouverture du tiroir caisse
+                  SwitchListTile(
+                    title: Text('Ouverture du tiroir caisse'),
+                    value: m.ouvertureDeTiroirCaisse ?? false,
+                    onChanged: (v) {
+                      final updated = m.copyWith(ouvertureDeTiroirCaisse: v);
+                      context.read<DrawerBloc>().add(
+                        OpenCreatePaiementMethodeDrawer(model: updated),
+                      );
+                    },
+                  ),
+
+                  // 5. Disponible en mode express
+                  SwitchListTile(
+                    title: Text('Disponible en mode express'),
+                    value: m.disponibleEnModeExpress ?? false,
+                    onChanged: (v) {
+                      final updated = m.copyWith(disponibleEnModeExpress: v);
+                      context.read<DrawerBloc>().add(
+                        OpenCreatePaiementMethodeDrawer(model: updated),
+                      );
+                    },
+                  ),
+
+                  // 6. Variation du moyen de paiement
+                  DropdownButtonFormField<String>(
+                    value: m.variationDuMoyenDePaiement,
+                    decoration: InputDecoration(labelText: 'Variation'),
+                    items:
+                        moyenDePaiementList
+                            .map(
+                              (v) => DropdownMenuItem(value: v, child: Text(v)),
+                            )
+                            .toList(),
+                    onChanged: (v) {
+                      if (v != null) {
+                        final updated = m.copyWith(
+                          variationDuMoyenDePaiement: v,
+                        );
+                        context.read<DrawerBloc>().add(
+                          OpenCreatePaiementMethodeDrawer(model: updated),
+                        );
+                      }
+                    },
+                  ),
+
+                  // 7. Compter à la fin du service
+                  SwitchListTile(
+                    title: Text('Compter à la fin du service'),
+                    value: m.compterAlaFinDuService ?? false,
+                    onChanged: (v) {
+                      final updated = m.copyWith(compterAlaFinDuService: v);
+                      context.read<DrawerBloc>().add(
+                        OpenCreatePaiementMethodeDrawer(model: updated),
+                      );
+                    },
+                  ),
+
+                  // 8. Renseigner le fond de caisse
+                  SwitchListTile(
+                    title: Text('Renseigner le fond de caisse'),
+                    value: m.rensignerleFondDeCaisee ?? false,
+                    onChanged: (v) {
+                      final updated = m.copyWith(rensignerleFondDeCaisee: v);
+                      context.read<DrawerBloc>().add(
+                        OpenCreatePaiementMethodeDrawer(model: updated),
+                      );
+                    },
+                  ),
+
+                  // 9. Type de salle disponible
+                  DropdownButtonFormField<String>(
+                    value: m.typeDeSalleDisponible,
+                    decoration: InputDecoration(labelText: 'Type de salle'),
+                    items:
+                        salles
+                            .map(
+                              (v) => DropdownMenuItem(value: v, child: Text(v)),
+                            )
+                            .toList(),
+                    onChanged: (v) {
+                      if (v != null) {
+                        final updated = m.copyWith(typeDeSalleDisponible: v);
+                        context.read<DrawerBloc>().add(
+                          OpenCreatePaiementMethodeDrawer(model: updated),
+                        );
+                      }
+                    },
+                  ),
+
+                  // 10. Actif
+                  SwitchListTile(
+                    title: Text('Actif'),
+                    value: m.actif ?? false,
+                    onChanged: (v) {
+                      final updated = m.copyWith(actif: v);
+                      context.read<DrawerBloc>().add(
+                        OpenCreatePaiementMethodeDrawer(model: updated),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<MoyenDePaiementBloc>().add(
+                        CreateMoyenDePaiementEvent(
+                          moyenDePaiementName: nameController.text,
+                          // ... ajoutez les autres champs si besoin
+                        ),
+                      );
+                      nameController.clear();
+                      Navigator.pop(context);
+                    },
+                    child: Text('Ajouter'),
+                  ),
+                ],
               ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                context.read<MoyenDePaiementBloc>().add(
-                  CreateMoyenDePaiementEvent(moyenDePaiementName: name.text),
-                );
-                name.clear();
-                Navigator.pop(context);
-              },
-              child: Text("Ajouter"),
-            ),
-          ],
-        ),
+            );
+          } else {
+            return SizedBox.shrink();
+          }
+          // return Drawer(
+          //   width: MediaQuery.of(context).size.width * .25,
+          //   child: Column(
+          //     children: [
+          //       SizedBox(height: 10),
+          //       Padding(
+          //         padding: const EdgeInsets.all(8.0),
+          //         child: TextFormField(
+          //           controller: name,
+          //           decoration: InputDecoration(
+          //             hintText: "Nom de la catégorie",
+          //             border: OutlineInputBorder(
+          //               borderRadius: BorderRadius.circular(8),
+          //               borderSide: BorderSide(color: Colors.indigo),
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //       ElevatedButton(
+          //         onPressed: () {
+          //           context.read<MoyenDePaiementBloc>().add(
+          //             CreateMoyenDePaiementEvent(
+          //               moyenDePaiementName: name.text,
+          //             ),
+          //           );
+          //           name.clear();
+          //           Navigator.pop(context);
+          //         },
+          //         child: Text("Ajouter"),
+          //       ),
+          //     ],
+          //   ),
+          // );
+        },
       ),
 
       key: _scaffoldKey,
@@ -74,6 +291,9 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
           ActionButton(onPressed: () {}, text: 'Reorganiser'),
           ActionButton(
             onPressed: () {
+              context.read<DrawerBloc>().add(
+                OpenCreatePaiementMethodeDrawer(model: _emptyModel),
+              );
               _scaffoldKey.currentState?.openEndDrawer();
             },
             text: 'Nouveau',
@@ -189,18 +409,13 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                                       style: AppTextStyle.indingosubHeading,
                                       underline: SizedBox(),
                                       value:
-                                          MoyenDePaiementModel
-                                                  .modeEncaissementList
-                                                  .contains(
-                                                    method.modeEncaissement,
-                                                  )
+                                          modeEncaissementList.contains(
+                                                method.modeEncaissement,
+                                              )
                                               ? method.modeEncaissement
-                                              : MoyenDePaiementModel
-                                                  .modeEncaissementList
-                                                  .first,
+                                              : modeEncaissementList.first,
                                       items:
-                                          MoyenDePaiementModel
-                                              .modeEncaissementList
+                                          modeEncaissementList
                                               .map(
                                                 (value) => DropdownMenuItem(
                                                   value: value,
@@ -237,18 +452,13 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                                       style: AppTextStyle.indingosubHeading,
                                       underline: SizedBox(),
                                       value:
-                                          MoyenDePaiementModel
-                                                  .gestionDuTropPercuList
-                                                  .contains(
-                                                    method.getsionDuTropPercu,
-                                                  )
+                                          gestionDuTropPercuList.contains(
+                                                method.getsionDuTropPercu,
+                                              )
                                               ? method.getsionDuTropPercu
-                                              : MoyenDePaiementModel
-                                                  .gestionDuTropPercuList
-                                                  .first,
+                                              : gestionDuTropPercuList.first,
                                       items:
-                                          MoyenDePaiementModel
-                                              .gestionDuTropPercuList
+                                          gestionDuTropPercuList
                                               .map(
                                                 (value) => DropdownMenuItem(
                                                   value: value,
@@ -332,15 +542,13 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                                   style: AppTextStyle.indingosubHeading,
                                   underline: SizedBox(),
                                   value:
-                                      MoyenDePaiementModel.variations.contains(
+                                      moyenDePaiementList.contains(
                                             method.variationDuMoyenDePaiement,
                                           )
                                           ? method.variationDuMoyenDePaiement
-                                          : MoyenDePaiementModel
-                                              .variations
-                                              .first,
+                                          : moyenDePaiementList.first,
                                   items:
-                                      MoyenDePaiementModel.variations
+                                      moyenDePaiementList
                                           .map(
                                             (value) => DropdownMenuItem(
                                               value: value,

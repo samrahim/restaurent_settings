@@ -21,11 +21,9 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
         emit(DrawerCreateUtilisateur(isOpen: false));
       }
       if (event is OpenCreatePaiementMethodeDrawer) {
-        emit(DrawerCreatePaiementMethode(isOpen: true));
+        emit(DrawerCreatePaiementMethode(model: event.model));
       }
-      if (event is CloseCreatePaiementMethodeDrawer) {
-        emit(DrawerCreatePaiementMethode(isOpen: false));
-      }
+
       if (event is OpenUpdateUtilisateurDrawer) {
         emit(DrawerUpdateUtilisateurState(utilisateur: event.utilisateur));
       }

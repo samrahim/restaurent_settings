@@ -192,3 +192,18 @@ class AppColors {
 }
 
 const salles = ['Toutes', 'Salle principale', 'Terrasse', 'Bar'];
+const moyenDePaiementList = ['Ecpece', "carte", 'cheque'];
+
+const List<String> gestionDuTropPercuList = [
+  'Gestion du trop perçu',
+  'Rendre la monnaie',
+  'Générer un avoir',
+  'Transformer en pourboir',
+];
+
+const List<String> modeEncaissementList = [
+  'Calculatrice classique',
+  'Terminal de paiement - TPE',
+  'Calculatrice Ticket Restaurant',
+  'Scanner de Ticket Restaurant',
+];

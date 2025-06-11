@@ -1,22 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 class MoyenDePaiementModel extends Equatable {
-  static const variations = ['Aucune'];
-
-  static const List<String> gestionDuTropPercuList = [
-    'Gestion du trop perçu',
-    'Rendre la monnaie',
-    'Générer un avoir',
-    'Transformer en pourboir',
-  ];
-
-  static const List<String> modeEncaissementList = [
-    'Calculatrice classique',
-    'Terminal de paiement - TPE',
-    'Calculatrice Ticket Restaurant',
-    'Scanner de Ticket Restaurant',
-  ];
-
   final String? name;
   final String? icon;
   final String? modeEncaissement;

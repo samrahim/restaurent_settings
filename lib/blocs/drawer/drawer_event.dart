@@ -13,8 +13,10 @@ class CloseCreateUtilisateurDrawer extends DrawerEvent {
 }
 
 class OpenCreatePaiementMethodeDrawer extends DrawerEvent {
+  MoyenDePaiementModel model;
+  OpenCreatePaiementMethodeDrawer({required this.model});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [model];
 }
 
 class CloseCreatePaiementMethodeDrawer extends DrawerEvent {
