@@ -413,6 +413,51 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                 ),
               ),
             );
+          }
+          if (state is DrawerUpdateMoyenDePaiement) {
+            switch (state.attributeName) {
+              case 'nom':
+                return UpdateAttributeDrawer(
+                  label: 'Nom',
+                  initialValue: state.currentValue as String,
+                  onSaved:
+                      (v) => context.read<MoyenDePaiementBloc>().add(
+                        UpdateMoyenDePaiementEvent(
+                          moyenDePaiement: state.model.copyWith(nom: v),
+                        ),
+                      ),
+                );
+              case 'modeEncaissement':
+                return UpdateAttributeDrawer(
+                  label: 'Mode d’encaissement',
+                  initialValue: state.currentValue as String,
+                  options: modeEncaissementList,
+                  onSaved:
+                      (v) => context.read<MoyenDePaiementBloc>().add(
+                        UpdateMoyenDePaiementEvent(
+                          moyenDePaiement: state.model.copyWith(
+                            modeEncaissement: v,
+                          ),
+                        ),
+                      ),
+                );
+              case 'actif':
+                return UpdateAttributeDrawer(
+                  label: 'Actif',
+                  initialValue: (state.currentValue as bool).toString(),
+                  options: ['true', 'false'],
+                  onSaved:
+                      (v) => context.read<MoyenDePaiementBloc>().add(
+                        UpdateMoyenDePaiementEvent(
+                          moyenDePaiement: state.model.copyWith(
+                            actif: v == 'true',
+                          ),
+                        ),
+                      ),
+                );
+              default:
+                return const SizedBox.shrink();
+            }
           } else {
             return SizedBox.shrink();
           }
@@ -490,7 +535,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
               child: BlocBuilder<MoyenDePaiementBloc, MoyenDePaiementState>(
                 builder: (context, state) {
                   if (state is MoyenDePaiementInitial) {
-                    final method = state.selectedModel;
+                    final m = state.selectedModel;
                     return Padding(
                       padding: const EdgeInsets.all(16),
                       child: SingleChildScrollView(
@@ -506,23 +551,36 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                               child: Column(
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  CustomListTile(
-                                    trailingwidget: Text(
-                                      method.nom!,
-                                      style: AppTextStyle.indingosubHeading,
+                                  InkWell(
+                                    onTap: () {
+                                      context.read<DrawerBloc>().add(
+                                        OpenUpdatePaiementMethodeDrawer(
+                                          model: m,
+                                          attributeName: 'nom',
+                                          currentValue: m.nom,
+                                        ),
+                                      );
+                                      _scaffoldKey.currentState
+                                          ?.openEndDrawer();
+                                    },
+                                    child: CustomListTile(
+                                      trailing: null,
+                                      title: Text(
+                                        'Nom',
+                                        style: AppTextStyle.greyHeading,
+                                      ),
+                                      trailingwidget: Text(
+                                        m.nom!,
+                                        style: AppTextStyle.indingosubHeading,
+                                      ),
+                                      leading: null,
                                     ),
-                                    title: Text(
-                                      "Nom",
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    leading: null,
-                                    trailing: null,
                                   ),
                                   Divider(),
                                   CustomListTile(
                                     trailingwidget:
-                                        method.icon != null
-                                            ? Image.network(method.icon!)
+                                        m.icon != null
+                                            ? Image.network(m.icon!)
                                             : Icon(
                                               Icons.restaurant,
                                               color: Colors.indigo.shade400,
@@ -535,175 +593,140 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                                     trailing: null,
                                   ),
                                   Divider(),
-                                  CustomListTile(
-                                    leading: null,
-                                    trailing: null,
-                                    title: Text(
-                                      'Mode d’encaissement',
-                                      style: AppTextStyle.greyHeading,
+
+                                  InkWell(
+                                    onTap: () {
+                                      context.read<DrawerBloc>().add(
+                                        OpenUpdatePaiementMethodeDrawer(
+                                          model: m,
+                                          attributeName: 'modeEncaissement',
+                                          currentValue: m.modeEncaissement,
+                                        ),
+                                      );
+                                      _scaffoldKey.currentState
+                                          ?.openEndDrawer();
+                                    },
+                                    child: CustomListTile(
+                                      leading: null,
+                                      trailing: null,
+                                      title: Text(
+                                        'Mode d’encaissement',
+                                        style: AppTextStyle.greyHeading,
+                                      ),
+                                      trailingwidget: Text(
+                                        m.modeEncaissement!,
+                                        style: AppTextStyle.indingosubHeading,
+                                      ),
                                     ),
-                                    trailingwidget: DropdownButton<String>(
-                                      style: AppTextStyle.indingosubHeading,
-                                      underline: SizedBox(),
-                                      value:
-                                          modeEncaissementList.contains(
-                                                method.modeEncaissement,
-                                              )
-                                              ? method.modeEncaissement
-                                              : modeEncaissementList.first,
-                                      items:
-                                          modeEncaissementList
-                                              .map(
-                                                (value) => DropdownMenuItem(
-                                                  value: value,
-                                                  child: Text(value),
-                                                ),
-                                              )
-                                              .toList(),
-                                      onChanged: (value) {
-                                        if (value != null) {
-                                          context
-                                              .read<MoyenDePaiementBloc>()
-                                              .add(
-                                                UpdateMoyenDePaiementEvent(
-                                                  moyenDePaiement: method
-                                                      .copyWith(
-                                                        modeEncaissement: value,
-                                                      ),
-                                                ),
-                                              );
-                                        }
-                                      },
+                                  ),
+                                  Divider(),
+                                  InkWell(
+                                    onTap: () {
+                                      context.read<DrawerBloc>().add(
+                                        OpenUpdatePaiementMethodeDrawer(
+                                          model: m,
+                                          attributeName: 'GestionDuTropPerçu',
+                                          currentValue: m.getsionDuTropPercu,
+                                        ),
+                                      );
+                                      _scaffoldKey.currentState
+                                          ?.openEndDrawer();
+                                    },
+                                    child: CustomListTile(
+                                      leading: null,
+                                      trailing: null,
+                                      title: Text(
+                                        'Gestion du trop-perçu',
+                                        style: AppTextStyle.greyHeading,
+                                      ),
+                                      trailingwidget: Text(
+                                        m.getsionDuTropPercu!,
+                                        style: AppTextStyle.indingosubHeading,
+                                      ),
                                     ),
                                   ),
 
                                   Divider(),
-                                  CustomListTile(
-                                    leading: null,
-                                    trailing: null,
-                                    title: Text(
-                                      'Gestion du trop-perçu',
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    trailingwidget: DropdownButton<String>(
-                                      style: AppTextStyle.indingosubHeading,
-                                      underline: SizedBox(),
-                                      value:
-                                          gestionDuTropPercuList.contains(
-                                                method.getsionDuTropPercu,
-                                              )
-                                              ? method.getsionDuTropPercu
-                                              : gestionDuTropPercuList.first,
-                                      items:
-                                          gestionDuTropPercuList
-                                              .map(
-                                                (value) => DropdownMenuItem(
-                                                  value: value,
-                                                  child: Text(value),
-                                                ),
-                                              )
-                                              .toList(),
-                                      onChanged: (value) {
-                                        if (value != null) {
-                                          context
-                                              .read<MoyenDePaiementBloc>()
-                                              .add(
-                                                UpdateMoyenDePaiementEvent(
-                                                  moyenDePaiement: method
-                                                      .copyWith(
-                                                        getsionDuTropPercu:
-                                                            value,
-                                                      ),
-                                                ),
-                                              );
-                                        }
-                                      },
-                                    ),
-                                  ),
-
-                                  Divider(),
-                                  SwitchListTile(
-                                    activeColor: Colors.blue,
-                                    title: Text(
-                                      'Ouverture du tiroir caisse',
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    value:
-                                        method.ouvertureDeTiroirCaisse ?? false,
-                                    onChanged: (value) {
-                                      context.read<MoyenDePaiementBloc>().add(
-                                        UpdateMoyenDePaiementEvent(
-                                          moyenDePaiement: method.copyWith(
-                                            ouvertureDeTiroirCaisse: value,
-                                          ),
+                                  InkWell(
+                                    onTap: () {
+                                      context.read<DrawerBloc>().add(
+                                        OpenUpdatePaiementMethodeDrawer(
+                                          model: m,
+                                          attributeName: 'OuvertureDuTiroir',
+                                          currentValue:
+                                              m.ouvertureDeTiroirCaisse,
                                         ),
                                       );
+                                      _scaffoldKey.currentState
+                                          ?.openEndDrawer();
                                     },
+                                    child: SwitchListTile(
+                                      activeTrackColor: AppColors.primary,
+                                      title: Text(
+                                        'Ouverture du tiroir caisse',
+                                        style: AppTextStyle.greyHeading,
+                                      ),
+                                      value: m.ouvertureDeTiroirCaisse ?? false,
+                                      onChanged: null,
+                                    ),
                                   ),
                                   Divider(),
-                                  SwitchListTile(
-                                    activeColor: Colors.blue,
-                                    title: Text(
-                                      'Disponible en mode express',
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    value:
-                                        method.disponibleEnModeExpress ?? false,
-                                    onChanged: (value) {
-                                      context.read<MoyenDePaiementBloc>().add(
-                                        UpdateMoyenDePaiementEvent(
-                                          moyenDePaiement: method.copyWith(
-                                            disponibleEnModeExpress: value,
-                                          ),
+                                  InkWell(
+                                    onTap: () {
+                                      context.read<DrawerBloc>().add(
+                                        OpenUpdatePaiementMethodeDrawer(
+                                          model: m,
+                                          attributeName:
+                                              'DisponibleEnModeExpress',
+                                          currentValue:
+                                              m.disponibleEnModeExpress,
                                         ),
                                       );
+                                      _scaffoldKey.currentState
+                                          ?.openEndDrawer();
                                     },
+                                    child: SwitchListTile(
+                                      activeTrackColor: AppColors.primary,
+                                      title: Text(
+                                        'Disponible en mode express',
+                                        style: AppTextStyle.greyHeading,
+                                      ),
+                                      value: m.disponibleEnModeExpress ?? false,
+                                      onChanged: null,
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
                             const SizedBox(height: 16),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.white,
-                              ),
-                              child: CustomListTile(
-                                leading: null,
-                                trailing: null,
-                                title: Text(
-                                  'Variations du moyen de paiement',
-                                  style: AppTextStyle.greyHeading,
+                            InkWell(
+                              onTap: () {
+                                context.read<DrawerBloc>().add(
+                                  OpenUpdatePaiementMethodeDrawer(
+                                    model: m,
+                                    attributeName:
+                                        'VariationsDuMoyenDePaiement',
+                                    currentValue: m.variationDuMoyenDePaiement,
+                                  ),
+                                );
+                                _scaffoldKey.currentState?.openEndDrawer();
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.white,
                                 ),
-                                trailingwidget: DropdownButton<String>(
-                                  style: AppTextStyle.indingosubHeading,
-                                  underline: SizedBox(),
-                                  value:
-                                      moyenDePaiementList.contains(
-                                            method.variationDuMoyenDePaiement,
-                                          )
-                                          ? method.variationDuMoyenDePaiement
-                                          : moyenDePaiementList.first,
-                                  items:
-                                      moyenDePaiementList
-                                          .map(
-                                            (value) => DropdownMenuItem(
-                                              value: value,
-                                              child: Text(value),
-                                            ),
-                                          )
-                                          .toList(),
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      context.read<MoyenDePaiementBloc>().add(
-                                        UpdateMoyenDePaiementEvent(
-                                          moyenDePaiement: method.copyWith(
-                                            variationDuMoyenDePaiement: value,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  },
+                                child: CustomListTile(
+                                  leading: null,
+                                  trailing: null,
+                                  title: Text(
+                                    'Variations du moyen de paiement',
+                                    style: AppTextStyle.greyHeading,
+                                  ),
+                                  trailingwidget: Text(
+                                    m.variationDuMoyenDePaiement!,
+                                    style: AppTextStyle.indingosubHeading,
+                                  ),
                                 ),
                               ),
                             ),
@@ -715,42 +738,54 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                               ),
                               child: Column(
                                 children: [
-                                  SwitchListTile(
-                                    activeColor: Colors.blue,
-                                    title: Text(
-                                      'Compter à la fin du service',
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    value:
-                                        method.compterAlaFinDuService ?? false,
-                                    onChanged: (value) {
-                                      context.read<MoyenDePaiementBloc>().add(
-                                        UpdateMoyenDePaiementEvent(
-                                          moyenDePaiement: method.copyWith(
-                                            compterAlaFinDuService: value,
-                                          ),
+                                  InkWell(
+                                    onTap: () {
+                                      context.read<DrawerBloc>().add(
+                                        OpenUpdatePaiementMethodeDrawer(
+                                          model: m,
+                                          attributeName:
+                                              'CompterALaFinDuService',
+                                          currentValue:
+                                              m.compterAlaFinDuService,
                                         ),
                                       );
+                                      _scaffoldKey.currentState
+                                          ?.openEndDrawer();
                                     },
+                                    child: SwitchListTile(
+                                      activeTrackColor: AppColors.primary,
+                                      title: Text(
+                                        'Compter à la fin du service',
+                                        style: AppTextStyle.greyHeading,
+                                      ),
+                                      value: m.compterAlaFinDuService ?? false,
+                                      onChanged: null,
+                                    ),
                                   ),
                                   Divider(),
-                                  SwitchListTile(
-                                    activeColor: Colors.blue,
-                                    title: Text(
-                                      'Renseigner le fond de caisse',
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    value:
-                                        method.rensignerleFondDeCaisee ?? false,
-                                    onChanged: (value) {
-                                      context.read<MoyenDePaiementBloc>().add(
-                                        UpdateMoyenDePaiementEvent(
-                                          moyenDePaiement: method.copyWith(
-                                            rensignerleFondDeCaisee: value,
-                                          ),
+                                  InkWell(
+                                    onTap: () {
+                                      context.read<DrawerBloc>().add(
+                                        OpenUpdatePaiementMethodeDrawer(
+                                          model: m,
+                                          attributeName:
+                                              'RenseignerLeFondDeCaisse',
+                                          currentValue:
+                                              m.rensignerleFondDeCaisee,
                                         ),
                                       );
+                                      _scaffoldKey.currentState
+                                          ?.openEndDrawer();
                                     },
+                                    child: SwitchListTile(
+                                      activeTrackColor: AppColors.primary,
+                                      title: Text(
+                                        'Renseigner le fond de caisse',
+                                        style: AppTextStyle.greyHeading,
+                                      ),
+                                      value: m.rensignerleFondDeCaisee ?? false,
+                                      onChanged: null,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -763,66 +798,56 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                               ),
                               child: Column(
                                 children: [
-                                  CustomListTile(
-                                    leading: null,
-                                    trailing: null,
-                                    title: Text(
-                                      'Disponible dans les salles',
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    trailingwidget: DropdownButton<String>(
-                                      style: AppTextStyle.indingosubHeading,
-                                      underline: SizedBox(),
-                                      value:
-                                          salles.contains(
-                                                method.typeDeSalleDisponible,
-                                              )
-                                              ? method.typeDeSalleDisponible
-                                              : salles.first,
-                                      items:
-                                          salles
-                                              .map(
-                                                (value) => DropdownMenuItem(
-                                                  value: value,
-                                                  child: Text(value),
-                                                ),
-                                              )
-                                              .toList(),
-                                      onChanged: (value) {
-                                        if (value != null) {
-                                          context
-                                              .read<MoyenDePaiementBloc>()
-                                              .add(
-                                                UpdateMoyenDePaiementEvent(
-                                                  moyenDePaiement: method
-                                                      .copyWith(
-                                                        typeDeSalleDisponible:
-                                                            value,
-                                                      ),
-                                                ),
-                                              );
-                                        }
-                                      },
+                                  InkWell(
+                                    onTap: () {
+                                      context.read<DrawerBloc>().add(
+                                        OpenUpdatePaiementMethodeDrawer(
+                                          model: m,
+                                          attributeName:
+                                              'DisponibleDansLesSalles',
+                                          currentValue:
+                                              m.disponibleEnModeExpress,
+                                        ),
+                                      );
+                                      _scaffoldKey.currentState
+                                          ?.openEndDrawer();
+                                    },
+                                    child: CustomListTile(
+                                      leading: null,
+                                      trailing: null,
+                                      title: Text(
+                                        'Disponible dans les salles',
+                                        style: AppTextStyle.greyHeading,
+                                      ),
+                                      trailingwidget: Text(
+                                        m.typeDeSalleDisponible!,
+                                        style: AppTextStyle.indingosubHeading,
+                                      ),
                                     ),
                                   ),
 
                                   Divider(),
-                                  SwitchListTile(
-                                    activeColor: Colors.blue,
-                                    title: Text(
-                                      'Actif',
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    value: method.actif ?? false,
-                                    onChanged: (value) {
-                                      context.read<MoyenDePaiementBloc>().add(
-                                        UpdateMoyenDePaiementEvent(
-                                          moyenDePaiement: method.copyWith(
-                                            actif: value,
-                                          ),
+                                  InkWell(
+                                    onTap: () {
+                                      context.read<DrawerBloc>().add(
+                                        OpenUpdatePaiementMethodeDrawer(
+                                          model: m,
+                                          attributeName: 'actif',
+                                          currentValue: m.actif,
                                         ),
                                       );
+                                      _scaffoldKey.currentState
+                                          ?.openEndDrawer();
                                     },
+                                    child: SwitchListTile(
+                                      activeTrackColor: AppColors.primary,
+                                      title: Text(
+                                        'Actif',
+                                        style: AppTextStyle.greyHeading,
+                                      ),
+                                      value: m.actif!,
+                                      onChanged: null,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -842,6 +867,56 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class UpdateAttributeDrawer extends StatelessWidget {
+  final String label;
+  final String initialValue;
+  final List<String>? options;
+  final void Function(String) onSaved;
+  const UpdateAttributeDrawer({
+    Key? key,
+    required this.label,
+    required this.initialValue,
+    this.options,
+    required this.onSaved,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final ctrl = TextEditingController(text: initialValue);
+    return Drawer(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(label, style: Theme.of(context).textTheme.bodyLarge),
+            const SizedBox(height: 16),
+            if (options == null)
+              TextFormField(controller: ctrl)
+            else
+              DropdownButtonFormField<String>(
+                value: initialValue,
+                items:
+                    options!
+                        .map((o) => DropdownMenuItem(value: o, child: Text(o)))
+                        .toList(),
+                onChanged: (v) => ctrl.text = v!,
+              ),
+            const Spacer(),
+            ElevatedButton(
+              onPressed: () {
+                onSaved(ctrl.text);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        ),
       ),
     );
   }
