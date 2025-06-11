@@ -181,7 +181,8 @@ class AppTextStyle {
 class AppColors {
   static const Color primary = Colors.blue;
   static final grey = Colors.grey[50];
-  static final greyaccent = Colors.grey[300];
+  static final greyaccentmeduid = Colors.grey[300];
+  static final greyaccent = Colors.grey[500];
 
   static Color? indingo200 = Colors.indigo[200];
   static Color? indingo500 = Colors.indigo[500];

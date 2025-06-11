@@ -336,11 +336,12 @@ class _GroupesUtilisateursScreenViewState
   }
 
   Widget _buildCreateUtilisateurDrawer(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 16.0),
@@ -349,7 +350,8 @@ class _GroupesUtilisateursScreenViewState
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
-            const SizedBox(height: 16),
+
+            // --- TES CHAMPS AVEC DES SIZEDBOX ENTRE ---
             TextField(
               controller: nom,
               decoration: InputDecoration(
@@ -362,6 +364,7 @@ class _GroupesUtilisateursScreenViewState
               ),
             ),
             const SizedBox(height: 16),
+
             TextField(
               controller: prenom,
               decoration: InputDecoration(
@@ -374,6 +377,8 @@ class _GroupesUtilisateursScreenViewState
               ),
             ),
             const SizedBox(height: 16),
+
+            // Dropdown Groupe
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -381,10 +386,10 @@ class _GroupesUtilisateursScreenViewState
                 border: Border.all(color: Colors.grey.shade400),
                 color: Colors.grey[50],
               ),
-              child: DropdownButtonFormField(
+              child: DropdownButtonFormField<String>(
                 value: group,
                 decoration: const InputDecoration(
-                  labelText: 'Rôle',
+                  labelText: 'Groupe',
                   border: InputBorder.none,
                 ),
                 items:
@@ -394,15 +399,11 @@ class _GroupesUtilisateursScreenViewState
                               DropdownMenuItem(value: grp, child: Text(grp)),
                         )
                         .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    group = value!;
-                  });
-                },
+                onChanged: (value) => setState(() => group = value!),
               ),
             ),
-
             const SizedBox(height: 16),
+
             TextField(
               controller: motPasseSchema,
               decoration: InputDecoration(
@@ -415,6 +416,7 @@ class _GroupesUtilisateursScreenViewState
               ),
             ),
             const SizedBox(height: 16),
+
             TextField(
               controller: motPasseChiffre,
               decoration: InputDecoration(
@@ -427,6 +429,8 @@ class _GroupesUtilisateursScreenViewState
               ),
             ),
             const SizedBox(height: 16),
+
+            // Dropdown Rôle
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -434,7 +438,7 @@ class _GroupesUtilisateursScreenViewState
                 border: Border.all(color: Colors.grey.shade400),
                 color: Colors.grey[50],
               ),
-              child: DropdownButtonFormField(
+              child: DropdownButtonFormField<String>(
                 value: role,
                 decoration: const InputDecoration(
                   labelText: 'Rôle',
@@ -442,16 +446,9 @@ class _GroupesUtilisateursScreenViewState
                 ),
                 items:
                     roleList
-                        .map(
-                          (role) =>
-                              DropdownMenuItem(value: role, child: Text(role)),
-                        )
+                        .map((r) => DropdownMenuItem(value: r, child: Text(r)))
                         .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    role = value!;
-                  });
-                },
+                onChanged: (value) => setState(() => role = value!),
               ),
             ),
 
@@ -460,7 +457,7 @@ class _GroupesUtilisateursScreenViewState
               onPressed: () {
                 context.read<UtilisateurBloc>().add(
                   CreateUtilisateur(
-                    groupe: groupe.text,
+                    groupe: group,
                     motPasseChiffre: motPasseChiffre.text,
                     nom: nom.text,
                     prenom: prenom.text,

@@ -26,10 +26,10 @@ class UpdateMoyenDePaiementEvent extends MoyenDePaiementEvent {
 }
 
 class CreateMoyenDePaiementEvent extends MoyenDePaiementEvent {
-  final String moyenDePaiementName;
+  final MoyenDePaiementModel model;
 
-  const CreateMoyenDePaiementEvent({required this.moyenDePaiementName});
+  const CreateMoyenDePaiementEvent({required this.model});
 
   @override
-  List<Object> get props => [moyenDePaiementName];
+  List<Object> get props => [model];
 }

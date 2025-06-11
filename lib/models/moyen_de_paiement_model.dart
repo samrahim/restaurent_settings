@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class MoyenDePaiementModel extends Equatable {
+  final String? id;
   final String? name;
   final String? icon;
   final String? modeEncaissement;
@@ -14,6 +15,7 @@ class MoyenDePaiementModel extends Equatable {
   final bool? actif;
 
   const MoyenDePaiementModel({
+    required this.id,
     required this.name,
     required this.icon,
     required this.modeEncaissement,
@@ -29,6 +31,7 @@ class MoyenDePaiementModel extends Equatable {
 
   @override
   List<Object?> get props => [
+    id,
     name,
     icon,
     modeEncaissement,
@@ -44,6 +47,7 @@ class MoyenDePaiementModel extends Equatable {
   MoyenDePaiementModel copyWith({
     String? name,
     String? icon,
+    String? id,
     String? modeEncaissement,
     String? getsionDuTropPercu,
     bool? ouvertureDeTiroirCaisse,
@@ -55,6 +59,7 @@ class MoyenDePaiementModel extends Equatable {
     bool? actif,
   }) {
     return MoyenDePaiementModel(
+      id: id ?? this.id,
       name: name ?? this.name,
       icon: icon ?? this.icon,
       modeEncaissement: modeEncaissement ?? this.modeEncaissement,
@@ -78,6 +83,7 @@ class MoyenDePaiementModel extends Equatable {
 
 List<MoyenDePaiementModel> moyenPaiementList = [
   MoyenDePaiementModel(
+    id: '1',
     name: 'Carte de crédit',
     icon: null,
     modeEncaissement: 'Encaissement',
@@ -91,6 +97,7 @@ List<MoyenDePaiementModel> moyenPaiementList = [
     actif: true,
   ),
   MoyenDePaiementModel(
+    id: '2',
     name: 'Espèces',
     icon: null,
     modeEncaissement: 'Encaissement',
@@ -104,6 +111,7 @@ List<MoyenDePaiementModel> moyenPaiementList = [
     actif: true,
   ),
   MoyenDePaiementModel(
+    id: '3',
     name: 'Ticket Restaurant',
     icon: null,
     modeEncaissement: 'Encaissement',

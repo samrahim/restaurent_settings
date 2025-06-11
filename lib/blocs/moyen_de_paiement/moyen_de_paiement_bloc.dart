@@ -30,24 +30,13 @@ class MoyenDePaiementBloc
         );
       }
       if (event is CreateMoyenDePaiementEvent) {
-        MoyenDePaiementModel newMoyenDePaiement = MoyenDePaiementModel(
-          name: event.moyenDePaiementName,
-          actif: true,
-          icon: null,
-          modeEncaissement: null,
-          getsionDuTropPercu: null,
-          ouvertureDeTiroirCaisse: null,
-          disponibleEnModeExpress: null,
-          variationDuMoyenDePaiement: null,
-          compterAlaFinDuService: null,
-          rensignerleFondDeCaisee: null,
-          typeDeSalleDisponible: null,
-        );
         emit(
           (state as MoyenDePaiementInitial).copyWith(
             moyenDePaiement: List.from(
               (state as MoyenDePaiementInitial).moyenDePaiement,
-            )..add(newMoyenDePaiement),
+            )..add(
+              event.model.copyWith(id: moyenPaiementList.length.toString()),
+            ),
           ),
         );
       }
