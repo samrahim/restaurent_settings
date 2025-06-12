@@ -84,3 +84,11 @@ class DrawerUpdateMoyenDePaiement extends DrawerState {
   @override
   List<Object?> get props => [model, attributeName, currentValue];
 }
+
+class DrawerCreateCategorieDeModificateur extends DrawerState {
+  final CategorieDeModificateur modificateur;
+
+  DrawerCreateCategorieDeModificateur({required this.modificateur});
+  @override
+  List<Object?> get props => [modificateur];
+}

@@ -33,8 +33,8 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
               onColorChanged: (Color color) {
                 tempColor = color;
               },
-              enableAlpha: false, // hide opacity slider
-              showLabel: true,
+              enableAlpha: false,
+
               pickerAreaHeightPercent: 0.8,
             ),
           ),

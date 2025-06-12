@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:restaurent/consts.dart';
 
 class MoyenDePaiementModel extends Equatable {
   final String? id;
@@ -90,10 +91,10 @@ List<MoyenDePaiementModel> moyenPaiementList = [
     getsionDuTropPercu: 'Gestion du trop perçu',
     ouvertureDeTiroirCaisse: true,
     disponibleEnModeExpress: true,
-    variationDuMoyenDePaiement: 'Carte bancaire',
+    variationDuMoyenDePaiement: 'Aucune',
     compterAlaFinDuService: true,
     rensignerleFondDeCaisee: true,
-    typeDeSalleDisponible: 'Toutes',
+    typeDeSalleDisponible: salles[2],
     actif: true,
   ),
   MoyenDePaiementModel(
@@ -104,10 +105,10 @@ List<MoyenDePaiementModel> moyenPaiementList = [
     getsionDuTropPercu: 'Gestion du trop perçu',
     ouvertureDeTiroirCaisse: true,
     disponibleEnModeExpress: true,
-    variationDuMoyenDePaiement: 'Espèces',
+    variationDuMoyenDePaiement: 'Aucune',
     compterAlaFinDuService: true,
     rensignerleFondDeCaisee: true,
-    typeDeSalleDisponible: 'Toutes',
+    typeDeSalleDisponible: salles[0],
     actif: true,
   ),
   MoyenDePaiementModel(
@@ -118,10 +119,10 @@ List<MoyenDePaiementModel> moyenPaiementList = [
     getsionDuTropPercu: 'Gestion du trop perçu',
     ouvertureDeTiroirCaisse: true,
     disponibleEnModeExpress: true,
-    variationDuMoyenDePaiement: 'Ticket restaurant',
+    variationDuMoyenDePaiement: 'Aucune',
     compterAlaFinDuService: true,
     rensignerleFondDeCaisee: true,
-    typeDeSalleDisponible: 'Terrasse',
+    typeDeSalleDisponible: salles[1],
     actif: true,
   ),
 ];

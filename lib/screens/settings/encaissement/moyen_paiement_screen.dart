@@ -455,6 +455,108 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                         ),
                       ),
                 );
+              case 'GestionDuTropPerçu':
+                return UpdateAttributeDrawer(
+                  options: gestionDuTropPercuList,
+                  label: 'Gestion du trop-perçu',
+                  initialValue: (state.currentValue) as String,
+                  onSaved:
+                      (v) => context.read<MoyenDePaiementBloc>().add(
+                        UpdateMoyenDePaiementEvent(
+                          moyenDePaiement: state.model.copyWith(
+                            getsionDuTropPercu: v,
+                          ),
+                        ),
+                      ),
+                );
+              case 'VariationsDuMoyenDePaiement':
+                return UpdateAttributeDrawer(
+                  options: moyenDePaiementList,
+                  label: 'Variations du moyen de paiement',
+                  initialValue: (state.currentValue) as String,
+
+                  onSaved:
+                      (v) => context.read<MoyenDePaiementBloc>().add(
+                        UpdateMoyenDePaiementEvent(
+                          moyenDePaiement: state.model.copyWith(
+                            variationDuMoyenDePaiement: v,
+                          ),
+                        ),
+                      ),
+                );
+              case 'OuvertureDuTiroir':
+                return UpdateAttributeDrawer(
+                  label: 'Ouverture du tiroir caisse',
+                  initialValue: (state.currentValue as bool).toString(),
+                  options: ['true', 'false'],
+                  onSaved:
+                      (v) => context.read<MoyenDePaiementBloc>().add(
+                        UpdateMoyenDePaiementEvent(
+                          moyenDePaiement: state.model.copyWith(
+                            ouvertureDeTiroirCaisse: v == 'true',
+                          ),
+                        ),
+                      ),
+                );
+              case 'DisponibleEnModeExpress':
+                return UpdateAttributeDrawer(
+                  label: 'Disponible en mode express',
+                  initialValue: (state.currentValue as bool).toString(),
+                  options: ['true', 'false'],
+                  onSaved:
+                      (v) => context.read<MoyenDePaiementBloc>().add(
+                        UpdateMoyenDePaiementEvent(
+                          moyenDePaiement: state.model.copyWith(
+                            disponibleEnModeExpress: v == 'true',
+                          ),
+                        ),
+                      ),
+                );
+
+              case 'CompterALaFinDuService':
+                return UpdateAttributeDrawer(
+                  label: 'Compter à la fin du service',
+                  initialValue: (state.currentValue as bool).toString(),
+                  options: ['true', 'false'],
+                  onSaved:
+                      (v) => context.read<MoyenDePaiementBloc>().add(
+                        UpdateMoyenDePaiementEvent(
+                          moyenDePaiement: state.model.copyWith(
+                            compterAlaFinDuService: v == 'true',
+                          ),
+                        ),
+                      ),
+                );
+              case 'RenseignerLeFondDeCaisse':
+                return UpdateAttributeDrawer(
+                  label: 'Renseigner le fond de caisse',
+                  initialValue: (state.currentValue as bool).toString(),
+                  options: ['true', 'false'],
+                  onSaved:
+                      (v) => context.read<MoyenDePaiementBloc>().add(
+                        UpdateMoyenDePaiementEvent(
+                          moyenDePaiement: state.model.copyWith(
+                            rensignerleFondDeCaisee: v == 'true',
+                          ),
+                        ),
+                      ),
+                );
+
+              case 'DisponibleDansLesSalles':
+                return UpdateAttributeDrawer(
+                  options: salles,
+                  label: 'Disponible dans les salles',
+                  initialValue: (state.currentValue) as String,
+                  onSaved:
+                      (v) => context.read<MoyenDePaiementBloc>().add(
+                        UpdateMoyenDePaiementEvent(
+                          moyenDePaiement: state.model.copyWith(
+                            typeDeSalleDisponible: v,
+                          ),
+                        ),
+                      ),
+                );
+
               default:
                 return const SizedBox.shrink();
             }
@@ -805,8 +907,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                                           model: m,
                                           attributeName:
                                               'DisponibleDansLesSalles',
-                                          currentValue:
-                                              m.disponibleEnModeExpress,
+                                          currentValue: m.typeDeSalleDisponible,
                                         ),
                                       );
                                       _scaffoldKey.currentState
@@ -887,8 +988,18 @@ class UpdateAttributeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(";;;;;;;;;;;;;;;;!!!!!!!!!!!!!!!$initialValue");
     final ctrl = TextEditingController(text: initialValue);
+    bool isBoolField =
+        options != null &&
+        options!.length == 2 &&
+        options!.contains('true') &&
+        options!.contains('false');
+
+    bool switchValue = initialValue == 'true';
+
     return Drawer(
+      width: MediaQuery.of(context).size.width * .33,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -896,7 +1007,22 @@ class UpdateAttributeDrawer extends StatelessWidget {
           children: [
             Text(label, style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 16),
-            if (options == null)
+
+            if (isBoolField)
+              StatefulBuilder(
+                builder: (context, setState) {
+                  return SwitchListTile(
+                    title: Text('Activer ?'),
+                    value: switchValue,
+                    onChanged: (value) {
+                      setState(() {
+                        switchValue = value;
+                      });
+                    },
+                  );
+                },
+              )
+            else if (options == null)
               TextFormField(controller: ctrl)
             else
               DropdownButtonFormField<String>(
@@ -907,10 +1033,15 @@ class UpdateAttributeDrawer extends StatelessWidget {
                         .toList(),
                 onChanged: (v) => ctrl.text = v!,
               ),
+
             const Spacer(),
             ElevatedButton(
               onPressed: () {
-                onSaved(ctrl.text);
+                if (isBoolField) {
+                  onSaved(switchValue.toString());
+                } else {
+                  onSaved(ctrl.text);
+                }
                 Navigator.of(context).pop();
               },
               child: const Text('Enregistrer'),

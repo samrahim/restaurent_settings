@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:restaurent/models/categorie_de_modificateur.dart';
 import 'package:restaurent/models/models.dart';
 
 part 'drawer_event.dart';
@@ -47,14 +48,17 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
       if (event is OpenCreateTauxTvaDrawer) {
         emit(DrawerCreateTauxTva(isOpen: true));
       }
-      if (event is CloseCreateTauxTvaDrawer) {
-        emit(DrawerCreateTauxTva(isOpen: false));
-      }
+
       if (event is UpdateCreateCategoriePrixModel) {
         emit(DrawerCreateCategoriePrix(model: event.model));
       }
       if (event is OpenProduitsAttachementDrawer) {
         emit(DrawerDeAttacheProduitsToCategorie(produits: []));
+      }
+      if (event is OpenCreateCategorieDeModificateur) {
+        emit(
+          DrawerCreateCategorieDeModificateur(modificateur: event.modificateur),
+        );
       }
     });
   }

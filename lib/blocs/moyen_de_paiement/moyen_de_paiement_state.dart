@@ -8,9 +8,9 @@ sealed class MoyenDePaiementState extends Equatable {
 }
 
 class MoyenDePaiementInitial extends MoyenDePaiementState {
-  List<MoyenDePaiementModel> moyenDePaiement;
-  MoyenDePaiementModel selectedModel;
-  MoyenDePaiementInitial({
+  final List<MoyenDePaiementModel> moyenDePaiement;
+  final MoyenDePaiementModel selectedModel;
+  const MoyenDePaiementInitial({
     required this.moyenDePaiement,
     required this.selectedModel,
   });
