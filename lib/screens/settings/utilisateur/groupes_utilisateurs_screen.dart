@@ -379,7 +379,8 @@ class _GroupesUtilisateursScreenViewState
 
             // Dropdown Groupe
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              margin: EdgeInsets.symmetric(vertical: 4.0),
+
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey.shade400),

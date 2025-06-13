@@ -5,6 +5,7 @@ import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
 import 'package:restaurent/screens/settings/carte/modificteur_details.dart';
+import 'package:restaurent/screens/widgets/create_button.dart';
 import 'package:restaurent/screens/widgets/show_picket.dart';
 import 'package:restaurent/screens/widgets/widgets.dart';
 
@@ -51,130 +52,176 @@ class _ModificateursSupplementsScreenViewState
           if (state is DrawerCreateCategorieDeModificateur) {
             final createModel = state.modificateur;
             return Drawer(
-              width: MediaQuery.of(context).size.width * .3,
-              child: Column(
-                children: [
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: name,
-                      decoration: InputDecoration(
-                        hintText: "Nom de la catégorie",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: AppColors.grey!),
+              width: MediaQuery.of(context).size.width * .33,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    SizedBox(height: 10),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      child: Text(
+                        'Créer une nouvelle categorie',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 4.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: AppColors.greyaccent!,
-                        width: .9,
-                      ),
-                    ),
-                    child: DropdownButtonFormField<String>(
-                      value: createModel.typeDeSalleDisponible,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: AppColors.greyaccent!),
-                        ),
-                        labelText: 'Type de salle',
-                      ),
-                      items:
-                          salles
-                              .map(
-                                (v) =>
-                                    DropdownMenuItem(value: v, child: Text(v)),
-                              )
-                              .toList(),
-                      onChanged: (v) {
-                        if (v != null) {
-                          final updated = createModel.copyWith(
-                            typeDeSalleDisponible: v,
-                          );
-                          context.read<DrawerBloc>().add(
-                            OpenCreateCategorieDeModificateur(
-                              modificateur: updated,
-                            ),
-                          );
-                        }
+                    SizedBox(height: 16),
+                    TextField(
+                      onChanged: (value) {
+                        createModel.copyWith(nom: value);
                       },
-                    ),
-                  ),
-
-                  // ListTile(title: "C",trailing: Container(height: 12, width: 12, color: createModel.color)),
-                  InkWell(
-                    onTap: () {
-                      openColorPicker(
-                        context: context,
-                        currentColor: createModel.color ?? Colors.pink,
-                        onColorSelected: (Color selectedColor) {
-                          final updated = createModel.copyWith(
-                            color: selectedColor,
-                          );
-                          context.read<DrawerBloc>().add(
-                            OpenCreateCategorieDeModificateur(
-                              modificateur: updated,
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: CustomListTile(
-                      trailingwidget: Container(
-                        height: 12,
-                        width: 12,
-                        color: createModel.color,
-                      ),
-                      title: null,
-                      leading: 'couleur',
-                      trailing: null,
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.grey!),
-                    ),
-                    child: CustomListTile(
-                      leading: null,
-                      trailing: null,
-                      title: Text("Obligatoire"),
-                      trailingwidget: Switch(
-                        activeColor: AppColors.primary,
-                        value: createModel.obligatoire!,
-                        onChanged: (value) {
-                          final updated = modificateur.copyWith(
-                            obligatoire: value,
-                          );
-                          context.read<DrawerBloc>().add(
-                            OpenCreateCategorieDeModificateur(
-                              modificateur: updated,
-                            ),
-                          );
-                        },
+                      decoration: InputDecoration(
+                        labelText: 'Nom',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[50],
                       ),
                     ),
-                  ),
-
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        categories_de_modificateurs.add(name.text);
-                      });
-                      name.clear();
-                      Navigator.pop(context);
-                    },
-                    child: Text("Ajouter"),
-                  ),
-                ],
+                    SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: ListTile(
+                        title: const Text('Disponible dans les salles'),
+                        trailing: DropdownButton<String>(
+                          underline: SizedBox(),
+                          value: createModel.typeDeSalleDisponible,
+                          style: AppTextStyle.indingosubHeading,
+                          items:
+                              salles
+                                  .map(
+                                    (v) => DropdownMenuItem(
+                                      value: v,
+                                      child: Text(v),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (v) {
+                            if (v != null) {
+                              final updated = createModel.copyWith(
+                                typeDeSalleDisponible: v,
+                              );
+                              context.read<DrawerBloc>().add(
+                                OpenCreateCategorieDeModificateur(
+                                  modificateur: updated,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: ListTile(
+                        trailing: InkWell(
+                          onTap: () {
+                            openColorPicker(
+                              context: context,
+                              currentColor: createModel.color ?? Colors.pink,
+                              onColorSelected: (Color selectedColor) {
+                                final updated = createModel.copyWith(
+                                  color: selectedColor,
+                                );
+                                context.read<DrawerBloc>().add(
+                                  OpenCreateCategorieDeModificateur(
+                                    modificateur: updated,
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            height: 12,
+                            width: 12,
+                            color: createModel.color,
+                          ),
+                        ),
+                        title: Text('Couleur'),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: ListTile(
+                        title: const Text('Type de selection'),
+                        trailing: DropdownButton<String>(
+                          underline: SizedBox(),
+                          value: createModel.typeDeSelection,
+                          style: AppTextStyle.indingosubHeading,
+                          items:
+                              optiontypeDeSelection
+                                  .map(
+                                    (v) => DropdownMenuItem(
+                                      value: v,
+                                      child: Text(v),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (v) {
+                            if (v != null) {
+                              final updated = createModel.copyWith(
+                                typeDeSelection: v,
+                              );
+                              context.read<DrawerBloc>().add(
+                                OpenCreateCategorieDeModificateur(
+                                  modificateur: updated,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: ListTile(
+                        title: Text('Obligatoire'),
+                        trailing: Switch(
+                          activeColor: AppColors.primary,
+                          value: createModel.obligatoire!,
+                          onChanged: (value) {
+                            final updated = createModel.copyWith(
+                              obligatoire: value,
+                            );
+                            context.read<DrawerBloc>().add(
+                              OpenCreateCategorieDeModificateur(
+                                modificateur: updated,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 32),
+                    CreateButton(
+                      onPressed: () {},
+                      buttonText: 'Cree une nouvelle categorie de prix',
+                    ),
+                  ],
+                ),
               ),
             );
           } else {
