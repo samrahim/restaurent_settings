@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:restaurent/consts.dart';
 
-import '../../widgets/widgets.dart';
+import '../../../widgets/widgets.dart';
 
 class ModificateurDetails extends StatefulWidget {
   final String categoryName;
@@ -96,7 +96,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                         trailing: Icon(Icons.chevron_right),
                       ),
                     ),
-                    // MODIFICATEURS / SUPPLÉMENTS section
+
                     Container(
                       padding: EdgeInsets.all(8),
                       child: Row(
@@ -115,8 +115,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                       color: Colors.white,
                       child: ListView.builder(
                         shrinkWrap: true,
-                        physics:
-                            NeverScrollableScrollPhysics(), // To prevent nested scroll issues
+                        physics: NeverScrollableScrollPhysics(),
                         itemCount: 5,
                         itemBuilder: (context, index) {
                           return Column(
