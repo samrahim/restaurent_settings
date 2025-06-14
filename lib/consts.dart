@@ -150,6 +150,7 @@ Map<String, Map<String, dynamic>> routes = {
     },
   },
 };
+List<String> roleList = ['Administrateur', 'Serveur', 'Responsable de salle'];
 
 class AppTextStyle {
   static TextStyle? indingoHeading = TextStyle(
@@ -199,6 +200,8 @@ const moyenDePaiementList = [
   "Espèces",
   'Ticket Restaurant',
 ];
+
+enum FieldType { string, boolean, dropdown, color, pattern }
 
 const List<String> gestionDuTropPercuList = [
   'Gestion du trop perçu',

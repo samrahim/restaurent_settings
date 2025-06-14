@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:restaurent/consts.dart';
 
 class UtilisateurModel extends Equatable {
   final String id;
@@ -55,8 +56,6 @@ class UtilisateurModel extends Equatable {
   ];
 }
 
-// ignore: constant_identifier_names
-List<String> roleList = ['Administrateur', 'Serveur', 'Responsable de salle'];
 List<String> groupeList = ['Groupe 1', 'Groupe 2', 'Groupe 3'];
 List<UtilisateurModel> utilisateurList = [
   UtilisateurModel(

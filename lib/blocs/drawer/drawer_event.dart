@@ -94,3 +94,17 @@ class OpenCreateCategorieDeModificateur extends DrawerEvent {
   @override
   List<Object?> get props => [modificateur];
 }
+
+class OpenUpdateCategorieDeModificateur extends DrawerEvent {
+  final CategorieDeModificateur modificateur;
+  final String attributeName;
+  final dynamic currentValue;
+
+  OpenUpdateCategorieDeModificateur({
+    required this.modificateur,
+    required this.attributeName,
+    required this.currentValue,
+  });
+  @override
+  List<Object?> get props => [modificateur, attributeName, currentValue];
+}

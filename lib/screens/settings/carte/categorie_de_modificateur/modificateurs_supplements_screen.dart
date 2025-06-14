@@ -146,9 +146,13 @@ class _ModificateursSupplementsScreenViewState
                             );
                           },
                           child: Container(
-                            height: 12,
-                            width: 12,
-                            color: createModel.color,
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: createModel.color,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.black26),
+                            ),
                           ),
                         ),
                         title: Text('Couleur'),
@@ -233,6 +237,84 @@ class _ModificateursSupplementsScreenViewState
                 ),
               ),
             );
+          }
+          if (state is DrawerUpdateCategorieDeModificateur) {
+            print('hw');
+            switch (state.attributeName) {
+              case 'nom':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.string,
+                  label: 'nom',
+                  initialValue: state.modificateur.nom!,
+                  onSaved:
+                      (v) => context.read<CategorieModificateurBloc>().add(
+                        UpdateCategorieDeModificateur(
+                          modificateur: state.modificateur.copyWith(nom: v),
+                        ),
+                      ),
+                );
+              case 'salle':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.dropdown,
+                  label: 'Salle',
+                  options: salles,
+                  initialValue: state.modificateur.typeDeSalleDisponible!,
+                  onSaved:
+                      (v) => context.read<CategorieModificateurBloc>().add(
+                        UpdateCategorieDeModificateur(
+                          modificateur: state.modificateur.copyWith(
+                            typeDeSalleDisponible: v,
+                          ),
+                        ),
+                      ),
+                );
+              case 'couleur':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.color,
+                  label: 'Couleur',
+
+                  initialValue: state.modificateur.color!,
+                  onSaved:
+                      (v) => context.read<CategorieModificateurBloc>().add(
+                        UpdateCategorieDeModificateur(
+                          modificateur: state.modificateur.copyWith(color: v),
+                        ),
+                      ),
+                );
+              case 'typeDeSelection':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.dropdown,
+                  label: 'Type de selection',
+                  options: optiontypeDeSelection,
+                  initialValue: state.modificateur.typeDeSelection!,
+                  onSaved:
+                      (v) => context.read<CategorieModificateurBloc>().add(
+                        UpdateCategorieDeModificateur(
+                          modificateur: state.modificateur.copyWith(
+                            typeDeSelection: v,
+                          ),
+                        ),
+                      ),
+                );
+              case 'obligatoire':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.boolean,
+                  label: 'Obligatoire',
+                  options: ['true', 'false'],
+                  initialValue: state.modificateur.obligatoire!,
+                  onSaved:
+                      (v) => context.read<CategorieModificateurBloc>().add(
+                        UpdateCategorieDeModificateur(
+                          modificateur: state.modificateur.copyWith(
+                            obligatoire: v,
+                          ),
+                        ),
+                      ),
+                );
+
+              default:
+                return const SizedBox.shrink();
+            }
           } else {
             return SizedBox.shrink();
           }
@@ -291,7 +373,9 @@ class _ModificateursSupplementsScreenViewState
                         state.selectedCategorie != null)
                       Expanded(
                         child: ModificateurDetails(
+                          modificateur: state.selectedCategorie!,
                           categoryName: state.selectedCategorie!.nom!,
+                          scaffoldKey: _scaffoldKey,
                         ),
                       )
                     else

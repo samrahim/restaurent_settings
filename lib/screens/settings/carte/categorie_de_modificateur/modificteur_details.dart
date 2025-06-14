@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurent/blocs/categorie_de_modificateur_bloc/categorie_modificateur_bloc.dart';
+import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/models/categorie_de_modificateur.dart';
 
 import '../../../widgets/widgets.dart';
 
 class ModificateurDetails extends StatefulWidget {
+  final CategorieDeModificateur modificateur;
   final String categoryName;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
-  const ModificateurDetails({super.key, required this.categoryName});
+  const ModificateurDetails({
+    required this.scaffoldKey,
+    super.key,
+    required this.categoryName,
+    required this.modificateur,
+  });
 
   @override
   State<ModificateurDetails> createState() => _ModificateurDetailsState();
@@ -176,11 +187,23 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                   ),
                   child: Column(
                     children: [
-                      CustomListTile(
-                        trailingwidget: null,
-                        title: Text('Nom', style: AppTextStyle.greyHeading),
-                        leading: null,
-                        trailing: widget.categoryName,
+                      InkWell(
+                        onTap: () {
+                          context.read<DrawerBloc>().add(
+                            OpenUpdateCategorieDeModificateur(
+                              modificateur: widget.modificateur,
+                              attributeName: 'nom',
+                              currentValue: widget.categoryName,
+                            ),
+                          );
+                          widget.scaffoldKey.currentState!.openEndDrawer();
+                        },
+                        child: CustomListTile(
+                          trailingwidget: null,
+                          title: Text('Nom', style: AppTextStyle.greyHeading),
+                          leading: null,
+                          trailing: widget.categoryName,
+                        ),
                       ),
                       Divider(),
                       CustomListTile(
@@ -194,47 +217,51 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                       ),
                       Divider(),
 
-                      CustomListTile(
-                        title: Text(
-                          'Afficher dans les salles et comptoirs',
-                          style: AppTextStyle.greyHeading,
-                        ),
-                        leading: null,
-                        trailing: null,
-                        trailingwidget: DropdownButton<String>(
-                          underline: SizedBox(),
-                          style: AppTextStyle.indingosubHeading,
-                          value: _selectedValue,
-                          onChanged: (String? newValue) {
-                            if (newValue != null) {
-                              setState(() {
-                                _selectedValue = newValue;
-                              });
-                            }
-                          },
-                          items:
-                              _options.map<DropdownMenuItem<String>>((
-                                String value,
-                              ) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
+                      InkWell(
+                        onTap: () {
+                          context.read<DrawerBloc>().add(
+                            OpenUpdateCategorieDeModificateur(
+                              modificateur: widget.modificateur,
+                              attributeName: 'salle',
+                              currentValue: widget.categoryName,
+                            ),
+                          );
+                          widget.scaffoldKey.currentState!.openEndDrawer();
+                        },
+                        child: CustomListTile(
+                          title: Text(
+                            'Afficher dans les salles et comptoirs',
+                            style: AppTextStyle.greyHeading,
+                          ),
+                          leading: null,
+                          trailing: widget.modificateur.typeDeSalleDisponible!,
+                          trailingwidget: null,
                         ),
                       ),
                       Divider(),
-                      CustomListTile(
-                        leading: null,
-                        trailing: null,
-                        title: Text("Couleur", style: AppTextStyle.greyHeading),
-                        trailingwidget: GestureDetector(
-                          onTap: _openColorPicker,
-                          child: Container(
+                      InkWell(
+                        onTap: () {
+                          context.read<DrawerBloc>().add(
+                            OpenUpdateCategorieDeModificateur(
+                              modificateur: widget.modificateur,
+                              attributeName: 'couleur',
+                              currentValue: widget.modificateur.color,
+                            ),
+                          );
+                          widget.scaffoldKey.currentState!.openEndDrawer();
+                        },
+                        child: CustomListTile(
+                          leading: null,
+                          trailing: null,
+                          title: Text(
+                            "Couleur",
+                            style: AppTextStyle.greyHeading,
+                          ),
+                          trailingwidget: Container(
                             width: 30,
                             height: 30,
                             decoration: BoxDecoration(
-                              color: _currentColor,
+                              color: widget.modificateur.color,
                               shape: BoxShape.circle,
                               border: Border.all(color: Colors.black26),
                             ),
@@ -253,50 +280,48 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                   ),
                   child: Column(
                     children: [
-                      CustomListTile(
-                        leading: null,
-                        trailing: null,
-                        title: Text(
-                          'Type de sélection',
-                          style: AppTextStyle.greyHeading,
-                        ),
-                        trailingwidget: DropdownButton<String>(
-                          underline: SizedBox(),
-                          style: AppTextStyle.indingosubHeading,
-                          value: _typeSelection,
-                          onChanged: (String? newValue) {
-                            if (newValue != null) {
-                              setState(() {
-                                _typeSelection = newValue;
-                              });
-                            }
-                          },
-                          items:
-                              _optiontypeDeSelection
-                                  .map<DropdownMenuItem<String>>((
-                                    String value,
-                                  ) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  })
-                                  .toList(),
+                      InkWell(
+                        onTap: () {
+                          context.read<DrawerBloc>().add(
+                            OpenUpdateCategorieDeModificateur(
+                              modificateur: widget.modificateur,
+                              attributeName: 'typeDeSelection',
+                              currentValue: widget.modificateur.typeDeSelection,
+                            ),
+                          );
+                          widget.scaffoldKey.currentState!.openEndDrawer();
+                        },
+                        child: CustomListTile(
+                          leading: null,
+                          trailing: widget.modificateur.typeDeSelection,
+                          title: Text(
+                            'Type de sélection',
+                            style: AppTextStyle.greyHeading,
+                          ),
+                          trailingwidget: null,
                         ),
                       ),
                       Divider(),
-                      CustomListTile(
-                        leading: 'Obligatoire',
-                        trailing: null,
-                        title: null,
-                        trailingwidget: Switch(
-                          activeColor: Colors.blueAccent,
-                          value: isObligatoire,
-                          onChanged: (value) {
-                            setState(() {
-                              isObligatoire = value;
-                            });
-                          },
+                      InkWell(
+                        onTap: () {
+                          context.read<DrawerBloc>().add(
+                            OpenUpdateCategorieDeModificateur(
+                              modificateur: widget.modificateur,
+                              attributeName: 'obligatoire',
+                              currentValue: widget.modificateur.obligatoire,
+                            ),
+                          );
+                          widget.scaffoldKey.currentState!.openEndDrawer();
+                        },
+                        child: CustomListTile(
+                          leading: 'Obligatoire',
+                          trailing: null,
+                          title: null,
+                          trailingwidget: Switch(
+                            activeTrackColor: AppColors.primary,
+                            value: isObligatoire,
+                            onChanged: null,
+                          ),
                         ),
                       ),
                     ],

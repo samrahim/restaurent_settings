@@ -418,6 +418,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
             switch (state.attributeName) {
               case 'nom':
                 return UpdateAttributeDrawer(
+                  fieldType: FieldType.string,
                   label: 'Nom',
                   initialValue: state.currentValue as String,
                   onSaved:
@@ -429,6 +430,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                 );
               case 'modeEncaissement':
                 return UpdateAttributeDrawer(
+                  fieldType: FieldType.dropdown,
                   label: 'Mode d’encaissement',
                   initialValue: state.currentValue as String,
                   options: modeEncaissementList,
@@ -443,9 +445,10 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                 );
               case 'actif':
                 return UpdateAttributeDrawer(
+                  fieldType: FieldType.boolean,
                   label: 'Actif',
                   initialValue: (state.currentValue as bool).toString(),
-                  options: ['true', 'false'],
+
                   onSaved:
                       (v) => context.read<MoyenDePaiementBloc>().add(
                         UpdateMoyenDePaiementEvent(
@@ -457,6 +460,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                 );
               case 'GestionDuTropPerçu':
                 return UpdateAttributeDrawer(
+                  fieldType: FieldType.dropdown,
                   options: gestionDuTropPercuList,
                   label: 'Gestion du trop-perçu',
                   initialValue: (state.currentValue) as String,
@@ -471,6 +475,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                 );
               case 'VariationsDuMoyenDePaiement':
                 return UpdateAttributeDrawer(
+                  fieldType: FieldType.dropdown,
                   options: moyenDePaiementList,
                   label: 'Variations du moyen de paiement',
                   initialValue: (state.currentValue) as String,
@@ -486,6 +491,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                 );
               case 'OuvertureDuTiroir':
                 return UpdateAttributeDrawer(
+                  fieldType: FieldType.boolean,
                   label: 'Ouverture du tiroir caisse',
                   initialValue: (state.currentValue as bool).toString(),
                   options: ['true', 'false'],
@@ -500,6 +506,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                 );
               case 'DisponibleEnModeExpress':
                 return UpdateAttributeDrawer(
+                  fieldType: FieldType.boolean,
                   label: 'Disponible en mode express',
                   initialValue: (state.currentValue as bool).toString(),
                   options: ['true', 'false'],
@@ -515,6 +522,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
 
               case 'CompterALaFinDuService':
                 return UpdateAttributeDrawer(
+                  fieldType: FieldType.boolean,
                   label: 'Compter à la fin du service',
                   initialValue: (state.currentValue as bool).toString(),
                   options: ['true', 'false'],
@@ -529,6 +537,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                 );
               case 'RenseignerLeFondDeCaisse':
                 return UpdateAttributeDrawer(
+                  fieldType: FieldType.boolean,
                   label: 'Renseigner le fond de caisse',
                   initialValue: (state.currentValue as bool).toString(),
                   options: ['true', 'false'],
@@ -544,6 +553,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
 
               case 'DisponibleDansLesSalles':
                 return UpdateAttributeDrawer(
+                  fieldType: FieldType.dropdown,
                   options: salles,
                   label: 'Disponible dans les salles',
                   initialValue: (state.currentValue) as String,
@@ -968,86 +978,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class UpdateAttributeDrawer extends StatelessWidget {
-  final String label;
-  final String initialValue;
-  final List<String>? options;
-  final void Function(String) onSaved;
-  const UpdateAttributeDrawer({
-    Key? key,
-    required this.label,
-    required this.initialValue,
-    this.options,
-    required this.onSaved,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    print(";;;;;;;;;;;;;;;;!!!!!!!!!!!!!!!$initialValue");
-    final ctrl = TextEditingController(text: initialValue);
-    bool isBoolField =
-        options != null &&
-        options!.length == 2 &&
-        options!.contains('true') &&
-        options!.contains('false');
-
-    bool switchValue = initialValue == 'true';
-
-    return Drawer(
-      width: MediaQuery.of(context).size.width * .33,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(label, style: Theme.of(context).textTheme.bodyLarge),
-            const SizedBox(height: 16),
-
-            if (isBoolField)
-              StatefulBuilder(
-                builder: (context, setState) {
-                  return SwitchListTile(
-                    title: Text('Activer ?'),
-                    value: switchValue,
-                    onChanged: (value) {
-                      setState(() {
-                        switchValue = value;
-                      });
-                    },
-                  );
-                },
-              )
-            else if (options == null)
-              TextFormField(controller: ctrl)
-            else
-              DropdownButtonFormField<String>(
-                value: initialValue,
-                items:
-                    options!
-                        .map((o) => DropdownMenuItem(value: o, child: Text(o)))
-                        .toList(),
-                onChanged: (v) => ctrl.text = v!,
-              ),
-
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                if (isBoolField) {
-                  onSaved(switchValue.toString());
-                } else {
-                  onSaved(ctrl.text);
-                }
-                Navigator.of(context).pop();
-              },
-              child: const Text('Enregistrer'),
-            ),
-          ],
-        ),
       ),
     );
   }

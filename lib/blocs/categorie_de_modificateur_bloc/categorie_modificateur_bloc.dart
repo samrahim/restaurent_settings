@@ -25,6 +25,7 @@ class CategorieModificateurBloc
           ),
         );
       }
+
       if (event is SelectCategorie) {
         emit(
           (state as CategorieModificateurInitial).copyWith(
@@ -33,13 +34,18 @@ class CategorieModificateurBloc
         );
       }
       if (event is DeselectCategorie) {
-        print('we called');
         emit(
           (state as CategorieModificateurInitial).copyWith(
             selectedCategorie: null,
           ),
         );
-        print((state as CategorieModificateurInitial).selectedCategorie);
+      }
+      if (event is UpdateCategorieDeModificateur) {
+        emit(
+          (state as CategorieModificateurInitial).copyWith(
+            selectedCategorie: event.modificateur,
+          ),
+        );
       }
     });
   }

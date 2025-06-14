@@ -289,188 +289,162 @@ class _GroupesUtilisateursScreenViewState
           ),
         ],
       ),
-      endDrawer: _buildDrawerWithBloc(context),
-    );
-  }
-
-  Widget _buildDrawerWithBloc(BuildContext context) {
-    return BlocListener<DrawerBloc, DrawerState>(
-      listener: (context, state) {
-        if (state is DrawerCreateUtilisateur) {
-          nom.clear();
-          prenom.clear();
-          groupe.clear();
-          motPasseChiffre.clear();
-          motPasseSchema.clear();
-          qrCode.clear();
-          role = roleList[0];
-        } else if (state is DrawerUpdateUtilisateurAttributeState) {
-          // Pre-fill data for update
-          nom.text = state.currentValue.toString();
-          prenom.text = state.currentValue.toString();
-          groupe.text = state.currentValue.toString();
-          motPasseChiffre.text = state.currentValue.toString();
-          motPasseSchema.text = state.currentValue.toString();
-          qrCode.text = state.currentValue.toString();
-          role = state.currentValue.toString();
-        }
-      },
-      child: Drawer(
-        width: MediaQuery.of(context).size.width * 0.3,
-        child: BlocBuilder<DrawerBloc, DrawerState>(
-          builder: (context, state) {
-            return _buildDrawerContent(context, state);
-          },
-        ),
+      endDrawer: BlocBuilder<DrawerBloc, DrawerState>(
+        builder: (context, state) {
+          if (state is DrawerCreateUtilisateur) {
+            return _buildCreateUtilisateurDrawer(context);
+          } else if (state is DrawerUpdateUtilisateurAttributeState) {
+            print('wer are in the state');
+            return _buildUpdateAttributeDrawer(context, state);
+          } else {
+            return SizedBox.shrink();
+          }
+        },
       ),
     );
   }
 
-  Widget _buildDrawerContent(BuildContext context, DrawerState state) {
-    if (state is DrawerCreateUtilisateur) {
-      return _buildCreateUtilisateurDrawer(context);
-    } else if (state is DrawerUpdateUtilisateurAttributeState) {
-      return _buildUpdateAttributeDrawer(context, state);
-    }
-    return Container(); // Default empty drawer
-  }
-
   Widget _buildCreateUtilisateurDrawer(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Text(
-                'Créer un nouvel utilisateur',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-
-            TextField(
-              controller: nom,
-              decoration: InputDecoration(
-                labelText: 'Nom',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+    return Drawer(
+      width: MediaQuery.of(context).size.width * .33,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                child: Text(
+                  'Créer un nouvel utilisateur',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                filled: true,
-                fillColor: Colors.grey[50],
               ),
-            ),
-            const SizedBox(height: 16),
 
-            TextField(
-              controller: prenom,
-              decoration: InputDecoration(
-                labelText: 'Prénom',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Dropdown Groupe
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 4.0),
-
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade400),
-                color: Colors.grey[50],
-              ),
-              child: DropdownButtonFormField<String>(
-                value: group,
-                decoration: const InputDecoration(
-                  labelText: 'Groupe',
-                  border: InputBorder.none,
-                ),
-                items:
-                    groupeList
-                        .map(
-                          (grp) =>
-                              DropdownMenuItem(value: grp, child: Text(grp)),
-                        )
-                        .toList(),
-                onChanged: (value) => setState(() => group = value!),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            TextField(
-              controller: motPasseSchema,
-              decoration: InputDecoration(
-                labelText: 'Mot de passe Schema',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            TextField(
-              controller: motPasseChiffre,
-              decoration: InputDecoration(
-                labelText: 'Mot de passe chiffre',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Dropdown Rôle
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade400),
-                color: Colors.grey[50],
-              ),
-              child: DropdownButtonFormField<String>(
-                value: role,
-                decoration: const InputDecoration(
-                  labelText: 'Rôle',
-                  border: InputBorder.none,
-                ),
-                items:
-                    roleList
-                        .map((r) => DropdownMenuItem(value: r, child: Text(r)))
-                        .toList(),
-                onChanged: (value) => setState(() => role = value!),
-              ),
-            ),
-
-            const SizedBox(height: 24),
-            CreateButton(
-              onPressed: () {
-                context.read<UtilisateurBloc>().add(
-                  CreateUtilisateur(
-                    groupe: group,
-                    motPasseChiffre: motPasseChiffre.text,
-                    nom: nom.text,
-                    prenom: prenom.text,
-                    qrCode: qrCode.text,
-                    role: role,
-                    motPasseSchema: motPasseSchema.text,
+              TextField(
+                controller: nom,
+                decoration: InputDecoration(
+                  labelText: 'Nom',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                );
-                _scaffoldKey.currentState?.closeEndDrawer();
-              },
-              buttonText: "Ajouter",
-            ),
-          ],
+                  filled: true,
+                  fillColor: Colors.grey[50],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              TextField(
+                controller: prenom,
+                decoration: InputDecoration(
+                  labelText: 'Prénom',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[50],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Dropdown Groupe
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 4.0),
+
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade400),
+                  color: Colors.grey[50],
+                ),
+                child: DropdownButtonFormField<String>(
+                  value: group,
+                  decoration: const InputDecoration(
+                    labelText: 'Groupe',
+                    border: InputBorder.none,
+                  ),
+                  items:
+                      groupeList
+                          .map(
+                            (grp) =>
+                                DropdownMenuItem(value: grp, child: Text(grp)),
+                          )
+                          .toList(),
+                  onChanged: (value) => setState(() => group = value!),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              TextField(
+                controller: motPasseSchema,
+                decoration: InputDecoration(
+                  labelText: 'Mot de passe Schema',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[50],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              TextField(
+                controller: motPasseChiffre,
+                decoration: InputDecoration(
+                  labelText: 'Mot de passe chiffre',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[50],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Dropdown Rôle
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade400),
+                  color: Colors.grey[50],
+                ),
+                child: DropdownButtonFormField<String>(
+                  value: role,
+                  decoration: const InputDecoration(
+                    labelText: 'Rôle',
+                    border: InputBorder.none,
+                  ),
+                  items:
+                      roleList
+                          .map(
+                            (r) => DropdownMenuItem(value: r, child: Text(r)),
+                          )
+                          .toList(),
+                  onChanged: (value) => setState(() => role = value!),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+              CreateButton(
+                onPressed: () {
+                  context.read<UtilisateurBloc>().add(
+                    CreateUtilisateur(
+                      groupe: group,
+                      motPasseChiffre: motPasseChiffre.text,
+                      nom: nom.text,
+                      prenom: prenom.text,
+                      qrCode: qrCode.text,
+                      role: role,
+                      motPasseSchema: motPasseSchema.text,
+                    ),
+                  );
+                  _scaffoldKey.currentState?.closeEndDrawer();
+                },
+                buttonText: "Ajouter",
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -480,145 +454,99 @@ class _GroupesUtilisateursScreenViewState
     BuildContext context,
     DrawerUpdateUtilisateurAttributeState state,
   ) {
-    final TextEditingController controller = TextEditingController(
-      text: state.currentValue.toString(),
-    );
+    print(state.attributeName);
+    switch (state.attributeName) {
+      case 'role':
+        return UpdateAttributeDrawer(
+          label: state.attributeName,
+          initialValue: state.utilisateur.role,
+          options: roleList,
+          fieldType: FieldType.dropdown,
+          onSaved: (v) {
+            context.read<UtilisateurBloc>().add(
+              UpdateUtilisateur(
+                utilisateurModel: state.utilisateur.copyWith(role: v),
+              ),
+            );
+          },
+        );
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Modifier ${state.attributeName}',
-            style: AppTextStyle.indingoHeading,
-          ),
-          const SizedBox(height: 24),
-          if (state.attributeName == 'role')
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade400),
-                color: Colors.grey[50],
-              ),
-              child: DropdownButtonFormField<String>(
-                value: state.currentValue,
-                decoration: const InputDecoration(border: InputBorder.none),
-                items:
-                    roleList
-                        .map(
-                          (role) =>
-                              DropdownMenuItem(value: role, child: Text(role)),
-                        )
-                        .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    controller.text = value;
-                  }
-                },
-              ),
-            )
-          else if (state.attributeName == 'groupe')
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade400),
-                color: Colors.grey[50],
-              ),
-              child: DropdownButtonFormField<String>(
-                value: state.currentValue,
-                decoration: const InputDecoration(border: InputBorder.none),
-                items:
-                    groupeList
-                        .map(
-                          (groupe) => DropdownMenuItem(
-                            value: groupe,
-                            child: Text(groupe),
-                          ),
-                        )
-                        .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    controller.text = value;
-                  }
-                },
-              ),
-            )
-          else
-            TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                labelText: state.attributeName,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
-            ),
-          const Spacer(),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                final updatedUser = state.utilisateur.copyWith(
-                  nom:
-                      state.attributeName == 'nom'
-                          ? controller.text
-                          : state.utilisateur.nom,
-                  prenom:
-                      state.attributeName == 'prenom'
-                          ? controller.text
-                          : state.utilisateur.prenom,
-                  groupe:
-                      state.attributeName == 'groupe'
-                          ? controller.text
-                          : state.utilisateur.groupe,
-                  motPasseSchema:
-                      state.attributeName == 'motPasseSchema'
-                          ? controller.text
-                          : state.utilisateur.motPasseSchema,
-                  motPasseChiffre:
-                      state.attributeName == 'motPasseChiffre'
-                          ? controller.text
-                          : state.utilisateur.motPasseChiffre,
-                  qrCode:
-                      state.attributeName == 'qrCode'
-                          ? controller.text
-                          : state.utilisateur.qrCode,
-                  role:
-                      state.attributeName == 'role'
-                          ? controller.text
-                          : state.utilisateur.role,
-                );
+      case 'motPasseChiffre':
+        return UpdateAttributeDrawer(
+          label: state.attributeName,
+          initialValue: state.utilisateur.motPasseChiffre,
 
-                context.read<UtilisateurBloc>().add(
-                  UpdateUtilisateur(utilisateurModel: updatedUser),
-                );
-                _scaffoldKey.currentState?.closeEndDrawer();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+          fieldType: FieldType.string,
+          onSaved: (v) {
+            context.read<UtilisateurBloc>().add(
+              UpdateUtilisateur(
+                utilisateurModel: state.utilisateur.copyWith(
+                  motPasseChiffre: v,
                 ),
               ),
-              child: const Text(
-                'Enregistrer',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+            );
+          },
+        );
+
+      case 'groupe':
+        return UpdateAttributeDrawer(
+          label: state.attributeName,
+          initialValue: state.utilisateur.groupe,
+          options: groupeList,
+          fieldType: FieldType.dropdown,
+          onSaved: (v) {
+            context.read<UtilisateurBloc>().add(
+              UpdateUtilisateur(
+                utilisateurModel: state.utilisateur.copyWith(groupe: v),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
+            );
+          },
+        );
+
+      case 'qrCode':
+        return UpdateAttributeDrawer(
+          label: state.attributeName,
+          initialValue: state.utilisateur.qrCode,
+
+          fieldType: FieldType.string,
+          onSaved: (v) {
+            context.read<UtilisateurBloc>().add(
+              UpdateUtilisateur(
+                utilisateurModel: state.utilisateur.copyWith(qrCode: v),
+              ),
+            );
+          },
+        );
+      case 'motPasseSchema':
+        return UpdateAttributeDrawer(
+          label: state.attributeName,
+          initialValue: state.utilisateur.motPasseSchema,
+
+          fieldType: FieldType.pattern,
+          onSaved: (v) {
+            context.read<UtilisateurBloc>().add(
+              UpdateUtilisateur(
+                utilisateurModel: state.utilisateur.copyWith(motPasseSchema: v),
+              ),
+            );
+          },
+        );
+      case 'nom':
+        return UpdateAttributeDrawer(
+          label: 'nom',
+          initialValue: state.utilisateur.nom,
+          fieldType: FieldType.string,
+          onSaved: (v) {
+            context.read<UtilisateurBloc>().add(
+              UpdateUtilisateur(
+                utilisateurModel: state.utilisateur.copyWith(nom: v),
+              ),
+            );
+          },
+        );
+      default:
+        return SizedBox.shrink();
+    }
   }
 
   Widget _buildUserDetailTile({

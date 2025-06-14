@@ -23,3 +23,11 @@ class DeselectCategorie extends CategorieModificateurEvent {
   @override
   List<Object?> get props => [];
 }
+
+class UpdateCategorieDeModificateur extends CategorieModificateurEvent {
+  final CategorieDeModificateur modificateur;
+  UpdateCategorieDeModificateur({required this.modificateur});
+
+  @override
+  List<Object?> get props => [modificateur];
+}
