@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurent/blocs/categorie_de_prix_bloc/categorie_de_prix_bloc.dart';
-import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
+import 'package:restaurent/providers/categorie_de_prix_provider.dart';
 import 'package:restaurent/screens/widgets/button_supprimer.dart';
 import 'package:restaurent/screens/widgets/custom_list_tile.dart';
 
-buildCategorieDePrixDetails({
+Widget buildCategorieDePrixDetails({
   required CategorieDePrixModel model,
   required BuildContext context,
+  required CategorieDePrixProvider provider,
 }) {
   return Column(
     mainAxisSize: MainAxisSize.max,
@@ -17,13 +16,13 @@ buildCategorieDePrixDetails({
       AppBar(
         leading: IconButton(
           onPressed: () {
-            context.read<CategorieDePrixBloc>().add(ClearData());
+            provider.clearSelection();
           },
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
         ),
         title: Text(model.nom, style: AppTextStyle.indingoHeading),
         centerTitle: true,
-        actions: [SizedBox()],
+        actions: [const SizedBox()],
       ),
       Expanded(
         child: Row(
@@ -43,7 +42,7 @@ buildCategorieDePrixDetails({
                     ),
 
                     ListTile(
-                      trailing: Icon(Icons.arrow_forward_ios),
+                      trailing: const Icon(Icons.arrow_forward_ios),
                       tileColor: AppColors.greyaccent,
                       leading: Text(
                         "Information generale",
@@ -53,7 +52,7 @@ buildCategorieDePrixDetails({
                       ),
                     ),
 
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -61,14 +60,8 @@ buildCategorieDePrixDetails({
                     ),
 
                     ListTile(
-                      onTap: () {
-                        // context.read<DrawerBloc>().add(
-                        //   OpenCreateCategoriePrixDrawer(model: model),
-                        // );
-                        // _scaffoldKey.currentState?.openEndDrawer();
-                      },
-                      trailing: Icon(Icons.arrow_forward_ios),
-
+                      onTap: () {},
+                      trailing: const Icon(Icons.arrow_forward_ios),
                       leading: Text(
                         "Produits associés",
                         style: AppTextStyle.indingosubHeading.copyWith(
@@ -92,7 +85,7 @@ buildCategorieDePrixDetails({
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height: 16),
+                              const SizedBox(height: 16),
                               Card(
                                 color: Colors.white,
                                 child: Column(
@@ -115,7 +108,11 @@ buildCategorieDePrixDetails({
                                       trailingwidget: Switch(
                                         activeColor: AppColors.primary,
                                         value: model.status,
-                                        onChanged: (v) {},
+                                        onChanged: (v) {
+                                          provider.update(
+                                            model.copyWith(status: v),
+                                          );
+                                        },
                                       ),
                                       title: null,
                                       leading: 'Categorie de prix active',
@@ -126,7 +123,13 @@ buildCategorieDePrixDetails({
                                       trailingwidget: Switch(
                                         activeColor: AppColors.primary,
                                         value: model.afficherNomCourtEnCommande,
-                                        onChanged: (v) {},
+                                        onChanged: (v) {
+                                          provider.update(
+                                            model.copyWith(
+                                              afficherNomCourtEnCommande: v,
+                                            ),
+                                          );
+                                        },
                                       ),
                                       title: null,
                                       leading: 'Afficher nom court en commande',
@@ -140,7 +143,13 @@ buildCategorieDePrixDetails({
                                         value:
                                             model
                                                 .afficherNomCourtEnEncaissement,
-                                        onChanged: (v) {},
+                                        onChanged: (v) {
+                                          provider.update(
+                                            model.copyWith(
+                                              afficherNomCourtEnEncaissement: v,
+                                            ),
+                                          );
+                                        },
                                       ),
                                       title: null,
                                       leading:
@@ -153,7 +162,13 @@ buildCategorieDePrixDetails({
                                         activeColor: AppColors.primary,
                                         value:
                                             model.afficherNomCourtEnFabrication,
-                                        onChanged: (v) {},
+                                        onChanged: (v) {
+                                          provider.update(
+                                            model.copyWith(
+                                              afficherNomCourtEnFabrication: v,
+                                            ),
+                                          );
+                                        },
                                       ),
                                       title: null,
                                       leading:
@@ -164,7 +179,7 @@ buildCategorieDePrixDetails({
                                 ),
                               ),
 
-                              SizedBox(height: 16),
+                              const SizedBox(height: 16),
                               Card(
                                 color: Colors.white,
                                 child: Column(
@@ -173,7 +188,13 @@ buildCategorieDePrixDetails({
                                       trailingwidget: Switch(
                                         activeColor: AppColors.primary,
                                         value: model.actifDansTouteLaJournee,
-                                        onChanged: (v) {},
+                                        onChanged: (v) {
+                                          provider.update(
+                                            model.copyWith(
+                                              actifDansTouteLaJournee: v,
+                                            ),
+                                          );
+                                        },
                                       ),
                                       leading: 'Actif toute la journée',
                                       title: null,
@@ -186,10 +207,8 @@ buildCategorieDePrixDetails({
                                       leading:
                                           'Jours d\'activite de la categorie de prix',
                                       trailingwidget: Text(
+                                        model.joursDactivite.join(", "),
                                         style: AppTextStyle.indingosubHeading,
-                                        model.joursDactivite
-                                            .map((e) => e)
-                                            .toString(),
                                       ),
                                     ),
 
@@ -212,9 +231,9 @@ buildCategorieDePrixDetails({
                                             title: null,
                                             leading: "Horaire de debut",
                                             trailing:
-                                                '${model.heureDebut!.hour.toString()}:${model.heureDebut!.minute}',
+                                                '${model.heureDebut!.hour.toString().padLeft(2, '0')}:${model.heureDebut!.minute.toString().padLeft(2, '0')}',
                                           ),
-                                          Divider(),
+                                          const Divider(),
                                         ],
                                       ),
 
@@ -224,14 +243,18 @@ buildCategorieDePrixDetails({
                                         title: null,
                                         leading: "Horaire de fin",
                                         trailing:
-                                            '${model.heureFin!.hour.toString()}:${model.heureFin!.minute}',
+                                            '${model.heureFin!.hour.toString().padLeft(2, '0')}:${model.heureFin!.minute.toString().padLeft(2, '0')}',
                                       ),
                                   ],
                                 ),
                               ),
 
-                              ButtonSupprimer(onTap: () {}),
-                              SizedBox(height: 17),
+                              ButtonSupprimer(
+                                onTap: () {
+                                  // FIXME: fixme
+                                },
+                              ),
+                              const SizedBox(height: 17),
                             ],
                           ),
                         ),

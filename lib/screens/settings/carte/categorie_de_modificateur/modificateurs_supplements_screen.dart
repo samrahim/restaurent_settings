@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurent/blocs/categorie_de_modificateur_bloc/categorie_modificateur_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
+import 'package:restaurent/providers/categorie_de_modificateur.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificteur_details.dart';
-import 'package:restaurent/screens/widgets/create_button.dart';
-import 'package:restaurent/screens/widgets/show_picket.dart';
-import 'package:restaurent/screens/widgets/widgets.dart';
+import 'package:restaurent/widgets/widgets.dart';
 
 class ModificateursSupplementsScreen extends StatelessWidget {
   const ModificateursSupplementsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiProvider(
       providers: [
         BlocProvider(create: (context) => DrawerBloc()),
-        BlocProvider(create: (context) => CategorieModificateurBloc()),
+        ChangeNotifierProvider(create: (_) => CategorieModificateurProvider()),
       ],
-      child: ModificateursSupplementsScreenView(),
+      child: const ModificateursSupplementsScreenView(),
     );
   }
 }
@@ -46,6 +45,7 @@ class _ModificateursSupplementsScreenViewState
     typeDeSalleDisponible: salles[0],
     typeDeSelection: optiontypeDeSelection[0],
   );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +60,7 @@ class _ModificateursSupplementsScreenViewState
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       child: Text(
@@ -71,7 +71,7 @@ class _ModificateursSupplementsScreenViewState
                         ),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextField(
                       controller: name,
                       decoration: InputDecoration(
@@ -83,7 +83,7 @@ class _ModificateursSupplementsScreenViewState
                         fillColor: Colors.grey[50],
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -93,7 +93,7 @@ class _ModificateursSupplementsScreenViewState
                       child: ListTile(
                         title: const Text('Disponible dans les salles'),
                         trailing: DropdownButton<String>(
-                          underline: SizedBox(),
+                          underline: const SizedBox(),
                           value: createModel.typeDeSalleDisponible,
                           style: AppTextStyle.indingosubHeading,
                           items:
@@ -120,7 +120,7 @@ class _ModificateursSupplementsScreenViewState
                         ),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -155,10 +155,10 @@ class _ModificateursSupplementsScreenViewState
                             ),
                           ),
                         ),
-                        title: Text('Couleur'),
+                        title: const Text('Couleur'),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -168,7 +168,7 @@ class _ModificateursSupplementsScreenViewState
                       child: ListTile(
                         title: const Text('Type de selection'),
                         trailing: DropdownButton<String>(
-                          underline: SizedBox(),
+                          underline: const SizedBox(),
                           value: createModel.typeDeSelection,
                           style: AppTextStyle.indingosubHeading,
                           items:
@@ -195,7 +195,7 @@ class _ModificateursSupplementsScreenViewState
                         ),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -203,7 +203,7 @@ class _ModificateursSupplementsScreenViewState
                         border: Border.all(color: Colors.grey),
                       ),
                       child: ListTile(
-                        title: Text('Obligatoire'),
+                        title: const Text('Obligatoire'),
                         trailing: Switch(
                           activeColor: AppColors.primary,
                           value: createModel.obligatoire!,
@@ -220,18 +220,16 @@ class _ModificateursSupplementsScreenViewState
                         ),
                       ),
                     ),
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
                     CreateButton(
                       onPressed: () {
-                        context.read<CategorieModificateurBloc>().add(
-                          CreateNewCategorieDeModificateur(
-                            modificateur: createModel.copyWith(nom: name.text),
-                          ),
-                        );
-
+                        // Utilisation du Provider pour créer la catégorie
+                        final provider =
+                            context.read<CategorieModificateurProvider>();
+                        provider.create(createModel.copyWith(nom: name.text));
                         _scaffoldKey.currentState?.closeEndDrawer();
                       },
-                      buttonText: 'Cree une nouvelle categorie de prix',
+                      buttonText: 'Créer une nouvelle catégorie de prix',
                     ),
                   ],
                 ),
@@ -239,19 +237,17 @@ class _ModificateursSupplementsScreenViewState
             );
           }
           if (state is DrawerUpdateCategorieDeModificateur) {
-            print('hw');
             switch (state.attributeName) {
               case 'nom':
                 return UpdateAttributeDrawer(
                   fieldType: FieldType.string,
                   label: 'nom',
                   initialValue: state.modificateur.nom!,
-                  onSaved:
-                      (v) => context.read<CategorieModificateurBloc>().add(
-                        UpdateCategorieDeModificateur(
-                          modificateur: state.modificateur.copyWith(nom: v),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    final provider =
+                        context.read<CategorieModificateurProvider>();
+                    provider.update(state.modificateur.copyWith(nom: v));
+                  },
                 );
               case 'salle':
                 return UpdateAttributeDrawer(
@@ -259,27 +255,24 @@ class _ModificateursSupplementsScreenViewState
                   label: 'Salle',
                   options: salles,
                   initialValue: state.modificateur.typeDeSalleDisponible!,
-                  onSaved:
-                      (v) => context.read<CategorieModificateurBloc>().add(
-                        UpdateCategorieDeModificateur(
-                          modificateur: state.modificateur.copyWith(
-                            typeDeSalleDisponible: v,
-                          ),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    final provider =
+                        context.read<CategorieModificateurProvider>();
+                    provider.update(
+                      state.modificateur.copyWith(typeDeSalleDisponible: v),
+                    );
+                  },
                 );
               case 'couleur':
                 return UpdateAttributeDrawer(
                   fieldType: FieldType.color,
                   label: 'Couleur',
-
                   initialValue: state.modificateur.color!,
-                  onSaved:
-                      (v) => context.read<CategorieModificateurBloc>().add(
-                        UpdateCategorieDeModificateur(
-                          modificateur: state.modificateur.copyWith(color: v),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    final provider =
+                        context.read<CategorieModificateurProvider>();
+                    provider.update(state.modificateur.copyWith(color: v));
+                  },
                 );
               case 'typeDeSelection':
                 return UpdateAttributeDrawer(
@@ -287,14 +280,13 @@ class _ModificateursSupplementsScreenViewState
                   label: 'Type de selection',
                   options: optiontypeDeSelection,
                   initialValue: state.modificateur.typeDeSelection!,
-                  onSaved:
-                      (v) => context.read<CategorieModificateurBloc>().add(
-                        UpdateCategorieDeModificateur(
-                          modificateur: state.modificateur.copyWith(
-                            typeDeSelection: v,
-                          ),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    final provider =
+                        context.read<CategorieModificateurProvider>();
+                    provider.update(
+                      state.modificateur.copyWith(typeDeSelection: v),
+                    );
+                  },
                 );
               case 'obligatoire':
                 return UpdateAttributeDrawer(
@@ -302,100 +294,89 @@ class _ModificateursSupplementsScreenViewState
                   label: 'Obligatoire',
                   options: ['true', 'false'],
                   initialValue: state.modificateur.obligatoire!,
-                  onSaved:
-                      (v) => context.read<CategorieModificateurBloc>().add(
-                        UpdateCategorieDeModificateur(
-                          modificateur: state.modificateur.copyWith(
-                            obligatoire: v,
-                          ),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    final provider =
+                        context.read<CategorieModificateurProvider>();
+                    provider.update(
+                      state.modificateur.copyWith(obligatoire: v),
+                    );
+                  },
                 );
 
               default:
                 return const SizedBox.shrink();
             }
           } else {
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           }
         },
       ),
       body: Container(
         color: Colors.grey.shade200,
-        child:
-            BlocBuilder<CategorieModificateurBloc, CategorieModificateurState>(
-              builder: (context, state) {
-                return Column(
-                  children: [
-                    if (state is CategorieModificateurInitial &&
-                        state.selectedCategorie != null)
-                      AppBar(
-                        backgroundColor: Colors.white,
-                        centerTitle: true,
-                        title: Text(
-                          state.selectedCategorie!.nom!,
-                          style: AppTextStyle.indingoHeading,
-                        ),
-                        actions: [SizedBox()],
-                        leading: IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          onPressed: () {
-                            context.read<CategorieModificateurBloc>().add(
-                              DeselectCategorie(),
-                            );
-                            print((state).selectedCategorie);
-                          },
-                        ),
-                      )
-                    else
-                      AppBar(
-                        actions: [
-                          ActionButton(onPressed: () {}, text: 'Reorganiser'),
-                          ActionButton(
-                            onPressed: () {
-                              context.read<DrawerBloc>().add(
-                                OpenCreateCategorieDeModificateur(
-                                  modificateur: modificateur,
-                                ),
-                              );
-                              _scaffoldKey.currentState?.openEndDrawer();
-                            },
-                            text: 'Nouveau',
-                          ),
-                        ],
-                        centerTitle: true,
-                        title: Text(
-                          'Categories de modificateurs / Supplements ',
-                          style: AppTextStyle.largeindingotext,
-                        ),
+        child: Consumer<CategorieModificateurProvider>(
+          builder: (context, provider, _) {
+            return Column(
+              children: [
+                if (provider.selectedCategorie != null)
+                  AppBar(
+                    backgroundColor: Colors.white,
+                    centerTitle: true,
+                    title: Text(
+                      provider.selectedCategorie!.nom!,
+                      style: AppTextStyle.indingoHeading,
+                    ),
+                    actions: [const SizedBox()],
+                    leading: IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () {
+                        provider.deselect();
+                      },
+                    ),
+                  )
+                else
+                  AppBar(
+                    actions: [
+                      ActionButton(onPressed: () {}, text: 'Reorganiser'),
+                      ActionButton(
+                        onPressed: () {
+                          context.read<DrawerBloc>().add(
+                            OpenCreateCategorieDeModificateur(
+                              modificateur: modificateur,
+                            ),
+                          );
+                          _scaffoldKey.currentState?.openEndDrawer();
+                        },
+                        text: 'Nouveau',
                       ),
-                    if (state is CategorieModificateurInitial &&
-                        state.selectedCategorie != null)
-                      Expanded(
-                        child: ModificateurDetails(
-                          modificateur: state.selectedCategorie!,
-                          categoryName: state.selectedCategorie!.nom!,
-                          scaffoldKey: _scaffoldKey,
-                        ),
-                      )
-                    else
-                      Expanded(
-                        child: _buildCategoriesList(
-                          state as CategorieModificateurInitial,
-                        ),
-                      ),
-                  ],
-                );
-              },
-            ),
+                    ],
+                    centerTitle: true,
+                    title: Text(
+                      'Categories de modificateurs / Supplements ',
+                      style: AppTextStyle.largeindingotext,
+                    ),
+                  ),
+                if (provider.selectedCategorie != null)
+                  Expanded(
+                    child: ModificateurDetails(
+                      modificateur: provider.selectedCategorie!,
+
+                      scaffoldKey: _scaffoldKey,
+                    ),
+                  )
+                else
+                  Expanded(child: _buildCategoriesList(provider)),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildCategoriesList(CategorieModificateurInitial state) {
+  Widget _buildCategoriesList(CategorieModificateurProvider provider) {
     return Container(
       color: Colors.grey.shade200,
-      margin: EdgeInsets.all(6),
+      margin: const EdgeInsets.all(6),
       child: Column(
         children: [
           Container(
@@ -403,34 +384,35 @@ class _ModificateursSupplementsScreenViewState
               borderRadius: BorderRadius.circular(8),
               color: Colors.white,
             ),
-
-            margin: EdgeInsets.all(18),
+            margin: const EdgeInsets.all(18),
             child: Column(
               children: [
-                ...state.allcategories.map(
-                  (e) => Column(
-                    children: [
-                      GestureDetector(
-                        child: ListTile(
-                          title: Text(
-                            e.nom!,
-                            style: AppTextStyle.indingoHeading,
+                ...provider.allcategories
+                    .map(
+                      (e) => Column(
+                        children: [
+                          GestureDetector(
+                            child: ListTile(
+                              title: Text(
+                                e.nom!,
+                                style: AppTextStyle.indingoHeading,
+                              ),
+                              trailing: const Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.indigo,
+                              ),
+                            ),
+                            onTap: () {
+                              provider.select(e);
+                            },
                           ),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.indigo,
-                          ),
-                        ),
-                        onTap: () {
-                          context.read<CategorieModificateurBloc>().add(
-                            SelectCategorie(modificateur: e),
-                          );
-                        },
+                          e != provider.allcategories.last
+                              ? const Divider()
+                              : const SizedBox(),
+                        ],
                       ),
-                      e != state.allcategories.last ? Divider() : SizedBox(),
-                    ],
-                  ),
-                ),
+                    )
+                    .toList(),
               ],
             ),
           ),

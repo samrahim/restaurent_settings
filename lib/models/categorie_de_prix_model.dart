@@ -95,7 +95,7 @@ class CategorieDePrixModel extends Equatable {
   ];
 }
 
-List<CategorieDePrixModel> categoriesPrix = [
+List<CategorieDePrixModel> categoriesPrixList = [
   CategorieDePrixModel(
     id: '1',
     nom: 'Happy Hour',

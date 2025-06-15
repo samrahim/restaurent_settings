@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurent/blocs/categorie_de_prix_bloc/categorie_de_prix_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
-import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
+import 'package:restaurent/providers/categorie_de_prix_provider.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_prix/catgorie_detaits.dart';
-import 'package:restaurent/screens/widgets/action_button.dart';
-import 'package:restaurent/screens/widgets/button_supprimer.dart';
-import 'package:restaurent/screens/widgets/create_button.dart';
-import 'package:restaurent/screens/widgets/custom_list_tile.dart';
+import 'package:restaurent/screens/widgets/widgets.dart';
+import 'package:restaurent/consts.dart';
 
 class CategoriesPrixScreen extends StatelessWidget {
   const CategoriesPrixScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiProvider(
       providers: [
         BlocProvider(create: (context) => DrawerBloc()),
-        BlocProvider(create: (context) => CategorieDePrixBloc()),
+        ChangeNotifierProvider(create: (_) => CategorieDePrixProvider()),
       ],
-      child: CategoriesPrixScreenView(),
+      child: const CategoriesPrixScreenView(),
     );
   }
 }
@@ -38,7 +36,7 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
 
   CategorieDePrixModel model = CategorieDePrixModel(
     produits: [],
-    id: categoriesPrix.length.toString(),
+    id: categoriesPrixList.length.toString(),
     nom: '',
     nomCourt: '',
     status: false,
@@ -49,20 +47,19 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
     categorieDePrixActive: false,
     joursDactivite: [],
     salle: salles.first,
-    heureDebut: TimeOfDay(hour: 12, minute: 00),
-    heureFin: TimeOfDay(hour: 12, minute: 00),
+    heureDebut: const TimeOfDay(hour: 12, minute: 00),
+    heureFin: const TimeOfDay(hour: 12, minute: 00),
   );
-  TextEditingController nom = TextEditingController();
-  TextEditingController nomCourt = TextEditingController();
-  String salle = salles.first;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: BlocBuilder<DrawerBloc, DrawerState>(
         builder: (context, state) {
-          if (state is! DrawerCreateCategoriePrix)
+          if (state is! DrawerCreateCategoriePrix) {
             return const SizedBox.shrink();
+          }
           final m = state.model;
 
           return Drawer(
@@ -218,7 +215,7 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
                           const SizedBox(height: 8),
                         ],
                       );
-                    }),
+                    }).toList(),
 
                     // Plages horaires si ni journée ni nuit
                     if (!m.actifDansTouteLaJournee) ...[
@@ -291,28 +288,10 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
                       height: 40,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
-                        itemCount:
-                            const [
-                              'Lundi',
-                              'Mardi',
-                              'Mercredi',
-                              'Jeudi',
-                              'Vendredi',
-                              'Samedi',
-                              'Dimanche',
-                            ].length,
+                        itemCount: joursSemaine.length,
                         separatorBuilder: (_, __) => const SizedBox(width: 8),
                         itemBuilder: (_, i) {
-                          final d =
-                              const [
-                                'Lundi',
-                                'Mardi',
-                                'Mercredi',
-                                'Jeudi',
-                                'Vendredi',
-                                'Samedi',
-                                'Dimanche',
-                              ][i];
+                          final d = joursSemaine[i];
                           final selected = m.joursDactivite.contains(d);
                           return ChoiceChip(
                             label: Text(d),
@@ -335,9 +314,10 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
                     const SizedBox(height: 24),
                     CreateButton(
                       onPressed: () {
-                        context.read<CategorieDePrixBloc>().add(
-                          CreateCategorieDePrix(categorieDePrixModel: m),
-                        );
+                        // Utilisation du Provider au lieu du BLoC
+                        final provider =
+                            context.read<CategorieDePrixProvider>();
+                        provider.create(m);
                         _scaffoldKey.currentState?.closeEndDrawer();
                       },
                       buttonText: "Créer la catégorie",
@@ -349,36 +329,34 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
           );
         },
       ),
-      body: BlocBuilder<CategorieDePrixBloc, CategorieDePrixState>(
-        builder: (context, state) {
-          if (state is CategorieDePrixInitial &&
-              state.selectedCategorie == null) {
+      body: Consumer<CategorieDePrixProvider>(
+        builder: (context, provider, _) {
+          if (provider.selected == null) {
             return _buildCategorieDePrixList(
               context: context,
-              data: state.categories,
-            );
-          }
-          if (state is CategorieDePrixInitial &&
-              state.selectedCategorie != null) {
-            return buildCategorieDePrixDetails(
-              context: context,
-              model: state.selectedCategorie!,
+              data: provider.categories,
+              provider: provider,
             );
           } else {
-            return SizedBox();
+            return buildCategorieDePrixDetails(
+              context: context,
+              model: provider.selected!,
+              provider: provider,
+            );
           }
         },
       ),
     );
   }
 
-  _buildCategorieDePrixList({
+  Widget _buildCategorieDePrixList({
     required BuildContext context,
     required List<CategorieDePrixModel> data,
+    required CategorieDePrixProvider provider,
   }) {
     return Container(
       color: Colors.grey.shade200,
-      margin: EdgeInsets.all(6),
+      margin: const EdgeInsets.all(6),
       child: Column(
         children: [
           AppBar(
@@ -405,36 +383,36 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
               borderRadius: BorderRadius.circular(8),
               color: Colors.white,
             ),
-
-            margin: EdgeInsets.all(18),
+            margin: const EdgeInsets.all(18),
             child: Column(
               children: [
-                ...data.map(
-                  (categorie) => Column(
-                    children: [
-                      InkWell(
-                        child: ListTile(
-                          hoverColor: Colors.grey.shade200,
-
-                          title: Text(
-                            categorie.nom,
-                            style: AppTextStyle.indingoHeading,
+                ...data
+                    .map(
+                      (categorie) => Column(
+                        children: [
+                          InkWell(
+                            child: ListTile(
+                              hoverColor: Colors.grey.shade200,
+                              title: Text(
+                                categorie.nom,
+                                style: AppTextStyle.indingoHeading,
+                              ),
+                              trailing: const Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.indigo,
+                              ),
+                            ),
+                            onTap: () {
+                              provider.select(categorie);
+                            },
                           ),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.indigo,
-                          ),
-                        ),
-                        onTap: () {
-                          context.read<CategorieDePrixBloc>().add(
-                            SelectCategoriDePrix(model: categorie),
-                          );
-                        },
+                          categorie != data.last
+                              ? const Divider()
+                              : const SizedBox(),
+                        ],
                       ),
-                      categorie != data.last ? Divider() : SizedBox(),
-                    ],
-                  ),
-                ),
+                    )
+                    .toList(),
               ],
             ),
           ),
@@ -443,3 +421,14 @@ class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
     );
   }
 }
+
+// Liste des jours de la semaine pour plus de clarté
+const List<String> joursSemaine = [
+  'Lundi',
+  'Mardi',
+  'Mercredi',
+  'Jeudi',
+  'Vendredi',
+  'Samedi',
+  'Dimanche',
+];

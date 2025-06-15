@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:provider/provider.dart';
-import 'package:restaurent/blocs/categorie_de_modificateur_bloc/categorie_modificateur_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
-
-import '../../../widgets/widgets.dart';
+import 'package:restaurent/widgets/widgets.dart';
 
 class ModificateurDetails extends StatefulWidget {
   final CategorieDeModificateur modificateur;
-  final String categoryName;
+
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const ModificateurDetails({
     required this.scaffoldKey,
     super.key,
-    required this.categoryName,
+
     required this.modificateur,
   });
 
@@ -25,50 +22,6 @@ class ModificateurDetails extends StatefulWidget {
 }
 
 class _ModificateurDetailsState extends State<ModificateurDetails> {
-  bool isObligatoire = false;
-  String _selectedValue = 'Tous';
-  String _typeSelection = 'Un seul choix';
-  final List<String> _optiontypeDeSelection = ['Un seul choix', 'Multi choix'];
-  Color _currentColor = Colors.pinkAccent;
-  final List<String> _options = ['Tous', 'Les salles', 'Les comptoirs'];
-  void _openColorPicker() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        Color tempColor = _currentColor;
-        return AlertDialog(
-          title: Text('Pick a color'),
-          content: SingleChildScrollView(
-            child: ColorPicker(
-              pickerColor: tempColor,
-              onColorChanged: (Color color) {
-                tempColor = color;
-              },
-              enableAlpha: false,
-
-              pickerAreaHeightPercent: 0.8,
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            ElevatedButton(
-              child: Text('Select'),
-              onPressed: () {
-                setState(() {
-                  _currentColor = tempColor;
-                });
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -85,7 +38,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -104,12 +57,12 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                           'Informations générales',
                           style: AppTextStyle.indingoHeading,
                         ),
-                        trailing: Icon(Icons.chevron_right),
+                        trailing: const Icon(Icons.chevron_right),
                       ),
                     ),
 
                     Container(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -117,7 +70,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                             'MODIFICATEURS / SUPPLÉMENTS',
                             style: AppTextStyle.greysubHeading,
                           ),
-                          Icon(Icons.add, color: Colors.red),
+                          const Icon(Icons.add, color: Colors.red),
                         ],
                       ),
                     ),
@@ -126,13 +79,13 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                       color: Colors.white,
                       child: ListView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: 5,
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
                               _buildModifierTile(modifiers[index]),
-                              if (index != 4) Divider(),
+                              if (index != 4) const Divider(),
                             ],
                           );
                         },
@@ -140,12 +93,12 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                     ),
 
                     Container(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('PRODUITS', style: AppTextStyle.greysubHeading),
-                          Icon(Icons.add, color: Colors.red),
+                          const Icon(Icons.add, color: Colors.red),
                         ],
                       ),
                     ),
@@ -155,13 +108,12 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                       color: Colors.white,
                       child: ListView.builder(
                         shrinkWrap: true,
-
                         itemCount: 5,
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
                               _buildModifierTile(modifiers[index]),
-                              if (index != 4) Divider(),
+                              if (index != 4) const Divider(),
                             ],
                           );
                         },
@@ -172,7 +124,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
               ),
             ),
           ),
-          SizedBox(width: 24),
+          const SizedBox(width: 24),
           // Right panel - Form
           Expanded(
             flex: 5,
@@ -180,7 +132,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  margin: EdgeInsets.only(top: 4),
+                  margin: const EdgeInsets.only(top: 4),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(4),
                     color: Colors.white,
@@ -193,7 +145,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                             OpenUpdateCategorieDeModificateur(
                               modificateur: widget.modificateur,
                               attributeName: 'nom',
-                              currentValue: widget.categoryName,
+                              currentValue: widget.modificateur.nom,
                             ),
                           );
                           widget.scaffoldKey.currentState!.openEndDrawer();
@@ -202,20 +154,20 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                           trailingwidget: null,
                           title: Text('Nom', style: AppTextStyle.greyHeading),
                           leading: null,
-                          trailing: widget.categoryName,
+                          trailing: widget.modificateur.nom,
                         ),
                       ),
-                      Divider(),
+                      const Divider(),
                       CustomListTile(
-                        trailingwidget: Icon(
+                        trailingwidget: const Icon(
                           Icons.restaurant,
-                          color: Colors.indigo.shade400,
+                          color: Colors.indigo,
                         ),
                         title: Text('Icone', style: AppTextStyle.greyHeading),
                         leading: null,
                         trailing: null,
                       ),
-                      Divider(),
+                      const Divider(),
 
                       InkWell(
                         onTap: () {
@@ -223,7 +175,8 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                             OpenUpdateCategorieDeModificateur(
                               modificateur: widget.modificateur,
                               attributeName: 'salle',
-                              currentValue: widget.categoryName,
+                              currentValue:
+                                  widget.modificateur.typeDeSalleDisponible,
                             ),
                           );
                           widget.scaffoldKey.currentState!.openEndDrawer();
@@ -238,7 +191,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                           trailingwidget: null,
                         ),
                       ),
-                      Divider(),
+                      const Divider(),
                       InkWell(
                         onTap: () {
                           context.read<DrawerBloc>().add(
@@ -271,9 +224,9 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                     ],
                   ),
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
                 Container(
-                  margin: EdgeInsets.only(top: 4),
+                  margin: const EdgeInsets.only(top: 4),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(4),
                     color: Colors.white,
@@ -301,7 +254,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                           trailingwidget: null,
                         ),
                       ),
-                      Divider(),
+                      const Divider(),
                       InkWell(
                         onTap: () {
                           context.read<DrawerBloc>().add(
@@ -319,17 +272,21 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                           title: null,
                           trailingwidget: Switch(
                             activeTrackColor: AppColors.primary,
-                            value: isObligatoire,
-                            onChanged: null,
+                            value: widget.modificateur.obligatoire!,
+                            onChanged: null, // Managed via drawer
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-                ButtonSupprimer(onTap: () {}),
+                ButtonSupprimer(
+                  onTap: () {
+                    // TODO: Implémenter la suppression
+                  },
+                ),
               ],
             ),
           ),
@@ -341,7 +298,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
   Widget _buildModifierTile(String title) {
     return ListTile(
       title: Text(title, style: AppTextStyle.indingosubHeading),
-      trailing: Icon(Icons.drag_handle),
+      trailing: const Icon(Icons.drag_handle),
     );
   }
 }
