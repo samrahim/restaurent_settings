@@ -2,25 +2,24 @@ import 'package:equatable/equatable.dart';
 import 'package:restaurent/consts.dart';
 
 class UtilisateurModel extends Equatable {
-  final String id;
-  final String nom;
-  final String prenom;
-  final String groupe;
-  final String motPasseSchema;
-  final String motPasseChiffre;
-  final String qrCode;
-  final String role;
-  const UtilisateurModel({
-    required this.id,
-    required this.nom,
-    required this.prenom,
-    required this.groupe,
-    required this.motPasseSchema,
-    required this.motPasseChiffre,
-    required this.qrCode,
-    required this.role,
+  String id;
+  String nom;
+  String prenom;
+  String groupe;
+  String motPasseSchema;
+  String motPasseChiffre;
+  String qrCode;
+  String role;
+  UtilisateurModel({
+    this.id = '',
+    this.nom = '',
+    this.prenom = '',
+    this.groupe = '',
+    this.motPasseSchema = '',
+    this.motPasseChiffre = '',
+    this.qrCode = '',
+    this.role = '',
   });
-
   UtilisateurModel copyWith({
     String? id,
     String? nom,

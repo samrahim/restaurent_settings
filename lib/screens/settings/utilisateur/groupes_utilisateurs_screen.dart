@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
-import 'package:restaurent/blocs/utilisateur/etulisateur_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/utilisateur_model.dart';
-import 'package:restaurent/screens/widgets/create_button.dart';
+import 'package:restaurent/providers/utlisateur_provider.dart';
 import 'package:restaurent/screens/widgets/widgets.dart';
 
 class GroupesUtilisateursScreen extends StatelessWidget {
@@ -12,9 +12,9 @@ class GroupesUtilisateursScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiProvider(
       providers: [
-        BlocProvider(create: (context) => UtilisateurBloc()),
+        ChangeNotifierProvider(create: (context) => UtilisateurProvider()),
         BlocProvider(create: (context) => DrawerBloc()),
       ],
       child: GroupesUtilisateursScreenView(),
@@ -50,258 +50,6 @@ class _GroupesUtilisateursScreenViewState
     motPasseChiffre.dispose();
     qrCode.dispose();
     super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              child: BlocBuilder<UtilisateurBloc, UtilisateurState>(
-                builder: (context, state) {
-                  if (state is UtilisateurInitial) {
-                    return state.utilisateurs != null
-                        ? ListView(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Administrateurs',
-                                style: AppTextStyle.greyHeading.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            ...state.utilisateurs!
-                                .where((u) => u.role == roleList[0])
-                                .map(
-                                  (utilisateur) => ListTile(
-                                    selectedTileColor: Colors.grey.shade300,
-                                    title: Text(
-                                      utilisateur.nom,
-                                      style: AppTextStyle.indingosubHeading,
-                                    ),
-                                    trailing: Icon(Icons.arrow_forward_ios),
-                                    selected:
-                                        state.selectedEtulisateur != null &&
-                                        utilisateur.id ==
-                                            state.selectedEtulisateur!.id,
-                                    onTap: () {
-                                      context.read<UtilisateurBloc>().add(
-                                        SelectUtilisateur(
-                                          utilisateurModel: utilisateur,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Serveurs',
-                                style: AppTextStyle.greyHeading.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            ...state.utilisateurs!
-                                .where((u) => u.role == roleList[1])
-                                .map(
-                                  (utilisateur) => ListTile(
-                                    selectedTileColor: Colors.grey.shade300,
-                                    title: Text(
-                                      utilisateur.nom,
-                                      style: AppTextStyle.indingosubHeading,
-                                    ),
-                                    trailing: Icon(Icons.arrow_forward_ios),
-                                    selected:
-                                        state.selectedEtulisateur != null &&
-                                        utilisateur.id ==
-                                            state.selectedEtulisateur!.id,
-                                    onTap: () {
-                                      context.read<UtilisateurBloc>().add(
-                                        SelectUtilisateur(
-                                          utilisateurModel: utilisateur,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Responsable de salle',
-                                style: AppTextStyle.greyHeading.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            ...state.utilisateurs!
-                                .where((u) => u.role == roleList[2])
-                                .map(
-                                  (utilisateur) => ListTile(
-                                    selectedTileColor: Colors.grey.shade300,
-                                    title: Text(
-                                      utilisateur.nom,
-                                      style: AppTextStyle.indingosubHeading,
-                                    ),
-                                    trailing: Icon(Icons.arrow_forward_ios),
-                                    selected:
-                                        state.selectedEtulisateur != null &&
-                                        utilisateur.id ==
-                                            state.selectedEtulisateur!.id,
-                                    onTap: () {
-                                      context.read<UtilisateurBloc>().add(
-                                        SelectUtilisateur(
-                                          utilisateurModel: utilisateur,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                          ],
-                        )
-                        : Center(child: Text("Aucun utilisateur trouvé"));
-                  }
-                  return const Center(child: CircularProgressIndicator());
-                },
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 4,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-                child: BlocBuilder<UtilisateurBloc, UtilisateurState>(
-                  builder: (context, state) {
-                    if (state is UtilisateurInitial) {
-                      final utilisateur = state.selectedEtulisateur;
-                      if (utilisateur == null) {
-                        return const Center(
-                          child: Text('Sélectionnez un utilisateur'),
-                        );
-                      }
-                      return Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Card(
-                              child: Column(
-                                children: [
-                                  _buildUserDetailTile(
-                                    title: 'Nom',
-                                    value: utilisateur.nom,
-                                    user: utilisateur,
-                                    attributeName: 'nom',
-                                  ),
-                                  const Divider(),
-                                  _buildUserDetailTile(
-                                    title: 'Prénom',
-                                    value: utilisateur.prenom,
-                                    user: utilisateur,
-                                    attributeName: 'prenom',
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Card(
-                              child: _buildUserDetailTile(
-                                title: 'Groupe',
-                                value: utilisateur.groupe,
-                                user: utilisateur,
-                                attributeName: 'groupe',
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Card(
-                              child: Column(
-                                children: [
-                                  _buildUserDetailTile(
-                                    title: 'Mot de passe Schema',
-                                    value: utilisateur.motPasseSchema,
-                                    user: utilisateur,
-                                    attributeName: 'motPasseSchema',
-                                  ),
-                                  const Divider(),
-                                  _buildUserDetailTile(
-                                    title: 'Mot de passe chiffre',
-                                    value: utilisateur.motPasseChiffre,
-                                    user: utilisateur,
-                                    attributeName: 'motPasseChiffre',
-                                  ),
-                                  const Divider(),
-                                  _buildUserDetailTile(
-                                    title: 'QR Code',
-                                    value: utilisateur.qrCode,
-                                    user: utilisateur,
-                                    attributeName: 'qrCode',
-                                  ),
-                                  const Divider(),
-                                  _buildUserDetailTile(
-                                    title: 'Rôle',
-                                    value: utilisateur.role,
-                                    user: utilisateur,
-                                    attributeName: 'role',
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 16),
-
-                            ButtonSupprimer(onTap: () {}),
-                          ],
-                        ),
-                      );
-                    }
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-
-      appBar: AppBar(
-        title: Text(
-          "Groupe d'utilisateurs",
-          style: AppTextStyle.largeindingotext,
-        ),
-        centerTitle: true,
-        actions: [
-          ActionButton(
-            onPressed: () {
-              context.read<DrawerBloc>().add(OpenCreateUtilisateurDrawer());
-              _scaffoldKey.currentState?.openEndDrawer();
-            },
-            text: "Nouveau",
-          ),
-        ],
-      ),
-      endDrawer: BlocBuilder<DrawerBloc, DrawerState>(
-        builder: (context, state) {
-          if (state is DrawerCreateUtilisateur) {
-            return _buildCreateUtilisateurDrawer(context);
-          } else if (state is DrawerUpdateUtilisateurAttributeState) {
-            print('wer are in the state');
-            return _buildUpdateAttributeDrawer(context, state);
-          } else {
-            return SizedBox.shrink();
-          }
-        },
-      ),
-    );
   }
 
   Widget _buildCreateUtilisateurDrawer(BuildContext context) {
@@ -428,16 +176,15 @@ class _GroupesUtilisateursScreenViewState
               const SizedBox(height: 24),
               CreateButton(
                 onPressed: () {
-                  context.read<UtilisateurBloc>().add(
-                    CreateUtilisateur(
-                      groupe: group,
-                      motPasseChiffre: motPasseChiffre.text,
-                      nom: nom.text,
-                      prenom: prenom.text,
-                      qrCode: qrCode.text,
-                      role: role,
-                      motPasseSchema: motPasseSchema.text,
-                    ),
+                  final provider = context.read<UtilisateurProvider>();
+                  provider.createUtilisateur(
+                    groupe: group,
+                    motPasseChiffre: motPasseChiffre.text,
+                    nom: nom.text,
+                    prenom: prenom.text,
+                    qrCode: qrCode.text,
+                    role: role,
+                    motPasseSchema: motPasseSchema.text,
                   );
                   _scaffoldKey.currentState?.closeEndDrawer();
                 },
@@ -450,11 +197,270 @@ class _GroupesUtilisateursScreenViewState
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      body: Consumer<UtilisateurProvider>(
+        builder: (context, provider, _) {
+          return Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  child:
+                      provider.utilisateurs != null
+                          ? ListView(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Administrateurs',
+                                  style: AppTextStyle.greyHeading.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              ...provider.utilisateurs!
+                                  .where((u) => u.role == roleList[0])
+                                  .map(
+                                    (utilisateur) => ListTile(
+                                      selectedTileColor: Colors.grey.shade300,
+                                      title: Text(
+                                        utilisateur.nom,
+                                        style: AppTextStyle.indingosubHeading,
+                                      ),
+                                      trailing: Icon(Icons.arrow_forward_ios),
+                                      selected:
+                                          provider.selectedUtilisateur !=
+                                              null &&
+                                          utilisateur.id ==
+                                              provider.selectedUtilisateur!.id,
+                                      onTap: () {
+                                        Provider.of<UtilisateurProvider>(
+                                          context,
+                                          listen: false,
+                                        ).selectUtilisateur(utilisateur);
+                                      },
+                                    ),
+                                  ),
+
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Serveurs',
+                                  style: AppTextStyle.greyHeading.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              ...provider.utilisateurs!
+                                  .where((u) => u.role == roleList[1])
+                                  .map(
+                                    (utilisateur) => ListTile(
+                                      selectedTileColor: Colors.grey.shade300,
+                                      title: Text(
+                                        utilisateur.nom,
+                                        style: AppTextStyle.indingosubHeading,
+                                      ),
+                                      trailing: Icon(Icons.arrow_forward_ios),
+                                      selected:
+                                          provider.selectedUtilisateur !=
+                                              null &&
+                                          utilisateur.id ==
+                                              provider.selectedUtilisateur!.id,
+                                      onTap: () {
+                                        Provider.of<UtilisateurProvider>(
+                                          context,
+                                          listen: false,
+                                        ).selectUtilisateur(utilisateur);
+                                      },
+                                    ),
+                                  ),
+
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Responsable de salle',
+                                  style: AppTextStyle.greyHeading.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              ...provider.utilisateurs!
+                                  .where((u) => u.role == roleList[2])
+                                  .map(
+                                    (utilisateur) => ListTile(
+                                      selectedTileColor: Colors.grey.shade300,
+                                      title: Text(
+                                        utilisateur.nom,
+                                        style: AppTextStyle.indingosubHeading,
+                                      ),
+                                      trailing: Icon(Icons.arrow_forward_ios),
+                                      selected:
+                                          provider.selectedUtilisateur !=
+                                              null &&
+                                          utilisateur.id ==
+                                              provider.selectedUtilisateur!.id,
+                                      onTap: () {
+                                        Provider.of<UtilisateurProvider>(
+                                          context,
+                                          listen: false,
+                                        ).selectUtilisateur(utilisateur);
+                                      },
+                                    ),
+                                  ),
+                            ],
+                          )
+                          : Center(child: Text("Aucun utilisateur trouvé")),
+                ),
+              ),
+
+              Expanded(
+                flex: 4,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    child:
+                        provider.selectedUtilisateur == null
+                            ? const Center(
+                              child: Text('Sélectionnez un utilisateur'),
+                            )
+                            : Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Card(
+                                    child: Column(
+                                      children: [
+                                        _buildUserDetailTile(
+                                          title: 'Nom',
+                                          value:
+                                              provider.selectedUtilisateur!.nom,
+                                          user: provider.selectedUtilisateur!,
+                                          attributeName: 'nom',
+                                        ),
+                                        const Divider(),
+                                        _buildUserDetailTile(
+                                          title: 'Prénom',
+                                          value:
+                                              provider
+                                                  .selectedUtilisateur!
+                                                  .prenom,
+                                          user: provider.selectedUtilisateur!,
+                                          attributeName: 'prenom',
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Card(
+                                    child: _buildUserDetailTile(
+                                      title: 'Groupe',
+                                      value:
+                                          provider.selectedUtilisateur!.groupe,
+                                      user: provider.selectedUtilisateur!,
+                                      attributeName: 'groupe',
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Card(
+                                    child: Column(
+                                      children: [
+                                        _buildUserDetailTile(
+                                          title: 'Mot de passe Schema',
+                                          value:
+                                              provider
+                                                  .selectedUtilisateur!
+                                                  .motPasseSchema,
+                                          user: provider.selectedUtilisateur!,
+                                          attributeName: 'motPasseSchema',
+                                        ),
+                                        const Divider(),
+                                        _buildUserDetailTile(
+                                          title: 'Mot de passe chiffre',
+                                          value:
+                                              provider
+                                                  .selectedUtilisateur!
+                                                  .motPasseChiffre,
+                                          user: provider.selectedUtilisateur!,
+                                          attributeName: 'motPasseChiffre',
+                                        ),
+                                        const Divider(),
+                                        _buildUserDetailTile(
+                                          title: 'QR Code',
+                                          value:
+                                              provider
+                                                  .selectedUtilisateur!
+                                                  .qrCode,
+                                          user: provider.selectedUtilisateur!,
+                                          attributeName: 'qrCode',
+                                        ),
+                                        const Divider(),
+                                        _buildUserDetailTile(
+                                          title: 'Rôle',
+                                          value:
+                                              provider
+                                                  .selectedUtilisateur!
+                                                  .role,
+                                          user: provider.selectedUtilisateur!,
+                                          attributeName: 'role',
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 16),
+
+                                  ButtonSupprimer(onTap: () {}),
+                                ],
+                              ),
+                            ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+
+      appBar: AppBar(
+        title: Text(
+          "Groupe d'utilisateurs",
+          style: AppTextStyle.largeindingotext,
+        ),
+        centerTitle: true,
+        actions: [
+          ActionButton(
+            onPressed: () {
+              context.read<DrawerBloc>().add(OpenCreateUtilisateurDrawer());
+              _scaffoldKey.currentState?.openEndDrawer();
+            },
+            text: "Nouveau",
+          ),
+        ],
+      ),
+      endDrawer: BlocBuilder<DrawerBloc, DrawerState>(
+        builder: (context, state) {
+          if (state is DrawerCreateUtilisateur) {
+            return _buildCreateUtilisateurDrawer(context);
+          } else if (state is DrawerUpdateUtilisateurAttributeState) {
+            print('wer are in the state');
+            return _buildUpdateAttributeDrawer(context, state);
+          } else {
+            return SizedBox.shrink();
+          }
+        },
+      ),
+    );
+  }
+
   Widget _buildUpdateAttributeDrawer(
     BuildContext context,
     DrawerUpdateUtilisateurAttributeState state,
   ) {
-    print(state.attributeName);
     switch (state.attributeName) {
       case 'role':
         return UpdateAttributeDrawer(
@@ -463,11 +469,9 @@ class _GroupesUtilisateursScreenViewState
           options: roleList,
           fieldType: FieldType.dropdown,
           onSaved: (v) {
-            context.read<UtilisateurBloc>().add(
-              UpdateUtilisateur(
-                utilisateurModel: state.utilisateur.copyWith(role: v),
-              ),
-            );
+            Provider.of<UtilisateurProvider>(
+              context,
+            ).updateUtilisateur(state.utilisateur.copyWith(role: v));
           },
         );
 
@@ -478,13 +482,10 @@ class _GroupesUtilisateursScreenViewState
 
           fieldType: FieldType.string,
           onSaved: (v) {
-            context.read<UtilisateurBloc>().add(
-              UpdateUtilisateur(
-                utilisateurModel: state.utilisateur.copyWith(
-                  motPasseChiffre: v,
-                ),
-              ),
-            );
+            Provider.of<UtilisateurProvider>(
+              context,
+              listen: false,
+            ).updateUtilisateur(state.utilisateur.copyWith(motPasseChiffre: v));
           },
         );
 
@@ -495,11 +496,10 @@ class _GroupesUtilisateursScreenViewState
           options: groupeList,
           fieldType: FieldType.dropdown,
           onSaved: (v) {
-            context.read<UtilisateurBloc>().add(
-              UpdateUtilisateur(
-                utilisateurModel: state.utilisateur.copyWith(groupe: v),
-              ),
-            );
+            Provider.of<UtilisateurProvider>(
+              context,
+              listen: false,
+            ).updateUtilisateur(state.utilisateur.copyWith(groupe: v));
           },
         );
 
@@ -510,11 +510,10 @@ class _GroupesUtilisateursScreenViewState
 
           fieldType: FieldType.string,
           onSaved: (v) {
-            context.read<UtilisateurBloc>().add(
-              UpdateUtilisateur(
-                utilisateurModel: state.utilisateur.copyWith(qrCode: v),
-              ),
-            );
+            Provider.of<UtilisateurProvider>(
+              context,
+              listen: false,
+            ).updateUtilisateur(state.utilisateur.copyWith(qrCode: v));
           },
         );
       case 'motPasseSchema':
@@ -524,11 +523,11 @@ class _GroupesUtilisateursScreenViewState
 
           fieldType: FieldType.pattern,
           onSaved: (v) {
-            context.read<UtilisateurBloc>().add(
-              UpdateUtilisateur(
-                utilisateurModel: state.utilisateur.copyWith(motPasseSchema: v),
-              ),
-            );
+            Provider.of<UtilisateurProvider>(
+              context,
+              listen: false,
+            ).updateUtilisateur(state.utilisateur.copyWith(motPasseSchema: v));
+            print(state.utilisateur.motPasseSchema);
           },
         );
       case 'nom':
@@ -537,11 +536,22 @@ class _GroupesUtilisateursScreenViewState
           initialValue: state.utilisateur.nom,
           fieldType: FieldType.string,
           onSaved: (v) {
-            context.read<UtilisateurBloc>().add(
-              UpdateUtilisateur(
-                utilisateurModel: state.utilisateur.copyWith(nom: v),
-              ),
-            );
+            Provider.of<UtilisateurProvider>(
+              context,
+              listen: false,
+            ).updateUtilisateur(state.utilisateur.copyWith(nom: v));
+          },
+        );
+      case 'prenom':
+        return UpdateAttributeDrawer(
+          label: 'Prenom',
+          initialValue: state.utilisateur.prenom,
+          fieldType: FieldType.string,
+          onSaved: (v) {
+            Provider.of<UtilisateurProvider>(
+              context,
+              listen: false,
+            ).updateUtilisateur(state.utilisateur.copyWith(prenom: v));
           },
         );
       default:

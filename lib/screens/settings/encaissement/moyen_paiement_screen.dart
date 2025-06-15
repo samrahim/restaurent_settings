@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
-import 'package:restaurent/blocs/moyen_de_paiement/moyen_de_paiement_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/moyen_de_paiement_model.dart';
-import 'package:restaurent/screens/widgets/create_button.dart';
+import 'package:restaurent/providers/moyen_de_paiement_provider.dart';
 
 import '../../widgets/widgets.dart';
 
@@ -13,9 +13,9 @@ class MoyenPaiementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiProvider(
       providers: [
-        BlocProvider(create: (context) => MoyenDePaiementBloc()),
+        ChangeNotifierProvider(create: (_) => MoyenDePaiementProvider()),
         BlocProvider(create: (context) => DrawerBloc()),
       ],
       child: MoyenPaiementView(),
@@ -52,6 +52,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       endDrawer: BlocBuilder<DrawerBloc, DrawerState>(
         builder: (context, state) {
           if (state is DrawerCreatePaiementMethode) {
@@ -400,9 +401,10 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
 
                       CreateButton(
                         onPressed: () {
-                          context.read<MoyenDePaiementBloc>().add(
-                            CreateMoyenDePaiementEvent(model: state.model),
-                          );
+                          Provider.of<MoyenDePaiementProvider>(
+                            context,
+                            listen: false,
+                          ).create(model: state.model);
                           nameController.clear();
                           Navigator.pop(context);
                         },
@@ -421,12 +423,12 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                   fieldType: FieldType.string,
                   label: 'Nom',
                   initialValue: state.currentValue as String,
-                  onSaved:
-                      (v) => context.read<MoyenDePaiementBloc>().add(
-                        UpdateMoyenDePaiementEvent(
-                          moyenDePaiement: state.model.copyWith(nom: v),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    Provider.of<MoyenDePaiementProvider>(
+                      context,
+                      listen: false,
+                    ).update(updated: state.model.copyWith(nom: v));
+                  },
                 );
               case 'modeEncaissement':
                 return UpdateAttributeDrawer(
@@ -434,14 +436,14 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                   label: 'Mode d’encaissement',
                   initialValue: state.currentValue as String,
                   options: modeEncaissementList,
-                  onSaved:
-                      (v) => context.read<MoyenDePaiementBloc>().add(
-                        UpdateMoyenDePaiementEvent(
-                          moyenDePaiement: state.model.copyWith(
-                            modeEncaissement: v,
-                          ),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    Provider.of<MoyenDePaiementProvider>(
+                      context,
+                      listen: false,
+                    ).update(
+                      updated: state.model.copyWith(modeEncaissement: v),
+                    );
+                  },
                 );
               case 'actif':
                 return UpdateAttributeDrawer(
@@ -449,14 +451,12 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                   label: 'Actif',
                   initialValue: (state.currentValue as bool).toString(),
 
-                  onSaved:
-                      (v) => context.read<MoyenDePaiementBloc>().add(
-                        UpdateMoyenDePaiementEvent(
-                          moyenDePaiement: state.model.copyWith(
-                            actif: v == 'true',
-                          ),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    Provider.of<MoyenDePaiementProvider>(
+                      context,
+                      listen: false,
+                    ).update(updated: state.model.copyWith(actif: v));
+                  },
                 );
               case 'GestionDuTropPerçu':
                 return UpdateAttributeDrawer(
@@ -464,14 +464,14 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                   options: gestionDuTropPercuList,
                   label: 'Gestion du trop-perçu',
                   initialValue: (state.currentValue) as String,
-                  onSaved:
-                      (v) => context.read<MoyenDePaiementBloc>().add(
-                        UpdateMoyenDePaiementEvent(
-                          moyenDePaiement: state.model.copyWith(
-                            getsionDuTropPercu: v,
-                          ),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    Provider.of<MoyenDePaiementProvider>(
+                      context,
+                      listen: false,
+                    ).update(
+                      updated: state.model.copyWith(getsionDuTropPercu: v),
+                    );
+                  },
                 );
               case 'VariationsDuMoyenDePaiement':
                 return UpdateAttributeDrawer(
@@ -480,14 +480,16 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                   label: 'Variations du moyen de paiement',
                   initialValue: (state.currentValue) as String,
 
-                  onSaved:
-                      (v) => context.read<MoyenDePaiementBloc>().add(
-                        UpdateMoyenDePaiementEvent(
-                          moyenDePaiement: state.model.copyWith(
-                            variationDuMoyenDePaiement: v,
-                          ),
-                        ),
+                  onSaved: (v) {
+                    Provider.of<MoyenDePaiementProvider>(
+                      context,
+                      listen: false,
+                    ).update(
+                      updated: state.model.copyWith(
+                        variationDuMoyenDePaiement: v,
                       ),
+                    );
+                  },
                 );
               case 'OuvertureDuTiroir':
                 return UpdateAttributeDrawer(
@@ -495,14 +497,14 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                   label: 'Ouverture du tiroir caisse',
                   initialValue: (state.currentValue as bool).toString(),
                   options: ['true', 'false'],
-                  onSaved:
-                      (v) => context.read<MoyenDePaiementBloc>().add(
-                        UpdateMoyenDePaiementEvent(
-                          moyenDePaiement: state.model.copyWith(
-                            ouvertureDeTiroirCaisse: v == 'true',
-                          ),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    Provider.of<MoyenDePaiementProvider>(
+                      context,
+                      listen: false,
+                    ).update(
+                      updated: state.model.copyWith(ouvertureDeTiroirCaisse: v),
+                    );
+                  },
                 );
               case 'DisponibleEnModeExpress':
                 return UpdateAttributeDrawer(
@@ -510,14 +512,14 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                   label: 'Disponible en mode express',
                   initialValue: (state.currentValue as bool).toString(),
                   options: ['true', 'false'],
-                  onSaved:
-                      (v) => context.read<MoyenDePaiementBloc>().add(
-                        UpdateMoyenDePaiementEvent(
-                          moyenDePaiement: state.model.copyWith(
-                            disponibleEnModeExpress: v == 'true',
-                          ),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    Provider.of<MoyenDePaiementProvider>(
+                      context,
+                      listen: false,
+                    ).update(
+                      updated: state.model.copyWith(disponibleEnModeExpress: v),
+                    );
+                  },
                 );
 
               case 'CompterALaFinDuService':
@@ -526,14 +528,14 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                   label: 'Compter à la fin du service',
                   initialValue: (state.currentValue as bool).toString(),
                   options: ['true', 'false'],
-                  onSaved:
-                      (v) => context.read<MoyenDePaiementBloc>().add(
-                        UpdateMoyenDePaiementEvent(
-                          moyenDePaiement: state.model.copyWith(
-                            compterAlaFinDuService: v == 'true',
-                          ),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    Provider.of<MoyenDePaiementProvider>(
+                      context,
+                      listen: false,
+                    ).update(
+                      updated: state.model.copyWith(compterAlaFinDuService: v),
+                    );
+                  },
                 );
               case 'RenseignerLeFondDeCaisse':
                 return UpdateAttributeDrawer(
@@ -541,14 +543,14 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                   label: 'Renseigner le fond de caisse',
                   initialValue: (state.currentValue as bool).toString(),
                   options: ['true', 'false'],
-                  onSaved:
-                      (v) => context.read<MoyenDePaiementBloc>().add(
-                        UpdateMoyenDePaiementEvent(
-                          moyenDePaiement: state.model.copyWith(
-                            rensignerleFondDeCaisee: v == 'true',
-                          ),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    Provider.of<MoyenDePaiementProvider>(
+                      context,
+                      listen: false,
+                    ).update(
+                      updated: state.model.copyWith(rensignerleFondDeCaisee: v),
+                    );
+                  },
                 );
 
               case 'DisponibleDansLesSalles':
@@ -557,14 +559,14 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                   options: salles,
                   label: 'Disponible dans les salles',
                   initialValue: (state.currentValue) as String,
-                  onSaved:
-                      (v) => context.read<MoyenDePaiementBloc>().add(
-                        UpdateMoyenDePaiementEvent(
-                          moyenDePaiement: state.model.copyWith(
-                            typeDeSalleDisponible: v,
-                          ),
-                        ),
-                      ),
+                  onSaved: (v) {
+                    Provider.of<MoyenDePaiementProvider>(
+                      context,
+                      listen: false,
+                    ).update(
+                      updated: state.model.copyWith(typeDeSalleDisponible: v),
+                    );
+                  },
                 );
 
               default:
@@ -575,8 +577,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
           }
         },
       ),
-
-      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('Moyen de paiement', style: AppTextStyle.largeindingotext),
@@ -598,45 +598,38 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
         children: [
           Expanded(
             flex: 2,
-            child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              child: BlocBuilder<MoyenDePaiementBloc, MoyenDePaiementState>(
-                builder: (context, state) {
-                  if (state is MoyenDePaiementInitial) {
-                    return ListView(
-                      children: [
-                        ...state.moyenDePaiement.map(
-                          (method) => ListTile(
-                            selectedTileColor: Colors.grey.shade300,
+            child: Consumer<MoyenDePaiementProvider>(
+              builder: (context, provider, _) {
+                final moyens = provider.moyens;
+                final selected = provider.selected;
 
-                            title: Text(
-                              method.nom ?? '',
-                              style: AppTextStyle.indingosubHeading,
-                            ),
-                            trailing: Icon(Icons.arrow_forward_ios),
-                            leading:
-                                method.icon != null
-                                    ? Image.asset(method.icon!)
-                                    : const Icon(Icons.payment),
-                            selected:
-                                method.nom ==
-                                (context.read<MoyenDePaiementBloc>().state
-                                        as MoyenDePaiementInitial)
-                                    .selectedModel
-                                    .nom,
-                            onTap: () {
-                              context.read<MoyenDePaiementBloc>().add(
-                                SelectMoyenDePaiement(moyenDePaiement: method),
-                              );
-                            },
-                          ),
+                if (moyens.isEmpty) {
+                  return const Center(child: Text("Aucun moyen de paiement"));
+                }
+
+                return ListView(
+                  children: [
+                    ...moyens.map(
+                      (method) => ListTile(
+                        selectedTileColor: Colors.grey.shade300,
+                        title: Text(
+                          method.nom ?? '',
+                          style: AppTextStyle.indingosubHeading,
                         ),
-                      ],
-                    );
-                  }
-                  return const Center(child: CircularProgressIndicator());
-                },
-              ),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        leading:
+                            method.icon != null
+                                ? Image.asset(method.icon!)
+                                : const Icon(Icons.payment),
+                        selected: method.nom == selected!.nom,
+                        onTap: () {
+                          provider.select(method);
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
 
@@ -644,10 +637,13 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
             flex: 3,
             child: Card(
               margin: const EdgeInsets.symmetric(horizontal: 16),
-              child: BlocBuilder<MoyenDePaiementBloc, MoyenDePaiementState>(
-                builder: (context, state) {
-                  if (state is MoyenDePaiementInitial) {
-                    final m = state.selectedModel;
+              child: Consumer<MoyenDePaiementProvider>(
+                builder: (context, provider, _) {
+                  final moyens = provider.moyens;
+                  final m = provider.selected;
+                  if (moyens.isEmpty) {
+                    return const Center(child: Text("Aucun moyen de paiement"));
+                  } else {
                     return Padding(
                       padding: const EdgeInsets.all(16),
                       child: SingleChildScrollView(
@@ -682,7 +678,7 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                                         style: AppTextStyle.greyHeading,
                                       ),
                                       trailingwidget: Text(
-                                        m.nom!,
+                                        m!.nom!,
                                         style: AppTextStyle.indingosubHeading,
                                       ),
                                       leading: null,
@@ -970,9 +966,6 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                       ),
                     );
                   }
-                  return const Center(
-                    child: Text('Sélectionnez un moyen de paiement'),
-                  );
                 },
               ),
             ),

@@ -52,8 +52,12 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
+
           children: [
-            Text(widget.label, style: Theme.of(context).textTheme.bodyLarge),
+            Text(
+              'Modifier votre ${widget.label}',
+              style: AppTextStyle.greyHeading,
+            ),
             const SizedBox(height: 16),
 
             if (widget.fieldType == FieldType.boolean)
@@ -105,18 +109,23 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
               )
             else if (widget.fieldType == FieldType.pattern)
               Expanded(
-                child: Center(
-                  child: PatternLock(
-                    dimension: 3,
-                    showInput: true,
-                    selectedColor: Colors.blue,
-                    notSelectedColor: Colors.grey,
-                    pointRadius: 8,
-                    onInputComplete: (List<int> input) {
-                      // stocke la séquence 0->8
-                      setState(() => _pattern = input);
-                    },
-                  ),
+                child: Column(
+                  children: [
+                    SizedBox(),
+                    Expanded(
+                      child: PatternLock(
+                        dimension: 3,
+                        showInput: true,
+                        selectedColor: Colors.blue,
+                        notSelectedColor: Colors.grey,
+                        pointRadius: 8,
+                        onInputComplete: (List<int> input) {
+                          setState(() => _pattern = input);
+                        },
+                      ),
+                    ),
+                    SizedBox(),
+                  ],
                 ),
               )
             else // FieldType.string
@@ -137,8 +146,7 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                     widget.onSaved(_controller.text);
                     break;
                   case FieldType.pattern:
-                    // tu peux encoder la liste en chaîne, ex: "0-1-2-5-8"
-                    widget.onSaved(_pattern.join('-'));
+                    widget.onSaved(_pattern.join(''));
 
                     break;
                 }
