@@ -103,7 +103,6 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                       ),
                     ),
 
-                    // List of products
                     Container(
                       color: Colors.white,
                       child: ListView.builder(
@@ -125,7 +124,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
             ),
           ),
           const SizedBox(width: 24),
-          // Right panel - Form
+
           Expanded(
             flex: 5,
             child: Column(

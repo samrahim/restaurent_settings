@@ -12,9 +12,7 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
       if (event is OpenCreateUtilisateurDrawer) {
         emit(DrawerCreateUtilisateur(isOpen: true));
       }
-      if (event is CloseCreateUtilisateurDrawer) {
-        emit(DrawerCreateUtilisateur(isOpen: false));
-      }
+
       if (event is OpenCreatePaiementMethodeDrawer) {
         emit(DrawerCreatePaiementMethode(model: event.model));
       }
@@ -58,10 +56,20 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
         );
       }
       if (event is OpenUpdateCategorieDeModificateur) {
-        print('event');
         emit(
           DrawerUpdateCategorieDeModificateur(
             modificateur: event.modificateur,
+            attributeName: event.attributeName,
+            currentValue: event.currentValue,
+          ),
+        );
+      }
+      if (event is OpenUpdateCategrieDePrixAttributs) {
+        print('event.model.nom ${event.model.nom}');
+        print('event.currentValue ${event.currentValue}');
+        emit(
+          DrawerUpdateCategoriDePrix(
+            model: event.model,
             attributeName: event.attributeName,
             currentValue: event.currentValue,
           ),

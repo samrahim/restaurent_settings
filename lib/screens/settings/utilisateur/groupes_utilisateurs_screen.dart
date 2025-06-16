@@ -330,92 +330,98 @@ class _GroupesUtilisateursScreenViewState
                             )
                             : Padding(
                               padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Card(
-                                    child: Column(
-                                      children: [
-                                        _buildUserDetailTile(
-                                          title: 'Nom',
-                                          value:
-                                              provider.selectedUtilisateur!.nom,
-                                          user: provider.selectedUtilisateur!,
-                                          attributeName: 'nom',
-                                        ),
-                                        const Divider(),
-                                        _buildUserDetailTile(
-                                          title: 'Prénom',
-                                          value:
-                                              provider
-                                                  .selectedUtilisateur!
-                                                  .prenom,
-                                          user: provider.selectedUtilisateur!,
-                                          attributeName: 'prenom',
-                                        ),
-                                      ],
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Card(
+                                      child: Column(
+                                        children: [
+                                          _buildUserDetailTile(
+                                            title: 'Nom',
+                                            value:
+                                                provider
+                                                    .selectedUtilisateur!
+                                                    .nom,
+                                            user: provider.selectedUtilisateur!,
+                                            attributeName: 'nom',
+                                          ),
+                                          const Divider(),
+                                          _buildUserDetailTile(
+                                            title: 'Prénom',
+                                            value:
+                                                provider
+                                                    .selectedUtilisateur!
+                                                    .prenom,
+                                            user: provider.selectedUtilisateur!,
+                                            attributeName: 'prenom',
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Card(
-                                    child: _buildUserDetailTile(
-                                      title: 'Groupe',
-                                      value:
-                                          provider.selectedUtilisateur!.groupe,
-                                      user: provider.selectedUtilisateur!,
-                                      attributeName: 'groupe',
+                                    const SizedBox(height: 16),
+                                    Card(
+                                      child: _buildUserDetailTile(
+                                        title: 'Groupe',
+                                        value:
+                                            provider
+                                                .selectedUtilisateur!
+                                                .groupe,
+                                        user: provider.selectedUtilisateur!,
+                                        attributeName: 'groupe',
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Card(
-                                    child: Column(
-                                      children: [
-                                        _buildUserDetailTile(
-                                          title: 'Mot de passe Schema',
-                                          value:
-                                              provider
-                                                  .selectedUtilisateur!
-                                                  .motPasseSchema,
-                                          user: provider.selectedUtilisateur!,
-                                          attributeName: 'motPasseSchema',
-                                        ),
-                                        const Divider(),
-                                        _buildUserDetailTile(
-                                          title: 'Mot de passe chiffre',
-                                          value:
-                                              provider
-                                                  .selectedUtilisateur!
-                                                  .motPasseChiffre,
-                                          user: provider.selectedUtilisateur!,
-                                          attributeName: 'motPasseChiffre',
-                                        ),
-                                        const Divider(),
-                                        _buildUserDetailTile(
-                                          title: 'QR Code',
-                                          value:
-                                              provider
-                                                  .selectedUtilisateur!
-                                                  .qrCode,
-                                          user: provider.selectedUtilisateur!,
-                                          attributeName: 'qrCode',
-                                        ),
-                                        const Divider(),
-                                        _buildUserDetailTile(
-                                          title: 'Rôle',
-                                          value:
-                                              provider
-                                                  .selectedUtilisateur!
-                                                  .role,
-                                          user: provider.selectedUtilisateur!,
-                                          attributeName: 'role',
-                                        ),
-                                      ],
+                                    const SizedBox(height: 16),
+                                    Card(
+                                      child: Column(
+                                        children: [
+                                          _buildUserDetailTile(
+                                            title: 'Mot de passe Schema',
+                                            value:
+                                                provider
+                                                    .selectedUtilisateur!
+                                                    .motPasseSchema,
+                                            user: provider.selectedUtilisateur!,
+                                            attributeName: 'motPasseSchema',
+                                          ),
+                                          const Divider(),
+                                          _buildUserDetailTile(
+                                            title: 'Mot de passe chiffre',
+                                            value:
+                                                provider
+                                                    .selectedUtilisateur!
+                                                    .motPasseChiffre,
+                                            user: provider.selectedUtilisateur!,
+                                            attributeName: 'motPasseChiffre',
+                                          ),
+                                          const Divider(),
+                                          _buildUserDetailTile(
+                                            title: 'QR Code',
+                                            value:
+                                                provider
+                                                    .selectedUtilisateur!
+                                                    .qrCode,
+                                            user: provider.selectedUtilisateur!,
+                                            attributeName: 'qrCode',
+                                          ),
+                                          const Divider(),
+                                          _buildUserDetailTile(
+                                            title: 'Rôle',
+                                            value:
+                                                provider
+                                                    .selectedUtilisateur!
+                                                    .role,
+                                            user: provider.selectedUtilisateur!,
+                                            attributeName: 'role',
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 16),
+                                    SizedBox(height: 16),
 
-                                  ButtonSupprimer(onTap: () {}),
-                                ],
+                                    ButtonSupprimer(onTap: () {}),
+                                  ],
+                                ),
                               ),
                             ),
                   ),

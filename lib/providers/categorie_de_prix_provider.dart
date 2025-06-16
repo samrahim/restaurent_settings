@@ -31,16 +31,14 @@ class CategorieDePrixProvider extends ChangeNotifier {
         _categories!.map((cat) {
           return cat.id == updatedModel.id ? updatedModel : cat;
         }).toList();
+    _selected = updatedModel;
     notifyListeners();
   }
 
   void loadAll() {
     //FIXME: call API
     _categories = categoriesPrixList;
-    _selected =
-        (_categories != null && _categories!.isNotEmpty)
-            ? _categories!.first
-            : null;
+    _selected = null;
     notifyListeners();
   }
 }

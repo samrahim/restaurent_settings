@@ -4,23 +4,22 @@ import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/produits_model.dart';
 
 class CategorieDePrixModel extends Equatable {
-  final String id;
-  final String nom;
-  final String nomCourt;
+  String? id;
+  String? nom;
+  String? nomCourt;
+  bool? status;
+  bool? afficherNomCourtEnCommande;
+  bool? afficherNomCourtEnEncaissement;
+  bool? afficherNomCourtEnFabrication;
+  bool? actifDansTouteLaJournee;
+  bool? categorieDePrixActive;
+  List<String>? joursDactivite;
+  String? salle;
+  TimeOfDay? heureDebut;
+  TimeOfDay? heureFin;
+  List<ProduitsModel>? produits;
 
-  final bool status;
-  final bool afficherNomCourtEnCommande;
-  final bool afficherNomCourtEnEncaissement;
-  final bool afficherNomCourtEnFabrication;
-  final bool actifDansTouteLaJournee;
-  final bool categorieDePrixActive;
-  final List<String> joursDactivite;
-  final String salle;
-  final TimeOfDay? heureDebut;
-  final TimeOfDay? heureFin;
-  final List<ProduitsModel>? produits;
-
-  const CategorieDePrixModel({
+  CategorieDePrixModel({
     required this.produits,
     required this.id,
     required this.nom,

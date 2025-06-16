@@ -594,20 +594,20 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
           ),
         ],
       ),
-      body: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Consumer<MoyenDePaiementProvider>(
-              builder: (context, provider, _) {
-                final moyens = provider.moyens;
-                final selected = provider.selected;
+      body: Consumer<MoyenDePaiementProvider>(
+        builder: (context, provider, _) {
+          final moyens = provider.moyens;
+          final m = provider.selected;
 
-                if (moyens.isEmpty) {
-                  return const Center(child: Text("Aucun moyen de paiement"));
-                }
+          if (moyens.isEmpty) {
+            return const Center(child: Text("Aucun moyen de paiement"));
+          }
 
-                return ListView(
+          return Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: ListView(
                   children: [
                     ...moyens.map(
                       (method) => ListTile(
@@ -621,356 +621,331 @@ class _MoyenPaiementViewState extends State<MoyenPaiementView> {
                             method.icon != null
                                 ? Image.asset(method.icon!)
                                 : const Icon(Icons.payment),
-                        selected: method.nom == selected!.nom,
+                        selected: method.nom == m!.nom,
                         onTap: () {
                           provider.select(method);
                         },
                       ),
                     ),
                   ],
-                );
-              },
-            ),
-          ),
+                ),
+              ),
 
-          Expanded(
-            flex: 3,
-            child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              child: Consumer<MoyenDePaiementProvider>(
-                builder: (context, provider, _) {
-                  final moyens = provider.moyens;
-                  final m = provider.selected;
-                  if (moyens.isEmpty) {
-                    return const Center(child: Text("Aucun moyen de paiement"));
-                  } else {
-                    return Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+              Expanded(
+                flex: 3,
+                child: Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
 
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.white,
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      context.read<DrawerBloc>().add(
-                                        OpenUpdatePaiementMethodeDrawer(
-                                          model: m,
-                                          attributeName: 'nom',
-                                          currentValue: m.nom,
-                                        ),
-                                      );
-                                      _scaffoldKey.currentState
-                                          ?.openEndDrawer();
-                                    },
-                                    child: CustomListTile(
-                                      trailing: null,
-                                      title: Text(
-                                        'Nom',
-                                        style: AppTextStyle.greyHeading,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    context.read<DrawerBloc>().add(
+                                      OpenUpdatePaiementMethodeDrawer(
+                                        model: m,
+                                        attributeName: 'nom',
+                                        currentValue: m.nom,
                                       ),
-                                      trailingwidget: Text(
-                                        m!.nom!,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                      leading: null,
-                                    ),
-                                  ),
-                                  Divider(),
-                                  CustomListTile(
-                                    trailingwidget:
-                                        m.icon != null
-                                            ? Image.network(m.icon!)
-                                            : Icon(
-                                              Icons.restaurant,
-                                              color: Colors.indigo.shade400,
-                                            ),
+                                    );
+                                    _scaffoldKey.currentState?.openEndDrawer();
+                                  },
+                                  child: CustomListTile(
+                                    trailing: null,
                                     title: Text(
-                                      "Icone",
+                                      'Nom',
                                       style: AppTextStyle.greyHeading,
                                     ),
+                                    trailingwidget: Text(
+                                      m!.nom!,
+                                      style: AppTextStyle.indingosubHeading,
+                                    ),
                                     leading: null,
-                                    trailing: null,
                                   ),
-                                  Divider(),
-
-                                  InkWell(
-                                    onTap: () {
-                                      context.read<DrawerBloc>().add(
-                                        OpenUpdatePaiementMethodeDrawer(
-                                          model: m,
-                                          attributeName: 'modeEncaissement',
-                                          currentValue: m.modeEncaissement,
-                                        ),
-                                      );
-                                      _scaffoldKey.currentState
-                                          ?.openEndDrawer();
-                                    },
-                                    child: CustomListTile(
-                                      leading: null,
-                                      trailing: null,
-                                      title: Text(
-                                        'Mode d’encaissement',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      trailingwidget: Text(
-                                        m.modeEncaissement!,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                    ),
-                                  ),
-                                  Divider(),
-                                  InkWell(
-                                    onTap: () {
-                                      context.read<DrawerBloc>().add(
-                                        OpenUpdatePaiementMethodeDrawer(
-                                          model: m,
-                                          attributeName: 'GestionDuTropPerçu',
-                                          currentValue: m.getsionDuTropPercu,
-                                        ),
-                                      );
-                                      _scaffoldKey.currentState
-                                          ?.openEndDrawer();
-                                    },
-                                    child: CustomListTile(
-                                      leading: null,
-                                      trailing: null,
-                                      title: Text(
-                                        'Gestion du trop-perçu',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      trailingwidget: Text(
-                                        m.getsionDuTropPercu!,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                    ),
-                                  ),
-
-                                  Divider(),
-                                  InkWell(
-                                    onTap: () {
-                                      context.read<DrawerBloc>().add(
-                                        OpenUpdatePaiementMethodeDrawer(
-                                          model: m,
-                                          attributeName: 'OuvertureDuTiroir',
-                                          currentValue:
-                                              m.ouvertureDeTiroirCaisse,
-                                        ),
-                                      );
-                                      _scaffoldKey.currentState
-                                          ?.openEndDrawer();
-                                    },
-                                    child: SwitchListTile(
-                                      activeTrackColor: AppColors.primary,
-                                      title: Text(
-                                        'Ouverture du tiroir caisse',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      value: m.ouvertureDeTiroirCaisse ?? false,
-                                      onChanged: null,
-                                    ),
-                                  ),
-                                  Divider(),
-                                  InkWell(
-                                    onTap: () {
-                                      context.read<DrawerBloc>().add(
-                                        OpenUpdatePaiementMethodeDrawer(
-                                          model: m,
-                                          attributeName:
-                                              'DisponibleEnModeExpress',
-                                          currentValue:
-                                              m.disponibleEnModeExpress,
-                                        ),
-                                      );
-                                      _scaffoldKey.currentState
-                                          ?.openEndDrawer();
-                                    },
-                                    child: SwitchListTile(
-                                      activeTrackColor: AppColors.primary,
-                                      title: Text(
-                                        'Disponible en mode express',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      value: m.disponibleEnModeExpress ?? false,
-                                      onChanged: null,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            InkWell(
-                              onTap: () {
-                                context.read<DrawerBloc>().add(
-                                  OpenUpdatePaiementMethodeDrawer(
-                                    model: m,
-                                    attributeName:
-                                        'VariationsDuMoyenDePaiement',
-                                    currentValue: m.variationDuMoyenDePaiement,
-                                  ),
-                                );
-                                _scaffoldKey.currentState?.openEndDrawer();
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Colors.white,
                                 ),
-                                child: CustomListTile(
-                                  leading: null,
-                                  trailing: null,
+                                Divider(),
+                                CustomListTile(
+                                  trailingwidget:
+                                      m.icon != null
+                                          ? Image.network(m.icon!)
+                                          : Icon(
+                                            Icons.restaurant,
+                                            color: Colors.indigo.shade400,
+                                          ),
                                   title: Text(
-                                    'Variations du moyen de paiement',
+                                    "Icone",
                                     style: AppTextStyle.greyHeading,
                                   ),
-                                  trailingwidget: Text(
-                                    m.variationDuMoyenDePaiement!,
-                                    style: AppTextStyle.indingosubHeading,
+                                  leading: null,
+                                  trailing: null,
+                                ),
+                                Divider(),
+
+                                InkWell(
+                                  onTap: () {
+                                    context.read<DrawerBloc>().add(
+                                      OpenUpdatePaiementMethodeDrawer(
+                                        model: m,
+                                        attributeName: 'modeEncaissement',
+                                        currentValue: m.modeEncaissement,
+                                      ),
+                                    );
+                                    _scaffoldKey.currentState?.openEndDrawer();
+                                  },
+                                  child: CustomListTile(
+                                    leading: null,
+                                    trailing: null,
+                                    title: Text(
+                                      'Mode d’encaissement',
+                                      style: AppTextStyle.greyHeading,
+                                    ),
+                                    trailingwidget: Text(
+                                      m.modeEncaissement!,
+                                      style: AppTextStyle.indingosubHeading,
+                                    ),
                                   ),
+                                ),
+                                Divider(),
+                                InkWell(
+                                  onTap: () {
+                                    context.read<DrawerBloc>().add(
+                                      OpenUpdatePaiementMethodeDrawer(
+                                        model: m,
+                                        attributeName: 'GestionDuTropPerçu',
+                                        currentValue: m.getsionDuTropPercu,
+                                      ),
+                                    );
+                                    _scaffoldKey.currentState?.openEndDrawer();
+                                  },
+                                  child: CustomListTile(
+                                    leading: null,
+                                    trailing: null,
+                                    title: Text(
+                                      'Gestion du trop-perçu',
+                                      style: AppTextStyle.greyHeading,
+                                    ),
+                                    trailingwidget: Text(
+                                      m.getsionDuTropPercu!,
+                                      style: AppTextStyle.indingosubHeading,
+                                    ),
+                                  ),
+                                ),
+
+                                Divider(),
+                                InkWell(
+                                  onTap: () {
+                                    context.read<DrawerBloc>().add(
+                                      OpenUpdatePaiementMethodeDrawer(
+                                        model: m,
+                                        attributeName: 'OuvertureDuTiroir',
+                                        currentValue: m.ouvertureDeTiroirCaisse,
+                                      ),
+                                    );
+                                    _scaffoldKey.currentState?.openEndDrawer();
+                                  },
+                                  child: SwitchListTile(
+                                    activeTrackColor: AppColors.primary,
+                                    title: Text(
+                                      'Ouverture du tiroir caisse',
+                                      style: AppTextStyle.greyHeading,
+                                    ),
+                                    value: m.ouvertureDeTiroirCaisse ?? false,
+                                    onChanged: null,
+                                  ),
+                                ),
+                                Divider(),
+                                InkWell(
+                                  onTap: () {
+                                    context.read<DrawerBloc>().add(
+                                      OpenUpdatePaiementMethodeDrawer(
+                                        model: m,
+                                        attributeName:
+                                            'DisponibleEnModeExpress',
+                                        currentValue: m.disponibleEnModeExpress,
+                                      ),
+                                    );
+                                    _scaffoldKey.currentState?.openEndDrawer();
+                                  },
+                                  child: SwitchListTile(
+                                    activeTrackColor: AppColors.primary,
+                                    title: Text(
+                                      'Disponible en mode express',
+                                      style: AppTextStyle.greyHeading,
+                                    ),
+                                    value: m.disponibleEnModeExpress ?? false,
+                                    onChanged: null,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          InkWell(
+                            onTap: () {
+                              context.read<DrawerBloc>().add(
+                                OpenUpdatePaiementMethodeDrawer(
+                                  model: m,
+                                  attributeName: 'VariationsDuMoyenDePaiement',
+                                  currentValue: m.variationDuMoyenDePaiement,
+                                ),
+                              );
+                              _scaffoldKey.currentState?.openEndDrawer();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.white,
+                              ),
+                              child: CustomListTile(
+                                leading: null,
+                                trailing: null,
+                                title: Text(
+                                  'Variations du moyen de paiement',
+                                  style: AppTextStyle.greyHeading,
+                                ),
+                                trailingwidget: Text(
+                                  m.variationDuMoyenDePaiement!,
+                                  style: AppTextStyle.indingosubHeading,
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 16),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Column(
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      context.read<DrawerBloc>().add(
-                                        OpenUpdatePaiementMethodeDrawer(
-                                          model: m,
-                                          attributeName:
-                                              'CompterALaFinDuService',
-                                          currentValue:
-                                              m.compterAlaFinDuService,
-                                        ),
-                                      );
-                                      _scaffoldKey.currentState
-                                          ?.openEndDrawer();
-                                    },
-                                    child: SwitchListTile(
-                                      activeTrackColor: AppColors.primary,
-                                      title: Text(
-                                        'Compter à la fin du service',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      value: m.compterAlaFinDuService ?? false,
-                                      onChanged: null,
-                                    ),
-                                  ),
-                                  Divider(),
-                                  InkWell(
-                                    onTap: () {
-                                      context.read<DrawerBloc>().add(
-                                        OpenUpdatePaiementMethodeDrawer(
-                                          model: m,
-                                          attributeName:
-                                              'RenseignerLeFondDeCaisse',
-                                          currentValue:
-                                              m.rensignerleFondDeCaisee,
-                                        ),
-                                      );
-                                      _scaffoldKey.currentState
-                                          ?.openEndDrawer();
-                                    },
-                                    child: SwitchListTile(
-                                      activeTrackColor: AppColors.primary,
-                                      title: Text(
-                                        'Renseigner le fond de caisse',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      value: m.rensignerleFondDeCaisee ?? false,
-                                      onChanged: null,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            SizedBox(height: 16),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.white,
-                              ),
-                              child: Column(
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      context.read<DrawerBloc>().add(
-                                        OpenUpdatePaiementMethodeDrawer(
-                                          model: m,
-                                          attributeName:
-                                              'DisponibleDansLesSalles',
-                                          currentValue: m.typeDeSalleDisponible,
-                                        ),
-                                      );
-                                      _scaffoldKey.currentState
-                                          ?.openEndDrawer();
-                                    },
-                                    child: CustomListTile(
-                                      leading: null,
-                                      trailing: null,
-                                      title: Text(
-                                        'Disponible dans les salles',
-                                        style: AppTextStyle.greyHeading,
+                            child: Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    context.read<DrawerBloc>().add(
+                                      OpenUpdatePaiementMethodeDrawer(
+                                        model: m,
+                                        attributeName: 'CompterALaFinDuService',
+                                        currentValue: m.compterAlaFinDuService,
                                       ),
-                                      trailingwidget: Text(
-                                        m.typeDeSalleDisponible!,
-                                        style: AppTextStyle.indingosubHeading,
+                                    );
+                                    _scaffoldKey.currentState?.openEndDrawer();
+                                  },
+                                  child: SwitchListTile(
+                                    activeTrackColor: AppColors.primary,
+                                    title: Text(
+                                      'Compter à la fin du service',
+                                      style: AppTextStyle.greyHeading,
+                                    ),
+                                    value: m.compterAlaFinDuService ?? false,
+                                    onChanged: null,
+                                  ),
+                                ),
+                                Divider(),
+                                InkWell(
+                                  onTap: () {
+                                    context.read<DrawerBloc>().add(
+                                      OpenUpdatePaiementMethodeDrawer(
+                                        model: m,
+                                        attributeName:
+                                            'RenseignerLeFondDeCaisse',
+                                        currentValue: m.rensignerleFondDeCaisee,
                                       ),
+                                    );
+                                    _scaffoldKey.currentState?.openEndDrawer();
+                                  },
+                                  child: SwitchListTile(
+                                    activeTrackColor: AppColors.primary,
+                                    title: Text(
+                                      'Renseigner le fond de caisse',
+                                      style: AppTextStyle.greyHeading,
+                                    ),
+                                    value: m.rensignerleFondDeCaisee ?? false,
+                                    onChanged: null,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white,
+                            ),
+                            child: Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    context.read<DrawerBloc>().add(
+                                      OpenUpdatePaiementMethodeDrawer(
+                                        model: m,
+                                        attributeName:
+                                            'DisponibleDansLesSalles',
+                                        currentValue: m.typeDeSalleDisponible,
+                                      ),
+                                    );
+                                    _scaffoldKey.currentState?.openEndDrawer();
+                                  },
+                                  child: CustomListTile(
+                                    leading: null,
+                                    trailing: null,
+                                    title: Text(
+                                      'Disponible dans les salles',
+                                      style: AppTextStyle.greyHeading,
+                                    ),
+                                    trailingwidget: Text(
+                                      m.typeDeSalleDisponible!,
+                                      style: AppTextStyle.indingosubHeading,
                                     ),
                                   ),
+                                ),
 
-                                  Divider(),
-                                  InkWell(
-                                    onTap: () {
-                                      context.read<DrawerBloc>().add(
-                                        OpenUpdatePaiementMethodeDrawer(
-                                          model: m,
-                                          attributeName: 'actif',
-                                          currentValue: m.actif,
-                                        ),
-                                      );
-                                      _scaffoldKey.currentState
-                                          ?.openEndDrawer();
-                                    },
-                                    child: SwitchListTile(
-                                      activeTrackColor: AppColors.primary,
-                                      title: Text(
-                                        'Actif',
-                                        style: AppTextStyle.greyHeading,
+                                Divider(),
+                                InkWell(
+                                  onTap: () {
+                                    context.read<DrawerBloc>().add(
+                                      OpenUpdatePaiementMethodeDrawer(
+                                        model: m,
+                                        attributeName: 'actif',
+                                        currentValue: m.actif,
                                       ),
-                                      value: m.actif!,
-                                      onChanged: null,
+                                    );
+                                    _scaffoldKey.currentState?.openEndDrawer();
+                                  },
+                                  child: SwitchListTile(
+                                    activeTrackColor: AppColors.primary,
+                                    title: Text(
+                                      'Actif',
+                                      style: AppTextStyle.greyHeading,
                                     ),
+                                    value: m.actif!,
+                                    onChanged: null,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 16),
-                            ButtonSupprimer(onTap: () {}),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 16),
+                          ButtonSupprimer(onTap: () {}),
+                        ],
                       ),
-                    );
-                  }
-                },
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }

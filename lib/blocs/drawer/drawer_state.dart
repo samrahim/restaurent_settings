@@ -98,3 +98,17 @@ class DrawerUpdateCategorieDeModificateur extends DrawerState {
   @override
   List<Object?> get props => [modificateur, attributeName, currentValue];
 }
+
+class DrawerUpdateCategoriDePrix extends DrawerState {
+  final CategorieDePrixModel model;
+  final String attributeName;
+  final dynamic currentValue;
+
+  DrawerUpdateCategoriDePrix({
+    required this.model,
+    required this.attributeName,
+    required this.currentValue,
+  });
+  @override
+  List<Object?> get props => [model, attributeName, currentValue];
+}

@@ -13,8 +13,6 @@ class MoyenDePaiementProvider extends ChangeNotifier {
   }
 
   Future<void> getMoyensDePaiement() async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    //FIXME: call API
     _moyens = moyenPaiementList;
     _selected =
         (_moyens != null && _moyens!.isNotEmpty) ? _moyens!.first : null;

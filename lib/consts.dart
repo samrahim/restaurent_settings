@@ -218,3 +218,13 @@ const List<String> modeEncaissementList = [
 ];
 
 final List<String> optiontypeDeSelection = ['Un seul choix', 'Multi choix'];
+
+const List<String> joursSemaine = [
+  'Lundi',
+  'Mardi',
+  'Mercredi',
+  'Jeudi',
+  'Vendredi',
+  'Samedi',
+  'Dimanche',
+];
