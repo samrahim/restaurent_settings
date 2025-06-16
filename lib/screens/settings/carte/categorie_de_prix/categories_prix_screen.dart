@@ -5,7 +5,7 @@ import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
 import 'package:restaurent/providers/categorie_de_prix_provider.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_prix/catgorie_detaits.dart';
-import 'package:restaurent/screens/widgets/widgets.dart';
+import 'package:restaurent/widgets/widgets.dart';
 import 'package:restaurent/consts.dart';
 
 class CategoriesPrixScreen extends StatelessWidget {

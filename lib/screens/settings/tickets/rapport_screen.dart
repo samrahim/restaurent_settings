@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/rapport_model.dart';
-import 'package:restaurent/screens/widgets/widgets.dart';
+import 'package:restaurent/widgets/widgets.dart';
 
 class RapportScreen extends StatefulWidget {
   const RapportScreen({super.key});

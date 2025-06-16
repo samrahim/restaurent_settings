@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pattern_lock/pattern_lock.dart';
 import 'package:restaurent/consts.dart';
-import 'package:restaurent/screens/widgets/create_button.dart';
-import 'package:restaurent/screens/widgets/show_picket.dart';
+import 'package:restaurent/widgets/create_button.dart';
+import 'package:restaurent/widgets/show_picket.dart';
 
 class UpdateAttributeDrawer extends StatefulWidget {
   final String label;

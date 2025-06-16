@@ -6,7 +6,7 @@ import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/moyen_de_paiement_model.dart';
 import 'package:restaurent/providers/moyen_de_paiement_provider.dart';
 
-import '../../widgets/widgets.dart';
+import '../../../widgets/widgets.dart';
 
 class MoyenPaiementScreen extends StatelessWidget {
   const MoyenPaiementScreen({super.key});

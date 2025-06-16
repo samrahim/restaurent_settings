@@ -7,7 +7,7 @@ import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/taux_tva_model.dart';
 import 'package:restaurent/providers/taux_tva_provider.dart';
-import 'package:restaurent/screens/widgets/widgets.dart';
+import 'package:restaurent/widgets/widgets.dart';
 
 class TauxTVAScreen extends StatelessWidget {
   const TauxTVAScreen({super.key});

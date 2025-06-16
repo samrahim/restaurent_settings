@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:restaurent/screens/widgets/custom_list_tile.dart';
+import 'package:restaurent/widgets/custom_list_tile.dart';
 
 class EnseigneScreen extends StatelessWidget {
   const EnseigneScreen({super.key});
