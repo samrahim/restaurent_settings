@@ -54,20 +54,35 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
 
           children: [
-            Text(
-              'Modifier votre ${widget.label}',
-              style: AppTextStyle.greyHeading,
-            ),
+            Text('Modifier ${widget.label}', style: AppTextStyle.greyHeading),
             const SizedBox(height: 16),
 
             if (widget.fieldType == FieldType.boolean)
-              SwitchListTile(
-                title: const Text('Activer ?'),
-                value: _boolValue,
-                onChanged: (v) => setState(() => _boolValue = v),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.greyaccent!, width: .9),
+                ),
+
+                child: SwitchListTile(
+                  activeColor: AppColors.primary,
+
+                  title: Text('Activer ?', style: AppTextStyle.greysubHeading),
+                  value: _boolValue,
+                  onChanged: (v) => setState(() => _boolValue = v),
+                ),
               )
             else if (widget.fieldType == FieldType.dropdown)
               DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: AppColors.greyaccent!),
+                  ),
+                  labelText: 'Gestion du trop-perçu',
+                ),
+
                 value: widget.initialValue,
                 items:
                     widget.options!
@@ -128,8 +143,26 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                   ],
                 ),
               )
-            else // FieldType.string
-              TextFormField(controller: _controller),
+            else
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 4.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.greyaccent!, width: .9),
+                ),
+
+                child: TextFormField(
+                  controller: _controller,
+                  decoration: InputDecoration(
+                    labelText: widget.label,
+                    labelStyle: AppTextStyle.greyHeading,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
 
             const Spacer(),
             CreateButton(
