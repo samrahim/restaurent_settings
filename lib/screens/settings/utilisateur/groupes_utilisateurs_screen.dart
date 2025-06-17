@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/utilisateur_model.dart';
-import 'package:restaurent/providers/utlisateur_provider.dart';
+import 'package:restaurent/providers/utilisateur_provider.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
 class GroupesUtilisateursScreen extends StatelessWidget {
@@ -12,11 +12,8 @@ class GroupesUtilisateursScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => UtilisateurProvider()),
-        BlocProvider(create: (context) => DrawerBloc()),
-      ],
+    return BlocProvider(
+      create: (context) => DrawerBloc(),
       child: GroupesUtilisateursScreenView(),
     );
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/providers/providers.dart';
 
 import '../blocs/settings/settings_bloc.dart';
 
@@ -18,10 +20,19 @@ class ReglageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create:
-          (context) =>
-              SettingsBloc(initialSettings: routes)..add(const LoadSettings()),
+    return MultiProvider(
+      providers: [
+        BlocProvider(
+          create:
+              (_) => SettingsBloc(initialSettings: routes)..add(LoadSettings()),
+        ),
+        ChangeNotifierProvider(create: (_) => CategorieDePrixProvider()),
+        ChangeNotifierProvider(create: (_) => CategorieModificateurProvider()),
+        ChangeNotifierProvider(create: (_) => MoyenDePaiementProvider()),
+        ChangeNotifierProvider(create: (_) => TauxEtTvaProvider()),
+        ChangeNotifierProvider(create: (_) => UtilisateurProvider()),
+      ],
+
       child: const ReglageView(),
     );
   }
@@ -40,11 +51,9 @@ class _ReglageViewState extends State<ReglageView>
   List<TabController>? _subTabControllers;
 
   void _initializeControllers(Map<String, Map<String, dynamic>> settings) {
-    // Dispose existing controllers if they exist
     _mainTabController?.dispose();
     _subTabControllers?.forEach((controller) => controller.dispose());
 
-    // Create new controllers
     _mainTabController = TabController(length: settings.length, vsync: this);
 
     _subTabControllers = List.generate(

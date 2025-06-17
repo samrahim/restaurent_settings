@@ -13,11 +13,8 @@ class MoyenPaiementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => MoyenDePaiementProvider()),
-        BlocProvider(create: (context) => DrawerBloc()),
-      ],
+    return BlocProvider(
+      create: (context) => DrawerBloc(),
       child: MoyenPaiementView(),
     );
   }

@@ -37,6 +37,7 @@ class CategorieDePrixProvider extends ChangeNotifier {
 
   void loadAll() {
     //FIXME: call API
+    print('we reload all');
     _categories = categoriesPrixList;
     _selected = null;
     notifyListeners();

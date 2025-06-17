@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurent/models/utilisateur_model.dart';
 
-// Nouveau Provider pour remplacer UtilisateurBloc
 class UtilisateurProvider with ChangeNotifier {
   List<UtilisateurModel>? _utilisateurs;
   UtilisateurModel? _selectedUtilisateur;
@@ -12,7 +11,6 @@ class UtilisateurProvider with ChangeNotifier {
     loadUtilisateurs();
   }
   void loadUtilisateurs() {
-    //FIXME: call API
     _utilisateurs = utilisateurList;
     _selectedUtilisateur =
         (_utilisateurs != null && _utilisateurs!.isNotEmpty)

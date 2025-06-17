@@ -14,11 +14,9 @@ class TauxTVAScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => TauxEtTvaProvider(tauxTvaList)),
-        BlocProvider(create: (_) => DrawerBloc()),
-      ],
+    return BlocProvider(
+      create: (_) => DrawerBloc(),
+
       child: const TauxTVAScreenView(),
     );
   }

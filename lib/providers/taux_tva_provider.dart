@@ -5,9 +5,13 @@ class TauxEtTvaProvider extends ChangeNotifier {
   List<TauxTvaModel> _tauxTvas = [];
   TauxTvaModel? _selectedTauxTva;
 
-  TauxEtTvaProvider(List<TauxTvaModel> initialList) {
-    _tauxTvas = initialList;
-    _selectedTauxTva = initialList.isNotEmpty ? initialList.first : null;
+  TauxEtTvaProvider() {
+    loadall();
+  }
+
+  void loadall() {
+    _tauxTvas = tauxTvaList;
+    _selectedTauxTva = tauxTvaList.isNotEmpty ? tauxTvaList.first : null;
   }
 
   List<TauxTvaModel> get tauxTvas => _tauxTvas;

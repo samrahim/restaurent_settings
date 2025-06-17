@@ -13,11 +13,8 @@ class CategoriesPrixScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        BlocProvider(create: (context) => DrawerBloc()),
-        ChangeNotifierProvider(create: (_) => CategorieDePrixProvider()),
-      ],
+    return BlocProvider(
+      create: (context) => DrawerBloc(),
       child: const CategoriesPrixScreenView(),
     );
   }
