@@ -9,27 +9,14 @@ import 'package:restaurent/models/taux_tva_model.dart';
 import 'package:restaurent/providers/taux_tva_provider.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
-class TauxTVAScreen extends StatelessWidget {
+class TauxTVAScreen extends StatefulWidget {
   const TauxTVAScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => DrawerBloc(),
-
-      child: const TauxTVAScreenView(),
-    );
-  }
+  State<TauxTVAScreen> createState() => _TauxTVAScreenState();
 }
 
-class TauxTVAScreenView extends StatefulWidget {
-  const TauxTVAScreenView({super.key});
-
-  @override
-  State<TauxTVAScreenView> createState() => _TauxTVAScreenViewState();
-}
-
-class _TauxTVAScreenViewState extends State<TauxTVAScreenView> {
+class _TauxTVAScreenState extends State<TauxTVAScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final tauxTvaController = TextEditingController();

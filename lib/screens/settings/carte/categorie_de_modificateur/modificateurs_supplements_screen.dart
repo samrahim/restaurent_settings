@@ -8,29 +8,16 @@ import 'package:restaurent/providers/categorie_de_modificateur.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificteur_details.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
-class ModificateursSupplementsScreen extends StatelessWidget {
+class ModificateursSupplementsScreen extends StatefulWidget {
   const ModificateursSupplementsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => DrawerBloc(),
-
-      child: const ModificateursSupplementsScreenView(),
-    );
-  }
+  State<ModificateursSupplementsScreen> createState() =>
+      _ModificateursSupplementsScreenState();
 }
 
-class ModificateursSupplementsScreenView extends StatefulWidget {
-  const ModificateursSupplementsScreenView({super.key});
-
-  @override
-  State<ModificateursSupplementsScreenView> createState() =>
-      _ModificateursSupplementsScreenViewState();
-}
-
-class _ModificateursSupplementsScreenViewState
-    extends State<ModificateursSupplementsScreenView> {
+class _ModificateursSupplementsScreenState
+    extends State<ModificateursSupplementsScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController name = TextEditingController();
 

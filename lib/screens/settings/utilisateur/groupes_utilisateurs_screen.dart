@@ -7,28 +7,15 @@ import 'package:restaurent/models/utilisateur_model.dart';
 import 'package:restaurent/providers/utilisateur_provider.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
-class GroupesUtilisateursScreen extends StatelessWidget {
+class GroupesUtilisateursScreen extends StatefulWidget {
   const GroupesUtilisateursScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => DrawerBloc(),
-      child: GroupesUtilisateursScreenView(),
-    );
-  }
+  State<GroupesUtilisateursScreen> createState() =>
+      _GroupesUtilisateursScreenState();
 }
 
-class GroupesUtilisateursScreenView extends StatefulWidget {
-  const GroupesUtilisateursScreenView({super.key});
-
-  @override
-  State<GroupesUtilisateursScreenView> createState() =>
-      _GroupesUtilisateursScreenViewState();
-}
-
-class _GroupesUtilisateursScreenViewState
-    extends State<GroupesUtilisateursScreenView> {
+class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController nom = TextEditingController();
   TextEditingController prenom = TextEditingController();

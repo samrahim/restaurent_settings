@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/providers/providers.dart';
 
@@ -22,6 +23,7 @@ class ReglageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        BlocProvider(create: (_) => DrawerBloc()),
         BlocProvider(
           create:
               (_) => SettingsBloc(initialSettings: routes)..add(LoadSettings()),

@@ -8,26 +8,14 @@ import 'package:restaurent/providers/moyen_de_paiement_provider.dart';
 
 import '../../../widgets/widgets.dart';
 
-class MoyenPaiementScreen extends StatelessWidget {
+class MoyenPaiementScreen extends StatefulWidget {
   const MoyenPaiementScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => DrawerBloc(),
-      child: MoyenPaiementView(),
-    );
-  }
+  State<MoyenPaiementScreen> createState() => _MoyenPaiementScreenState();
 }
 
-class MoyenPaiementView extends StatefulWidget {
-  MoyenPaiementView({super.key});
-
-  @override
-  State<MoyenPaiementView> createState() => _MoyenPaiementViewState();
-}
-
-class _MoyenPaiementViewState extends State<MoyenPaiementView> {
+class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
   final MoyenDePaiementModel _emptyModel = MoyenDePaiementModel(
     id: null,
     nom: '',

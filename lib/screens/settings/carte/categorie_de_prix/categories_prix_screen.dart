@@ -8,27 +8,14 @@ import 'package:restaurent/screens/settings/carte/categorie_de_prix/catgorie_det
 import 'package:restaurent/widgets/widgets.dart';
 import 'package:restaurent/consts.dart';
 
-class CategoriesPrixScreen extends StatelessWidget {
+class CategoriesPrixScreen extends StatefulWidget {
   const CategoriesPrixScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => DrawerBloc(),
-      child: const CategoriesPrixScreenView(),
-    );
-  }
+  State<CategoriesPrixScreen> createState() => _CategoriesPrixScreenState();
 }
 
-class CategoriesPrixScreenView extends StatefulWidget {
-  const CategoriesPrixScreenView({super.key});
-
-  @override
-  State<CategoriesPrixScreenView> createState() =>
-      _CategoriesPrixScreenViewState();
-}
-
-class _CategoriesPrixScreenViewState extends State<CategoriesPrixScreenView> {
+class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   CategorieDePrixModel model = CategorieDePrixModel(
