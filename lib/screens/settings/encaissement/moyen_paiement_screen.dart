@@ -921,7 +921,11 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          ButtonSupprimer(onTap: () {}),
+                          ButtonSupprimer(
+                            onTap: () {},
+                            text: 'Supprimer',
+                            style: null,
+                          ),
                         ],
                       ),
                     ),

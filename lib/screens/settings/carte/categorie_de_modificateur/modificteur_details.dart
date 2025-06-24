@@ -282,6 +282,8 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                 const SizedBox(height: 24),
 
                 ButtonSupprimer(
+                  style: null,
+                  text: 'Supprimer',
                   onTap: () {
                     // TODO: Implémenter la suppression
                   },

@@ -403,7 +403,11 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
                                     ),
                                     SizedBox(height: 16),
 
-                                    ButtonSupprimer(onTap: () {}),
+                                    ButtonSupprimer(
+                                      style: null,
+                                      onTap: () {},
+                                      text: 'Supprimer',
+                                    ),
                                   ],
                                 ),
                               ),

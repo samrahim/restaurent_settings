@@ -379,9 +379,9 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                 ),
 
                                 ButtonSupprimer(
-                                  onTap: () {
-                                    // FIXME: fixme
-                                  },
+                                  style: null,
+                                  onTap: () {},
+                                  text: 'Supprimer',
                                 ),
                                 const SizedBox(height: 17),
                               ],
