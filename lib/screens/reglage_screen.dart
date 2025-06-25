@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
@@ -23,16 +24,48 @@ class ReglageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<http.Client>(create: (_) => http.Client()),
         BlocProvider(create: (_) => DrawerBloc()),
         BlocProvider(
           create:
               (_) => SettingsBloc(initialSettings: routes)..add(LoadSettings()),
         ),
-        ChangeNotifierProvider(create: (_) => CategorieDePrixProvider()),
-        ChangeNotifierProvider(create: (_) => CategorieModificateurProvider()),
-        ChangeNotifierProvider(create: (_) => MoyenDePaiementProvider()),
-        ChangeNotifierProvider(create: (_) => TauxEtTvaProvider()),
-        ChangeNotifierProvider(create: (_) => UtilisateurProvider()),
+
+        ChangeNotifierProxyProvider<http.Client, CategorieDePrixProvider>(
+          create:
+              (context) =>
+                  CategorieDePrixProvider(client: context.read<http.Client>()),
+          update:
+              (_, client, previous) => CategorieDePrixProvider(client: client),
+        ),
+        ChangeNotifierProxyProvider<http.Client, CategorieModificateurProvider>(
+          create:
+              (context) => CategorieModificateurProvider(
+                client: context.read<http.Client>(),
+              ),
+          update:
+              (_, client, previous) =>
+                  CategorieModificateurProvider(client: client),
+        ),
+        ChangeNotifierProxyProvider<http.Client, MoyenDePaiementProvider>(
+          create:
+              (context) =>
+                  MoyenDePaiementProvider(client: context.read<http.Client>()),
+          update:
+              (_, client, previous) => MoyenDePaiementProvider(client: client),
+        ),
+        ChangeNotifierProxyProvider<http.Client, TauxEtTvaProvider>(
+          create:
+              (context) =>
+                  TauxEtTvaProvider(client: context.read<http.Client>()),
+          update: (_, client, previous) => TauxEtTvaProvider(client: client),
+        ),
+        ChangeNotifierProxyProvider<http.Client, UtilisateurProvider>(
+          create:
+              (context) =>
+                  UtilisateurProvider(client: context.read<http.Client>()),
+          update: (_, client, previous) => UtilisateurProvider(client: client),
+        ),
       ],
 
       child: const ReglageView(),

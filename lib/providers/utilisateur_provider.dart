@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:restaurent/models/utilisateur_model.dart';
 
 class UtilisateurProvider with ChangeNotifier {
+  final http.Client client;
   List<UtilisateurModel>? _utilisateurs;
   UtilisateurModel? _selectedUtilisateur;
 
   List<UtilisateurModel>? get utilisateurs => _utilisateurs;
   UtilisateurModel? get selectedUtilisateur => _selectedUtilisateur;
-  UtilisateurProvider() {
+  UtilisateurProvider({required this.client}) {
     loadUtilisateurs();
   }
   void loadUtilisateurs() {

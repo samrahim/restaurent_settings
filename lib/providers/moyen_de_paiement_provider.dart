@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:restaurent/models/moyen_de_paiement_model.dart';
 
 class MoyenDePaiementProvider extends ChangeNotifier {
+  final http.Client client;
   List<MoyenDePaiementModel>? _moyens = [];
   MoyenDePaiementModel? _selected;
 
   List<MoyenDePaiementModel> get moyens => _moyens ?? [];
   MoyenDePaiementModel? get selected => _selected;
 
-  MoyenDePaiementProvider() {
+  MoyenDePaiementProvider({required this.client}) {
     getMoyensDePaiement();
   }
 

@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:restaurent/models/taux_tva_model.dart';
 
 class TauxEtTvaProvider extends ChangeNotifier {
+  final http.Client client;
   List<TauxTvaModel> _tauxTvas = [];
   TauxTvaModel? _selectedTauxTva;
 
-  TauxEtTvaProvider() {
+  TauxEtTvaProvider({required this.client}) {
     loadall();
   }
 

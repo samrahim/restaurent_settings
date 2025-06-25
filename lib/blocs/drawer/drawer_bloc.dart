@@ -65,8 +65,6 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
         );
       }
       if (event is OpenUpdateCategrieDePrixAttributs) {
-        print('event.model.nom ${event.model.nom}');
-        print('event.currentValue ${event.currentValue}');
         emit(
           DrawerUpdateCategoriDePrix(
             model: event.model,

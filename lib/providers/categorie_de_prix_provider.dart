@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:restaurent/models/categorie_de_prix_model.dart';
 
 class CategorieDePrixProvider extends ChangeNotifier {
+  final http.Client client;
   List<CategorieDePrixModel>? _categories = [];
   CategorieDePrixModel? _selected;
 
   List<CategorieDePrixModel> get categories => _categories ?? [];
   CategorieDePrixModel? get selected => _selected;
-  CategorieDePrixProvider() {
+  CategorieDePrixProvider({required this.client}) {
     loadAll();
   }
 
