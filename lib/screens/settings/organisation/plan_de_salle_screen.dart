@@ -9,31 +9,31 @@ class PlanDeSalleScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Text(
-            //   'Plan de Salle',
-            //   style: Theme.of(context).textTheme.headlineMedium,
-            // ),
-            // const SizedBox(height: 16),
-            // _buildToolbar(),
-            // const SizedBox(height: 16),
-            // Expanded(
-            //   child: Stack(
-            //     children: [
-            //       _buildFloorPlan(),
-            //       Positioned(right: 16, top: 16, child: _buildToolsPanel()),
-            //     ],
-            //   ),
-            // ),
+            Text(
+              'Plan de Salle',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            const SizedBox(height: 16),
+            _buildToolbar(),
+            const SizedBox(height: 16),
+            Expanded(
+              child: Stack(
+                children: [
+                  _buildFloorPlan(),
+                  Positioned(right: 16, top: 16, child: _buildToolsPanel()),
+                ],
+              ),
+            ),
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     // Save layout
-      //   },
-      //   child: const Icon(Icons.save),
-      //   tooltip: 'Enregistrer le plan',
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Save layout
+        },
+        child: const Icon(Icons.save),
+        tooltip: 'Enregistrer le plan',
+      ),
     );
   }
 

@@ -107,7 +107,7 @@ List<MoyenDePaiementModel> moyenPaiementList = [
     variationDuMoyenDePaiement: 'Aucune',
     compterAlaFinDuService: true,
     rensignerleFondDeCaisee: true,
-    sallesIDS: [0],
+    sallesIDS: [1],
     actif: true,
   ),
   MoyenDePaiementModel(

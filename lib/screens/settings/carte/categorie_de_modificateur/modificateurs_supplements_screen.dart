@@ -102,20 +102,19 @@ class _ModificateursSupplementsScreenState
                                   selected: selected,
                                   selectedColor: AppColors.indingo200,
                                   onSelected: (sel) {
-                                    // context.read<DrawerBloc>().add(
-                                    //   Update(
-                                    //         modificateur: createModel,
-                                    //         attributeName: 'salle',
-                                    //         currentValue: createModel.sallesIDS,
-                                    //       )
-                                    //       as DrawerEvent,
-                                    // );
-                                    // final salleIds = List<int>.from(
-                                    //   createModel.sallesIDS!,
-                                    // );
-                                    // sel
-                                    //     ? salleIds.add(id)
-                                    //     : salleIds.remove(id);
+                                    final updated = createModel.copyWith(
+                                      sallesIDS:
+                                          sel
+                                              ? [...createModel.sallesIDS!, id]
+                                              : createModel.sallesIDS!
+                                                  .where((e) => e != id)
+                                                  .toList(),
+                                    );
+                                    context.read<DrawerBloc>().add(
+                                      OpenCreateCategorieDeModificateur(
+                                        modificateur: updated,
+                                      ),
+                                    );
                                   },
                                 );
                               },
