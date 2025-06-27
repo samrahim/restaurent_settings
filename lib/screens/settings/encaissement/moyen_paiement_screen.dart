@@ -27,7 +27,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
     variationDuMoyenDePaiement: moyenDePaiementList.first,
     compterAlaFinDuService: true,
     rensignerleFondDeCaisee: true,
-    typeDeSalleDisponible: salles.first,
+    sallesIDS: [],
     actif: true,
   );
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -326,7 +326,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                           ),
                         ),
                         child: DropdownButtonFormField<String>(
-                          value: m.typeDeSalleDisponible,
+                          value: m.sallesIDS.toString(),
 
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -341,16 +341,14 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                               salles
                                   .map(
                                     (v) => DropdownMenuItem(
-                                      value: v,
-                                      child: Text(v),
+                                      value: v['nom'].toString(),
+                                      child: Text(v['nom'].toString()),
                                     ),
                                   )
                                   .toList(),
                           onChanged: (v) {
                             if (v != null) {
-                              final updated = m.copyWith(
-                                typeDeSalleDisponible: v,
-                              );
+                              final updated = m.copyWith(sallesIDS: []);
                               context.read<DrawerBloc>().add(
                                 OpenCreatePaiementMethodeDrawer(model: updated),
                               );
@@ -540,17 +538,15 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
 
               case 'DisponibleDansLesSalles':
                 return UpdateAttributeDrawer(
-                  fieldType: FieldType.dropdown,
+                  fieldType: FieldType.choice,
                   options: salles,
                   label: 'Disponible dans les salles',
-                  initialValue: (state.currentValue) as String,
+                  initialValue: (state.currentValue) as List<int>,
                   onSaved: (v) {
                     Provider.of<MoyenDePaiementProvider>(
                       context,
                       listen: false,
-                    ).update(
-                      updated: state.model.copyWith(typeDeSalleDisponible: v),
-                    );
+                    ).update(updated: state.model.copyWith(sallesIDS: v));
                   },
                 );
 
@@ -876,22 +872,31 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                         model: m,
                                         attributeName:
                                             'DisponibleDansLesSalles',
-                                        currentValue: m.typeDeSalleDisponible,
+                                        currentValue: m.sallesIDS,
                                       ),
                                     );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
                                   child: CustomListTile(
                                     leading: null,
-                                    trailing: null,
+                                    trailing:
+                                        m.sallesIDS != null
+                                            ? m.sallesIDS!
+                                                .map(
+                                                  (id) =>
+                                                      salles.firstWhere(
+                                                            (s) =>
+                                                                s['id'] == id,
+                                                          )['nom']
+                                                          as String,
+                                                )
+                                                .join(', ')
+                                            : 'Aucune salle sélectionnée',
                                     title: Text(
                                       'Disponible dans les salles',
                                       style: AppTextStyle.greyHeading,
                                     ),
-                                    trailingwidget: Text(
-                                      m.typeDeSalleDisponible!,
-                                      style: AppTextStyle.indingosubHeading,
-                                    ),
+                                    trailingwidget: null,
                                   ),
                                 ),
 

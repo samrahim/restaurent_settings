@@ -303,17 +303,36 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                         trailing: null,
                                       ),
                                       const Divider(),
-                                      CustomListTile(
-                                        title: null,
-                                        trailing: null,
-                                        leading:
-                                            'Jours d\'activite de la categorie de prix',
-                                        trailingwidget: Text(
-                                          widget
-                                              .categorieDePrixModel
-                                              .joursDactivite!
-                                              .join(", "),
-                                          style: AppTextStyle.indingosubHeading,
+                                      InkWell(
+                                        onTap: () {
+                                          context.read<DrawerBloc>().add(
+                                            OpenUpdateCategrieDePrixAttributs(
+                                              model:
+                                                  widget.categorieDePrixModel,
+                                              attributeName:
+                                                  'jours d\'activite',
+                                              currentValue:
+                                                  widget
+                                                      .categorieDePrixModel
+                                                      .joursDactivite,
+                                            ),
+                                          );
+                                          widget.scaffoldKey.currentState
+                                              ?.openEndDrawer();
+                                        },
+                                        child: CustomListTile(
+                                          title: null,
+                                          trailing: null,
+                                          leading:
+                                              'Jours d\'activite de la categorie de prix',
+                                          trailingwidget: Text(
+                                            widget
+                                                .categorieDePrixModel
+                                                .joursDactivite!
+                                                .join(", "),
+                                            style:
+                                                AppTextStyle.indingosubHeading,
+                                          ),
                                         ),
                                       ),
 
@@ -328,7 +347,7 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                               currentValue:
                                                   widget
                                                       .categorieDePrixModel
-                                                      .salle,
+                                                      .salleIDS,
                                             ),
                                           );
                                           widget.scaffoldKey.currentState
@@ -340,9 +359,27 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                           leading:
                                               'Salles Consernees par la cetegorie de prix',
                                           trailing:
-                                              widget.categorieDePrixModel.salle,
+                                              widget
+                                                          .categorieDePrixModel
+                                                          .salleIDS !=
+                                                      null
+                                                  ? widget
+                                                      .categorieDePrixModel
+                                                      .salleIDS!
+                                                      .map(
+                                                        (id) =>
+                                                            salles.firstWhere(
+                                                                  (s) =>
+                                                                      s['id'] ==
+                                                                      id,
+                                                                )['nom']
+                                                                as String,
+                                                      )
+                                                      .join(', ')
+                                                  : 'Aucune salle sélectionnée',
                                         ),
                                       ),
+
                                       if (!widget
                                           .categorieDePrixModel
                                           .actifDansTouteLaJournee!)

@@ -27,7 +27,7 @@ class _ModificateursSupplementsScreenState
     icon: null,
     nom: '',
     obligatoire: true,
-    typeDeSalleDisponible: salles[0],
+    sallesIDS: [],
     typeDeSelection: optiontypeDeSelection[0],
   );
 
@@ -75,34 +75,53 @@ class _ModificateursSupplementsScreenState
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Colors.grey),
                       ),
-                      child: ListTile(
-                        title: const Text('Disponible dans les salles'),
-                        trailing: DropdownButton<String>(
-                          underline: const SizedBox(),
-                          value: createModel.typeDeSalleDisponible,
-                          style: AppTextStyle.indingosubHeading,
-                          items:
-                              salles
-                                  .map(
-                                    (v) => DropdownMenuItem(
-                                      value: v,
-                                      child: Text(v),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged: (v) {
-                            if (v != null) {
-                              final updated = createModel.copyWith(
-                                typeDeSalleDisponible: v,
-                              );
-                              context.read<DrawerBloc>().add(
-                                OpenCreateCategorieDeModificateur(
-                                  modificateur: updated,
-                                ),
-                              );
-                            }
-                          },
-                        ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Disponible dans les salles'),
+                          const SizedBox(height: 8),
+                          SizedBox(
+                            height: 40,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: salles.length,
+                              separatorBuilder:
+                                  (_, __) => const SizedBox(width: 8),
+                              itemBuilder: (_, i) {
+                                final salle = salles[i];
+                                final id = salle['id'] as int;
+                                final nom = salle['nom'] as String;
+                                final selected = createModel.sallesIDS!
+                                    .contains(id);
+                                return ChoiceChip(
+                                  label: Text(nom),
+                                  selected: selected,
+                                  selectedColor: AppColors.indingo200,
+                                  onSelected: (sel) {
+                                    // context.read<DrawerBloc>().add(
+                                    //   Update(
+                                    //         modificateur: createModel,
+                                    //         attributeName: 'salle',
+                                    //         currentValue: createModel.sallesIDS,
+                                    //       )
+                                    //       as DrawerEvent,
+                                    // );
+                                    // final salleIds = List<int>.from(
+                                    //   createModel.sallesIDS!,
+                                    // );
+                                    // sel
+                                    //     ? salleIds.add(id)
+                                    //     : salleIds.remove(id);
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -236,16 +255,14 @@ class _ModificateursSupplementsScreenState
                 );
               case 'salle':
                 return UpdateAttributeDrawer(
-                  fieldType: FieldType.dropdown,
+                  fieldType: FieldType.choice,
                   label: 'Salle',
                   options: salles,
-                  initialValue: state.modificateur.typeDeSalleDisponible!,
+                  initialValue: state.modificateur.sallesIDS,
                   onSaved: (v) {
                     final provider =
                         context.read<CategorieModificateurProvider>();
-                    provider.update(
-                      state.modificateur.copyWith(typeDeSalleDisponible: v),
-                    );
+                    provider.update(state.modificateur.copyWith(sallesIDS: v));
                   },
                 );
               case 'couleur':

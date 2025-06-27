@@ -8,7 +8,7 @@ class UpdateAttributeDrawer extends StatefulWidget {
   final String label;
   final dynamic initialValue;
   final FieldType fieldType;
-  final List<String>? options;
+  final List<dynamic>? options;
   final void Function(dynamic) onSaved;
 
   const UpdateAttributeDrawer({
@@ -28,6 +28,7 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
   late TextEditingController _controller;
   late bool _boolValue;
   late Color _selectedColor;
+  late List<dynamic> _selectedChoices;
 
   @override
   void initState() {
@@ -40,6 +41,24 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
         widget.initialValue is Color
             ? widget.initialValue
             : Colors.blue; // Default color
+
+    if (widget.fieldType == FieldType.choice) {
+      if (widget.options != null &&
+          widget.options!.isNotEmpty &&
+          widget.options!.first is Map) {
+        // salles: list of ids
+        _selectedChoices =
+            widget.initialValue != null
+                ? List<int>.from(widget.initialValue)
+                : <int>[];
+      } else {
+        // string options (e.g. jours)
+        _selectedChoices =
+            widget.initialValue != null
+                ? List<String>.from(widget.initialValue)
+                : <String>[];
+      }
+    }
   }
 
   List<int> _pattern = [];
@@ -86,7 +105,12 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                 value: widget.initialValue,
                 items:
                     widget.options!
-                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                        .map(
+                          (e) => DropdownMenuItem<String>(
+                            value: e.toString(),
+                            child: Text(e.toString()),
+                          ),
+                        )
                         .toList(),
                 onChanged: (val) => _controller.text = val!,
               )
@@ -143,6 +167,54 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                   ],
                 ),
               )
+            else if (widget.fieldType == FieldType.choice)
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Wrap(
+                  spacing: 8,
+                  children:
+                      widget.options!.map((option) {
+                        if (option is Map) {
+                          final int id = option['id'];
+                          final String label = option['nom'];
+                          final bool isSelected = _selectedChoices.contains(id);
+                          return ChoiceChip(
+                            label: Text(label),
+                            selected: isSelected,
+                            selectedColor: AppColors.indingo200,
+                            onSelected: (selected) {
+                              setState(() {
+                                if (selected) {
+                                  _selectedChoices.add(id);
+                                } else {
+                                  _selectedChoices.remove(id);
+                                }
+                              });
+                            },
+                          );
+                        } else {
+                          final String value = option.toString();
+                          final bool isSelected = _selectedChoices.contains(
+                            value,
+                          );
+                          return ChoiceChip(
+                            label: Text(value),
+                            selected: isSelected,
+                            selectedColor: AppColors.indingo200,
+                            onSelected: (selected) {
+                              setState(() {
+                                if (selected) {
+                                  _selectedChoices.add(value);
+                                } else {
+                                  _selectedChoices.remove(value);
+                                }
+                              });
+                            },
+                          );
+                        }
+                      }).toList(),
+                ),
+              )
             else
               Container(
                 margin: EdgeInsets.symmetric(vertical: 4.0),
@@ -180,7 +252,9 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                     break;
                   case FieldType.pattern:
                     widget.onSaved(_pattern.join(''));
-
+                    break;
+                  case FieldType.choice:
+                    widget.onSaved(_selectedChoices);
                     break;
                 }
                 Navigator.of(context).pop();

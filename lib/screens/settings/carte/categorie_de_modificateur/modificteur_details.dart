@@ -174,8 +174,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                             OpenUpdateCategorieDeModificateur(
                               modificateur: widget.modificateur,
                               attributeName: 'salle',
-                              currentValue:
-                                  widget.modificateur.typeDeSalleDisponible,
+                              currentValue: widget.modificateur.sallesIDS,
                             ),
                           );
                           widget.scaffoldKey.currentState!.openEndDrawer();
@@ -186,7 +185,18 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                             style: AppTextStyle.greyHeading,
                           ),
                           leading: null,
-                          trailing: widget.modificateur.typeDeSalleDisponible!,
+                          trailing:
+                              widget.modificateur.sallesIDS != null
+                                  ? widget.modificateur.sallesIDS!
+                                      .map(
+                                        (id) =>
+                                            salles.firstWhere(
+                                                  (s) => s['id'] == id,
+                                                )['nom']
+                                                as String,
+                                      )
+                                      .join(', ')
+                                  : 'Aucune salle sélectionnée',
                           trailingwidget: null,
                         ),
                       ),

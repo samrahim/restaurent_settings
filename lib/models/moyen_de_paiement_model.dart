@@ -12,7 +12,7 @@ class MoyenDePaiementModel extends Equatable {
   final String? variationDuMoyenDePaiement;
   final bool? compterAlaFinDuService;
   final bool? rensignerleFondDeCaisee;
-  final String? typeDeSalleDisponible;
+  final List<int>? sallesIDS;
   final bool? actif;
 
   const MoyenDePaiementModel({
@@ -26,7 +26,7 @@ class MoyenDePaiementModel extends Equatable {
     required this.variationDuMoyenDePaiement,
     required this.compterAlaFinDuService,
     required this.rensignerleFondDeCaisee,
-    required this.typeDeSalleDisponible,
+    required this.sallesIDS,
     required this.actif,
   });
 
@@ -42,7 +42,7 @@ class MoyenDePaiementModel extends Equatable {
     variationDuMoyenDePaiement,
     compterAlaFinDuService,
     rensignerleFondDeCaisee,
-    typeDeSalleDisponible,
+    sallesIDS,
     actif,
   ];
   MoyenDePaiementModel copyWith({
@@ -56,7 +56,7 @@ class MoyenDePaiementModel extends Equatable {
     String? variationDuMoyenDePaiement,
     bool? compterAlaFinDuService,
     bool? rensignerleFondDeCaisee,
-    String? typeDeSalleDisponible,
+    List<int>? sallesIDS,
     bool? actif,
   }) {
     return MoyenDePaiementModel(
@@ -75,8 +75,7 @@ class MoyenDePaiementModel extends Equatable {
           compterAlaFinDuService ?? this.compterAlaFinDuService,
       rensignerleFondDeCaisee:
           rensignerleFondDeCaisee ?? this.rensignerleFondDeCaisee,
-      typeDeSalleDisponible:
-          typeDeSalleDisponible ?? this.typeDeSalleDisponible,
+      sallesIDS: sallesIDS ?? this.sallesIDS,
       actif: actif ?? this.actif,
     );
   }
@@ -94,7 +93,7 @@ List<MoyenDePaiementModel> moyenPaiementList = [
     variationDuMoyenDePaiement: 'Aucune',
     compterAlaFinDuService: true,
     rensignerleFondDeCaisee: true,
-    typeDeSalleDisponible: salles[2],
+    sallesIDS: [2],
     actif: true,
   ),
   MoyenDePaiementModel(
@@ -108,7 +107,7 @@ List<MoyenDePaiementModel> moyenPaiementList = [
     variationDuMoyenDePaiement: 'Aucune',
     compterAlaFinDuService: true,
     rensignerleFondDeCaisee: true,
-    typeDeSalleDisponible: salles[0],
+    sallesIDS: [0],
     actif: true,
   ),
   MoyenDePaiementModel(
@@ -122,7 +121,7 @@ List<MoyenDePaiementModel> moyenPaiementList = [
     variationDuMoyenDePaiement: 'Aucune',
     compterAlaFinDuService: true,
     rensignerleFondDeCaisee: true,
-    typeDeSalleDisponible: salles[1],
+    sallesIDS: [1],
     actif: true,
   ),
 ];

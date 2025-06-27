@@ -193,7 +193,12 @@ class AppColors {
   static const Color septenary = Color(0xFF000000);
 }
 
-const salles = ['Toutes', 'Salle principale', 'Terrasse', 'Bar'];
+List<Map<String, dynamic>> salles = [
+  {'id': 1, 'nom': 'Toutes'},
+  {'id': 2, 'nom': 'Salle principale'},
+  {'id': 3, 'nom': 'Terrasse'},
+  {'id': 4, 'nom': 'Bar'},
+];
 const moyenDePaiementList = [
   'Aucune',
   'Carte bancaire',
@@ -201,7 +206,7 @@ const moyenDePaiementList = [
   'Ticket Restaurant',
 ];
 
-enum FieldType { string, boolean, dropdown, color, pattern }
+enum FieldType { string, boolean, dropdown, color, pattern, choice }
 
 const List<String> gestionDuTropPercuList = [
   'Gestion du trop perçu',

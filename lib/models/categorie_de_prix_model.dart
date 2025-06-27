@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/produits_model.dart';
 
 class CategorieDePrixModel extends Equatable {
@@ -14,7 +13,7 @@ class CategorieDePrixModel extends Equatable {
   bool? actifDansTouteLaJournee;
   bool? categorieDePrixActive;
   List<String>? joursDactivite;
-  String? salle;
+  List<int>? salleIDS;
   TimeOfDay? heureDebut;
   TimeOfDay? heureFin;
   List<ProduitsModel>? produits;
@@ -31,7 +30,7 @@ class CategorieDePrixModel extends Equatable {
     required this.actifDansTouteLaJournee,
     required this.categorieDePrixActive,
     required this.joursDactivite,
-    required this.salle,
+    required this.salleIDS,
     required this.heureDebut,
     required this.heureFin,
   });
@@ -45,7 +44,7 @@ class CategorieDePrixModel extends Equatable {
     bool? actifDansTouteLaJournee,
     bool? actifDansTouteLaNuit,
     List<String>? joursDactivite,
-    String? salle,
+    List<int>? salleIDS,
     TimeOfDay? heureDebut,
     TimeOfDay? heureFin,
     bool? categorieDePrixActive,
@@ -68,7 +67,7 @@ class CategorieDePrixModel extends Equatable {
       categorieDePrixActive:
           categorieDePrixActive ?? this.categorieDePrixActive,
       joursDactivite: joursDactivite ?? this.joursDactivite,
-      salle: salle ?? this.salle,
+      salleIDS: salleIDS ?? this.salleIDS,
       heureDebut: heureDebut ?? this.heureDebut,
       heureFin: heureFin ?? this.heureFin,
       produits: produits ?? this.produits,
@@ -87,7 +86,7 @@ class CategorieDePrixModel extends Equatable {
     actifDansTouteLaJournee,
     categorieDePrixActive,
     joursDactivite,
-    salle,
+    salleIDS,
     heureDebut,
     heureFin,
     produits,
@@ -105,7 +104,7 @@ List<CategorieDePrixModel> categoriesPrixList = [
     afficherNomCourtEnFabrication: true,
     actifDansTouteLaJournee: true,
     categorieDePrixActive: true,
-    salle: salles[0],
+    salleIDS: [1],
     heureDebut: null,
     heureFin: null,
     produits: [],
@@ -121,7 +120,7 @@ List<CategorieDePrixModel> categoriesPrixList = [
     afficherNomCourtEnFabrication: true,
     actifDansTouteLaJournee: false,
     categorieDePrixActive: true,
-    salle: salles[2],
+    salleIDS: [2, 1],
     heureDebut: TimeOfDay(hour: 17, minute: 0),
     heureFin: TimeOfDay(hour: 19, minute: 0),
     produits: [],
@@ -138,7 +137,7 @@ List<CategorieDePrixModel> categoriesPrixList = [
     afficherNomCourtEnFabrication: true,
     actifDansTouteLaJournee: false,
     categorieDePrixActive: true,
-    salle: salles[1],
+    salleIDS: [1],
     heureDebut: TimeOfDay(hour: 17, minute: 0),
     heureFin: TimeOfDay(hour: 19, minute: 0),
     produits: [],

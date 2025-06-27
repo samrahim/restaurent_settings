@@ -30,7 +30,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
     actifDansTouteLaJournee: false,
     categorieDePrixActive: false,
     joursDactivite: [],
-    salle: salles.first,
+    salleIDS: [],
     heureDebut: const TimeOfDay(hour: 12, minute: 00),
     heureFin: const TimeOfDay(hour: 12, minute: 00),
   );
@@ -94,41 +94,6 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                             ),
                           );
                         },
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Salle
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey),
-                        ),
-                        child: ListTile(
-                          title: const Text('Disponible dans les salles'),
-                          trailing: DropdownButton<String>(
-                            style: AppTextStyle.indingosubHeading,
-                            value: m.salle,
-                            underline: const SizedBox(),
-                            items:
-                                salles
-                                    .map(
-                                      (s) => DropdownMenuItem(
-                                        value: s,
-                                        child: Text(s),
-                                      ),
-                                    )
-                                    .toList(),
-                            onChanged: (v) {
-                              if (v == null) return;
-                              context.read<DrawerBloc>().add(
-                                UpdateCreateCategoriePrixModel(
-                                  m.copyWith(salle: v),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
                       ),
                       const SizedBox(height: 16),
 
@@ -196,7 +161,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                             const SizedBox(height: 8),
                           ],
                         );
-                      }).toList(),
+                      }),
 
                       // Plages horaires si ni journée ni nuit
                       if (!m.actifDansTouteLaJournee!) ...[
@@ -263,34 +228,107 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                       ],
 
                       // Jours d'activité (chips scrollables)
-                      const Text('Jours d’activité'),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        height: 40,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: joursSemaine.length,
-                          separatorBuilder: (_, __) => const SizedBox(width: 8),
-                          itemBuilder: (_, i) {
-                            final d = joursSemaine[i];
-                            final selected = m.joursDactivite!.contains(d);
-                            return ChoiceChip(
-                              label: Text(d),
-                              selected: selected,
-                              selectedColor: AppColors.indingo200,
-                              onSelected: (sel) {
-                                final jours = List<String>.from(
-                                  m.joursDactivite!,
-                                );
-                                sel ? jours.add(d) : jours.remove(d);
-                                context.read<DrawerBloc>().add(
-                                  UpdateCreateCategoriePrixModel(
-                                    m.copyWith(joursDactivite: jours),
-                                  ),
-                                );
-                              },
-                            );
-                          },
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 12,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Disponible dans les salles'),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              height: 40,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: salles.length,
+                                separatorBuilder:
+                                    (_, __) => const SizedBox(width: 8),
+                                itemBuilder: (_, i) {
+                                  final salle = salles[i];
+                                  final id = salle['id'] as int;
+                                  final nom = salle['nom'] as String;
+                                  final selected = m.salleIDS!.contains(id);
+                                  return ChoiceChip(
+                                    label: Text(nom),
+                                    selected: selected,
+                                    selectedColor: AppColors.indingo200,
+                                    onSelected: (sel) {
+                                      final salleIds = List<int>.from(
+                                        m.salleIDS!,
+                                      );
+                                      sel
+                                          ? salleIds.add(id)
+                                          : salleIds.remove(id);
+                                      context.read<DrawerBloc>().add(
+                                        UpdateCreateCategoriePrixModel(
+                                          m.copyWith(salleIDS: salleIds),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 12,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Jours d\'activite'),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              height: 40,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: joursSemaine.length,
+                                separatorBuilder:
+                                    (_, __) => const SizedBox(width: 8),
+                                itemBuilder: (_, i) {
+                                  final d = joursSemaine[i];
+                                  final selected = m.joursDactivite!.contains(
+                                    d,
+                                  );
+                                  return ChoiceChip(
+                                    label: Text(d.toString()),
+                                    selected: selected,
+                                    selectedColor: AppColors.indingo200,
+                                    onSelected: (sel) {
+                                      final jours = List<String>.from(
+                                        m.joursDactivite!,
+                                      );
+                                      sel
+                                          ? jours.add(d.toString())
+                                          : jours.remove(d);
+                                      context.read<DrawerBloc>().add(
+                                        UpdateCreateCategoriePrixModel(
+                                          m.copyWith(joursDactivite: jours),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
 
@@ -363,7 +401,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
               case 'Afficher nom court a l\'encaissement':
                 return UpdateAttributeDrawer(
                   label: 'Afficher nom court a l\'encaissement',
-                  initialValue: state.model.afficherNomCourtEnCommande,
+                  initialValue: state.model.afficherNomCourtEnEncaissement,
                   fieldType: FieldType.boolean,
                   onSaved: (v) {
                     final provider = context.read<CategorieDePrixProvider>();
@@ -376,11 +414,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                 return UpdateAttributeDrawer(
                   label: 'Salles',
                   options: salles,
-                  initialValue: state.model.salle,
-                  fieldType: FieldType.dropdown,
+                  initialValue: state.model.salleIDS,
+                  fieldType: FieldType.choice,
                   onSaved: (v) {
                     final provider = context.read<CategorieDePrixProvider>();
-                    provider.update(state.model.copyWith(salle: v));
+                    provider.update(state.model.copyWith(salleIDS: v));
                   },
                 );
               case 'Afficher nom court en fabrication':
@@ -393,6 +431,17 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                     provider.update(
                       state.model.copyWith(afficherNomCourtEnFabrication: v),
                     );
+                  },
+                );
+              case "jours d'activite":
+                return UpdateAttributeDrawer(
+                  label: "jours d'activite",
+                  options: joursSemaine,
+                  initialValue: state.model.joursDactivite,
+                  fieldType: FieldType.choice,
+                  onSaved: (v) {
+                    final provider = context.read<CategorieDePrixProvider>();
+                    provider.update(state.model.copyWith(joursDactivite: v));
                   },
                 );
               default:
@@ -479,33 +528,31 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
             margin: const EdgeInsets.all(18),
             child: Column(
               children: [
-                ...provider.categories
-                    .map(
-                      (categorie) => Column(
-                        children: [
-                          InkWell(
-                            child: ListTile(
-                              hoverColor: Colors.grey.shade200,
-                              title: Text(
-                                categorie.nom!,
-                                style: AppTextStyle.indingoHeading,
-                              ),
-                              trailing: const Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.indigo,
-                              ),
-                            ),
-                            onTap: () {
-                              provider.select(categorie);
-                            },
+                ...provider.categories.map(
+                  (categorie) => Column(
+                    children: [
+                      InkWell(
+                        child: ListTile(
+                          hoverColor: Colors.grey.shade200,
+                          title: Text(
+                            categorie.nom!,
+                            style: AppTextStyle.indingoHeading,
                           ),
-                          categorie != provider.categories.last
-                              ? const Divider()
-                              : const SizedBox(),
-                        ],
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.indigo,
+                          ),
+                        ),
+                        onTap: () {
+                          provider.select(categorie);
+                        },
                       ),
-                    )
-                    .toList(),
+                      categorie != provider.categories.last
+                          ? const Divider()
+                          : const SizedBox(),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

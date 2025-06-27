@@ -6,7 +6,7 @@ class CategorieDeModificateur extends Equatable {
   final String? id;
   final String? nom;
   final String? icon;
-  final String? typeDeSalleDisponible;
+  final List<int>? sallesIDS;
   final String? typeDeSelection;
   final bool? obligatoire;
   final Color? color;
@@ -15,7 +15,7 @@ class CategorieDeModificateur extends Equatable {
     required this.id,
     required this.nom,
     required this.icon,
-    required this.typeDeSalleDisponible,
+    required this.sallesIDS,
     required this.typeDeSelection,
     required this.obligatoire,
     required this.color,
@@ -28,14 +28,13 @@ class CategorieDeModificateur extends Equatable {
     String? icon,
     bool? obligatoire,
     String? typeDeSelection,
-    String? typeDeSalleDisponible,
+    List<int>? sallesIDS,
   }) {
     return CategorieDeModificateur(
       id: id ?? this.id,
       nom: nom ?? this.nom,
       icon: icon ?? this.icon,
-      typeDeSalleDisponible:
-          typeDeSalleDisponible ?? this.typeDeSalleDisponible,
+      sallesIDS: sallesIDS ?? this.sallesIDS,
       typeDeSelection: typeDeSelection ?? this.typeDeSelection,
       obligatoire: obligatoire ?? this.obligatoire,
       color: color ?? this.color,
@@ -47,7 +46,7 @@ class CategorieDeModificateur extends Equatable {
     id,
     nom,
     icon,
-    typeDeSalleDisponible,
+    sallesIDS,
     typeDeSelection,
     obligatoire,
     color,
@@ -59,7 +58,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     id: '1',
     nom: 'Cuisson',
     icon: null,
-    typeDeSalleDisponible: salles[0],
+    sallesIDS: [2],
     typeDeSelection: optiontypeDeSelection[0],
     obligatoire: true,
     color: Colors.pink,
@@ -68,7 +67,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     id: '2',
     nom: 'Sauces',
     icon: null,
-    typeDeSalleDisponible: salles[1],
+    sallesIDS: [1],
     typeDeSelection: optiontypeDeSelection[1],
     obligatoire: false,
     color: Colors.purpleAccent,
@@ -77,7 +76,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     id: '3',
     nom: 'Supplements payants',
     icon: null,
-    typeDeSalleDisponible: salles[2],
+    sallesIDS: [2],
     typeDeSelection: optiontypeDeSelection[1],
     obligatoire: false,
     color: Colors.deepOrangeAccent,
@@ -86,7 +85,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     id: '4',
     nom: 'Accompagnement',
     icon: null,
-    typeDeSalleDisponible: salles[1],
+    sallesIDS: [1, 2],
     typeDeSelection: optiontypeDeSelection[1],
     obligatoire: true,
     color: Colors.amber,
@@ -95,7 +94,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     id: '5',
     nom: 'Glaces',
     icon: null,
-    typeDeSalleDisponible: salles[2],
+    sallesIDS: [2],
     typeDeSelection: optiontypeDeSelection[1],
     obligatoire: false,
     color: Colors.cyan,
