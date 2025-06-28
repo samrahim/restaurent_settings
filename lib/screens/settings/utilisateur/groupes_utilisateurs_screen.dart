@@ -197,15 +197,19 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
                       provider.utilisateurs != null
                           ? ListView(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Administrateurs',
-                                  style: AppTextStyle.greyHeading.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
+                              provider.utilisateurs!
+                                      .where((e) => e.role == "Administrateur")
+                                      .isNotEmpty
+                                  ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Administrateurs',
+                                      style: AppTextStyle.greyHeading.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  )
+                                  : SizedBox.shrink(),
                               ...provider.utilisateurs!
                                   .where((u) => u.role == roleList[0])
                                   .map(
@@ -230,15 +234,19 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
                                     ),
                                   ),
 
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Serveurs',
-                                  style: AppTextStyle.greyHeading.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
+                              provider.utilisateurs!
+                                      .where((e) => e.role == "Serveur")
+                                      .isNotEmpty
+                                  ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Serveurs',
+                                      style: AppTextStyle.greyHeading.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  )
+                                  : SizedBox.shrink(),
                               ...provider.utilisateurs!
                                   .where((u) => u.role == roleList[1])
                                   .map(
@@ -263,15 +271,21 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
                                     ),
                                   ),
 
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Responsable de salle',
-                                  style: AppTextStyle.greyHeading.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
+                              provider.utilisateurs!
+                                      .where(
+                                        (e) => e.role == "Responsable de salle",
+                                      )
+                                      .isNotEmpty
+                                  ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Responsable de salle',
+                                      style: AppTextStyle.greyHeading.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  )
+                                  : SizedBox.shrink(),
                               ...provider.utilisateurs!
                                   .where((u) => u.role == roleList[2])
                                   .map(
@@ -465,6 +479,7 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
           onSaved: (v) {
             Provider.of<UtilisateurProvider>(
               context,
+              listen: false,
             ).updateUtilisateur(state.utilisateur.copyWith(role: v));
           },
         );

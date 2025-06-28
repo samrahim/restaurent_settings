@@ -92,11 +92,10 @@ class PlanDeSalleScreen extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // Example tables
           Positioned(left: 50, top: 50, child: _buildTable('T1', 4, true)),
           Positioned(left: 150, top: 50, child: _buildTable('T2', 2, false)),
           Positioned(left: 50, top: 150, child: _buildTable('T3', 6, false)),
-          // Example zone
+
           Positioned(right: 100, top: 100, child: _buildZone('Terrasse')),
         ],
       ),
