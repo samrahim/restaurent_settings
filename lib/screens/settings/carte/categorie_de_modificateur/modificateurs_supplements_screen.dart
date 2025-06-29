@@ -30,6 +30,7 @@ class _ModificateursSupplementsScreenState
     obligatoire: true,
     sallesIDS: [],
     typeDeSelection: optiontypeDeSelection[0],
+    subCategories: [],
   );
 
   @override

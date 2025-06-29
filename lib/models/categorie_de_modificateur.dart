@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
 
 class CategorieDeModificateur extends Equatable {
   final String? id;
@@ -19,6 +20,7 @@ class CategorieDeModificateur extends Equatable {
     required this.typeDeSelection,
     required this.obligatoire,
     required this.color,
+    required this.subCategories,
   });
 
   CategorieDeModificateur copyWith({
@@ -29,9 +31,11 @@ class CategorieDeModificateur extends Equatable {
     bool? obligatoire,
     String? typeDeSelection,
     List<int>? sallesIDS,
+    List<SubCategorieDeModificateur>? subCategories,
   }) {
     return CategorieDeModificateur(
       id: id ?? this.id,
+      subCategories: subCategories ?? this.subCategories,
       nom: nom ?? this.nom,
       icon: icon ?? this.icon,
       sallesIDS: sallesIDS ?? this.sallesIDS,
@@ -50,11 +54,13 @@ class CategorieDeModificateur extends Equatable {
     typeDeSelection,
     obligatoire,
     color,
+    subCategories,
   ];
 }
 
 List<CategorieDeModificateur> categoriesdemodificateursList = [
   CategorieDeModificateur(
+    subCategories: [],
     id: '1',
     nom: 'Cuisson',
     icon: null,
@@ -64,6 +70,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     color: Colors.pink,
   ),
   CategorieDeModificateur(
+    subCategories: [],
     id: '2',
     nom: 'Sauces',
     icon: null,
@@ -73,6 +80,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     color: Colors.purpleAccent,
   ),
   CategorieDeModificateur(
+    subCategories: [],
     id: '3',
     nom: 'Supplements payants',
     icon: null,
@@ -82,6 +90,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     color: Colors.deepOrangeAccent,
   ),
   CategorieDeModificateur(
+    subCategories: [],
     id: '4',
     nom: 'Accompagnement',
     icon: null,
@@ -91,6 +100,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     color: Colors.amber,
   ),
   CategorieDeModificateur(
+    subCategories: [],
     id: '5',
     nom: 'Glaces',
     icon: null,
