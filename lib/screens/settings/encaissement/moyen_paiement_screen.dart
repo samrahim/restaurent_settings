@@ -316,44 +316,57 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                       ),
 
                       Container(
-                        margin: EdgeInsets.symmetric(vertical: 4.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: AppColors.greyaccent!,
-                            width: .9,
-                          ),
+                          border: Border.all(color: Colors.grey),
                         ),
-                        child: DropdownButtonFormField<String>(
-                          value: m.sallesIDS.toString(),
-
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: AppColors.greyaccent!,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 12,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Disponible dans les salles'),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              height: 40,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: salles.length,
+                                separatorBuilder:
+                                    (_, __) => const SizedBox(width: 8),
+                                itemBuilder: (_, i) {
+                                  final salle = salles[i];
+                                  final id = salle['id'] as int;
+                                  final nom = salle['nom'] as String;
+                                  final selected = m.sallesIDS!.contains(id);
+                                  return ChoiceChip(
+                                    label: Text(nom),
+                                    selected: selected,
+                                    selectedColor: AppColors.indingo200,
+                                    onSelected: (sel) {
+                                      final salleIds = List<int>.from(
+                                        m.sallesIDS!,
+                                      );
+                                      sel
+                                          ? salleIds.add(id)
+                                          : salleIds.remove(id);
+                                      final updated = m.copyWith(
+                                        sallesIDS: salleIds,
+                                      );
+                                      context.read<DrawerBloc>().add(
+                                        OpenCreatePaiementMethodeDrawer(
+                                          model: updated,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
                               ),
                             ),
-                            labelText: 'Type de salle',
-                          ),
-                          items:
-                              salles
-                                  .map(
-                                    (v) => DropdownMenuItem(
-                                      value: v['nom'].toString(),
-                                      child: Text(v['nom'].toString()),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged: (v) {
-                            if (v != null) {
-                              final updated = m.copyWith(sallesIDS: []);
-                              context.read<DrawerBloc>().add(
-                                OpenCreatePaiementMethodeDrawer(model: updated),
-                              );
-                            }
-                          },
+                          ],
                         ),
                       ),
 

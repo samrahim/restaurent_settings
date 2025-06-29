@@ -150,7 +150,9 @@ Map<String, Map<String, dynamic>> routes = {
     },
   },
 };
+
 List<String> roleList = ['Administrateur', 'Serveur', 'Responsable de salle'];
+const String baseUrl = 'http://localhost:8080/api/';
 
 class AppTextStyle {
   static TextStyle? indingoHeading = TextStyle(

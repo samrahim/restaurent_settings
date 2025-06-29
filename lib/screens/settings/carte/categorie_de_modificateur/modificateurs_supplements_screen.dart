@@ -6,6 +6,7 @@ import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
 import 'package:restaurent/providers/categorie_de_modificateur.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificteur_details.dart';
+import 'package:restaurent/widgets/salle_ids_picker.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
 class ModificateursSupplementsScreen extends StatefulWidget {
@@ -69,59 +70,19 @@ class _ModificateursSupplementsScreenState
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 12,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Disponible dans les salles'),
-                          const SizedBox(height: 8),
-                          SizedBox(
-                            height: 40,
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: salles.length,
-                              separatorBuilder:
-                                  (_, __) => const SizedBox(width: 8),
-                              itemBuilder: (_, i) {
-                                final salle = salles[i];
-                                final id = salle['id'] as int;
-                                final nom = salle['nom'] as String;
-                                final selected = createModel.sallesIDS!
-                                    .contains(id);
-                                return ChoiceChip(
-                                  label: Text(nom),
-                                  selected: selected,
-                                  selectedColor: AppColors.indingo200,
-                                  onSelected: (sel) {
-                                    final updated = createModel.copyWith(
-                                      sallesIDS:
-                                          sel
-                                              ? [...createModel.sallesIDS!, id]
-                                              : createModel.sallesIDS!
-                                                  .where((e) => e != id)
-                                                  .toList(),
-                                    );
-                                    context.read<DrawerBloc>().add(
-                                      OpenCreateCategorieDeModificateur(
-                                        modificateur: updated,
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            ),
+                    SalleIdsPicker(
+                      salles: salles,
+                      selectedSalleIds: createModel.sallesIDS!,
+                      onSelectionChanged: (updatedSalleIds) {
+                        final updated = createModel.copyWith(
+                          sallesIDS: updatedSalleIds,
+                        );
+                        context.read<DrawerBloc>().add(
+                          OpenCreateCategorieDeModificateur(
+                            modificateur: updated,
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 16),
                     Container(

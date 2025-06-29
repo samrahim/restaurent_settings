@@ -8,15 +8,6 @@ import 'package:restaurent/providers/providers.dart';
 
 import '../blocs/settings/settings_bloc.dart';
 
-class DepanageScreen extends StatelessWidget {
-  const DepanageScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Dépannage Screen'));
-  }
-}
-
 class ReglageScreen extends StatelessWidget {
   const ReglageScreen({super.key});
 

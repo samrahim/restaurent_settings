@@ -7,6 +7,7 @@ import 'package:restaurent/providers/categorie_de_prix_provider.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_prix/catgorie_detaits.dart';
 import 'package:restaurent/widgets/widgets.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/widgets/salle_ids_picker.dart';
 
 class CategoriesPrixScreen extends StatefulWidget {
   const CategoriesPrixScreen({super.key});
@@ -227,57 +228,16 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                         const SizedBox(height: 16),
                       ],
 
-                      // Jours d'activité (chips scrollables)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 12,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text('Disponible dans les salles'),
-                            const SizedBox(height: 8),
-                            SizedBox(
-                              height: 40,
-                              child: ListView.separated(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: salles.length,
-                                separatorBuilder:
-                                    (_, __) => const SizedBox(width: 8),
-                                itemBuilder: (_, i) {
-                                  final salle = salles[i];
-                                  final id = salle['id'] as int;
-                                  final nom = salle['nom'] as String;
-                                  final selected = m.salleIDS!.contains(id);
-                                  return ChoiceChip(
-                                    label: Text(nom),
-                                    selected: selected,
-                                    selectedColor: AppColors.indingo200,
-                                    onSelected: (sel) {
-                                      final salleIds = List<int>.from(
-                                        m.salleIDS!,
-                                      );
-                                      sel
-                                          ? salleIds.add(id)
-                                          : salleIds.remove(id);
-                                      context.read<DrawerBloc>().add(
-                                        UpdateCreateCategoriePrixModel(
-                                          m.copyWith(salleIDS: salleIds),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
+                      SalleIdsPicker(
+                        salles: salles,
+                        selectedSalleIds: m.salleIDS!,
+                        onSelectionChanged: (selectedIds) {
+                          context.read<DrawerBloc>().add(
+                            UpdateCreateCategoriePrixModel(
+                              m.copyWith(salleIDS: selectedIds),
                             ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 16),
                       Container(
