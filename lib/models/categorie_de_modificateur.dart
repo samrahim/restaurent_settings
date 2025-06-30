@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/models/produits_model.dart';
 import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
 
 class CategorieDeModificateur extends Equatable {
@@ -11,6 +12,7 @@ class CategorieDeModificateur extends Equatable {
   final String? typeDeSelection;
   final bool? obligatoire;
   final Color? color;
+  final List<ProduitsModel> produits;
   final List<SubCategorieDeModificateur> subCategories;
   const CategorieDeModificateur({
     required this.id,
@@ -21,6 +23,7 @@ class CategorieDeModificateur extends Equatable {
     required this.obligatoire,
     required this.color,
     required this.subCategories,
+    required this.produits,
   });
 
   CategorieDeModificateur copyWith({
@@ -32,6 +35,7 @@ class CategorieDeModificateur extends Equatable {
     String? typeDeSelection,
     List<int>? sallesIDS,
     List<SubCategorieDeModificateur>? subCategories,
+    List<ProduitsModel>? produits,
   }) {
     return CategorieDeModificateur(
       id: id ?? this.id,
@@ -42,6 +46,7 @@ class CategorieDeModificateur extends Equatable {
       typeDeSelection: typeDeSelection ?? this.typeDeSelection,
       obligatoire: obligatoire ?? this.obligatoire,
       color: color ?? this.color,
+      produits: produits ?? this.produits,
     );
   }
 
@@ -55,6 +60,7 @@ class CategorieDeModificateur extends Equatable {
     obligatoire,
     color,
     subCategories,
+    produits,
   ];
 }
 
@@ -68,6 +74,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     typeDeSelection: optiontypeDeSelection[0],
     obligatoire: true,
     color: Colors.pink,
+    produits: [],
   ),
   CategorieDeModificateur(
     subCategories: [],
@@ -78,6 +85,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     typeDeSelection: optiontypeDeSelection[1],
     obligatoire: false,
     color: Colors.purpleAccent,
+    produits: [],
   ),
   CategorieDeModificateur(
     subCategories: [],
@@ -88,6 +96,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     typeDeSelection: optiontypeDeSelection[1],
     obligatoire: false,
     color: Colors.deepOrangeAccent,
+    produits: [],
   ),
   CategorieDeModificateur(
     subCategories: [],
@@ -98,6 +107,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     typeDeSelection: optiontypeDeSelection[1],
     obligatoire: true,
     color: Colors.amber,
+    produits: [],
   ),
   CategorieDeModificateur(
     subCategories: [],
@@ -108,5 +118,6 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     typeDeSelection: optiontypeDeSelection[1],
     obligatoire: false,
     color: Colors.cyan,
+    produits: [],
   ),
 ];

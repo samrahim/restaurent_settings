@@ -112,3 +112,12 @@ class DrawerUpdateCategoriDePrix extends DrawerState {
   @override
   List<Object?> get props => [model, attributeName, currentValue];
 }
+
+class DrawerCreateSubCategorieDeModificateur extends DrawerState {
+  final String modificateurId;
+
+  DrawerCreateSubCategorieDeModificateur({required this.modificateurId});
+
+  @override
+  List<Object?> get props => [modificateurId];
+}

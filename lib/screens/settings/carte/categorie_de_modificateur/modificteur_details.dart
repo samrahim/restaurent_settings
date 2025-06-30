@@ -4,6 +4,7 @@ import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
 import 'package:restaurent/models/salle_model.dart';
+import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
 class ModificateurDetails extends StatefulWidget {
@@ -63,7 +64,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                     ),
 
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -71,7 +72,18 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                             'MODIFICATEURS / SUPPLÉMENTS',
                             style: AppTextStyle.greysubHeading,
                           ),
-                          const Icon(Icons.add, color: Colors.red),
+                          IconButton(
+                            onPressed: () {
+                              context.read<DrawerBloc>().add(
+                                OpenCreateSubCategorieDeModificateur(
+                                  modificateurId: widget.modificateur.id!,
+                                ),
+                              );
+
+                              widget.scaffoldKey.currentState!.openDrawer();
+                            },
+                            icon: Icon(Icons.add, color: Colors.red),
+                          ),
                         ],
                       ),
                     ),
@@ -81,11 +93,13 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                       child: ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: 5,
+                        itemCount: widget.modificateur.subCategories.length,
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
-                              _buildModifierTile(modifiers[index]),
+                              _buildModifierTile(
+                                widget.modificateur.subCategories[index],
+                              ),
                               if (index != 4) const Divider(),
                             ],
                           );
@@ -99,7 +113,11 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('PRODUITS', style: AppTextStyle.greysubHeading),
-                          const Icon(Icons.add, color: Colors.red),
+
+                          IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.add, color: Colors.red),
+                          ),
                         ],
                       ),
                     ),
@@ -108,12 +126,16 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                       color: Colors.white,
                       child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: 5,
+                        itemCount: widget.modificateur.subCategories.length,
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
-                              _buildModifierTile(modifiers[index]),
-                              if (index != 4) const Divider(),
+                              _buildModifierTile(
+                                widget.modificateur.subCategories[index],
+                              ),
+                              if (index !=
+                                  widget.modificateur.subCategories.length)
+                                const Divider(),
                             ],
                           );
                         },
@@ -306,9 +328,9 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
     );
   }
 
-  Widget _buildModifierTile(String title) {
+  Widget _buildModifierTile(SubCategorieDeModificateur subCategorie) {
     return ListTile(
-      title: Text(title, style: AppTextStyle.indingosubHeading),
+      title: Text(subCategorie.nom, style: AppTextStyle.indingosubHeading),
       trailing: const Icon(Icons.drag_handle),
     );
   }

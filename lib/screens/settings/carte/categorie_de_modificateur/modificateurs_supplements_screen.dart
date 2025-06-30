@@ -5,6 +5,8 @@ import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
 import 'package:restaurent/models/salle_model.dart';
+import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
+import 'package:restaurent/models/taux_tva_model.dart';
 import 'package:restaurent/providers/categorie_de_modificateur.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificteur_details.dart';
 import 'package:restaurent/widgets/salle_ids_picker.dart';
@@ -22,6 +24,8 @@ class _ModificateursSupplementsScreenState
     extends State<ModificateursSupplementsScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController name = TextEditingController();
+  TextEditingController prix = TextEditingController();
+  TextEditingController supplement = TextEditingController();
 
   CategorieDeModificateur modificateur = CategorieDeModificateur(
     id: '',
@@ -32,16 +36,18 @@ class _ModificateursSupplementsScreenState
     sallesIDS: [],
     typeDeSelection: optiontypeDeSelection[0],
     subCategories: [],
+    produits: [],
   );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: BlocBuilder<DrawerBloc, DrawerState>(
+      endDrawer: _endDrawer(),
+      drawer: BlocBuilder<DrawerBloc, DrawerState>(
         builder: (context, state) {
-          if (state is DrawerCreateCategorieDeModificateur) {
-            final createModel = state.modificateur;
+          print('we build');
+          if (state is DrawerCreateSubCategorieDeModificateur) {
             return Drawer(
               width: MediaQuery.of(context).size.width * .33,
               child: Padding(
@@ -52,7 +58,7 @@ class _ModificateursSupplementsScreenState
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       child: Text(
-                        'Créer une nouvelle categorie',
+                        'Créer une nouvelle sous-catégorie',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -61,7 +67,7 @@ class _ModificateursSupplementsScreenState
                     ),
                     const SizedBox(height: 16),
                     TextField(
-                      controller: name,
+                      controller: supplement,
                       decoration: InputDecoration(
                         labelText: 'Nom',
                         border: OutlineInputBorder(
@@ -72,207 +78,50 @@ class _ModificateursSupplementsScreenState
                       ),
                     ),
                     const SizedBox(height: 16),
-                    SalleIdsPicker(
-                      salles: salles,
-                      selectedSalleIds: createModel.sallesIDS!,
-                      onSelectionChanged: (updatedSalleIds) {
-                        final updated = createModel.copyWith(
-                          sallesIDS: updatedSalleIds,
-                        );
-                        context.read<DrawerBloc>().add(
-                          OpenCreateCategorieDeModificateur(
-                            modificateur: updated,
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: ListTile(
-                        trailing: InkWell(
-                          onTap: () {
-                            openColorPicker(
-                              context: context,
-                              currentColor: createModel.color ?? Colors.pink,
-                              onColorSelected: (Color selectedColor) {
-                                final updated = createModel.copyWith(
-                                  color: selectedColor,
-                                );
-                                context.read<DrawerBloc>().add(
-                                  OpenCreateCategorieDeModificateur(
-                                    modificateur: updated,
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              color: createModel.color,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.black26),
-                            ),
-                          ),
+                    TextField(
+                      controller: prix,
+
+                      decoration: InputDecoration(
+                        labelText: 'Prix',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        title: const Text('Couleur'),
+                        filled: true,
+                        fillColor: Colors.grey[50],
                       ),
                     ),
+
                     const SizedBox(height: 16),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: ListTile(
-                        title: const Text('Type de selection'),
-                        trailing: DropdownButton<String>(
-                          underline: const SizedBox(),
-                          value: createModel.typeDeSelection,
-                          style: AppTextStyle.indingosubHeading,
-                          items:
-                              optiontypeDeSelection
-                                  .map(
-                                    (v) => DropdownMenuItem(
-                                      value: v,
-                                      child: Text(v),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged: (v) {
-                            if (v != null) {
-                              final updated = createModel.copyWith(
-                                typeDeSelection: v,
-                              );
-                              context.read<DrawerBloc>().add(
-                                OpenCreateCategorieDeModificateur(
-                                  modificateur: updated,
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: ListTile(
-                        title: const Text('Obligatoire'),
-                        trailing: Switch(
-                          activeColor: AppColors.primary,
-                          value: createModel.obligatoire!,
-                          onChanged: (value) {
-                            final updated = createModel.copyWith(
-                              obligatoire: value,
-                            );
-                            context.read<DrawerBloc>().add(
-                              OpenCreateCategorieDeModificateur(
-                                modificateur: updated,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
                     CreateButton(
                       onPressed: () {
-                        // Utilisation du Provider pour créer la catégorie
                         final provider =
                             context.read<CategorieModificateurProvider>();
-                        provider.create(createModel.copyWith(nom: name.text));
+                        provider.update(
+                          modificateur.copyWith(
+                            subCategories: [
+                              ...modificateur.subCategories,
+                              SubCategorieDeModificateur(
+                                id:
+                                    modificateur.subCategories.length
+                                        .toString(),
+                                nom: supplement.text,
+                                prix: 12.2,
+                                tvaModel: tauxTvaList[1],
+                              ),
+                            ],
+                          ),
+                        );
                         _scaffoldKey.currentState?.closeEndDrawer();
                       },
-                      buttonText: 'Créer une nouvelle catégorie de prix',
+                      buttonText:
+                          'Créer une nouvelle sous-catégorie de modificateurs',
                     ),
                   ],
                 ),
               ),
             );
           }
-          if (state is DrawerUpdateCategorieDeModificateur) {
-            switch (state.attributeName) {
-              case 'nom':
-                return UpdateAttributeDrawer(
-                  fieldType: FieldType.string,
-                  label: 'nom',
-                  initialValue: state.modificateur.nom!,
-                  onSaved: (v) {
-                    final provider =
-                        context.read<CategorieModificateurProvider>();
-                    provider.update(state.modificateur.copyWith(nom: v));
-                  },
-                );
-              case 'salle':
-                return UpdateAttributeDrawer(
-                  fieldType: FieldType.choice,
-                  label: 'Salle',
-                  options: salles,
-                  initialValue: state.modificateur.sallesIDS,
-                  onSaved: (v) {
-                    final provider =
-                        context.read<CategorieModificateurProvider>();
-                    provider.update(state.modificateur.copyWith(sallesIDS: v));
-                  },
-                );
-              case 'couleur':
-                return UpdateAttributeDrawer(
-                  fieldType: FieldType.color,
-                  label: 'Couleur',
-                  initialValue: state.modificateur.color!,
-                  onSaved: (v) {
-                    final provider =
-                        context.read<CategorieModificateurProvider>();
-                    provider.update(state.modificateur.copyWith(color: v));
-                  },
-                );
-              case 'typeDeSelection':
-                return UpdateAttributeDrawer(
-                  fieldType: FieldType.dropdown,
-                  label: 'Type de selection',
-                  options: optiontypeDeSelection,
-                  initialValue: state.modificateur.typeDeSelection!,
-                  onSaved: (v) {
-                    final provider =
-                        context.read<CategorieModificateurProvider>();
-                    provider.update(
-                      state.modificateur.copyWith(typeDeSelection: v),
-                    );
-                  },
-                );
-              case 'obligatoire':
-                return UpdateAttributeDrawer(
-                  fieldType: FieldType.boolean,
-                  label: 'Obligatoire',
-                  options: ['true', 'false'],
-                  initialValue: state.modificateur.obligatoire!,
-                  onSaved: (v) {
-                    final provider =
-                        context.read<CategorieModificateurProvider>();
-                    provider.update(
-                      state.modificateur.copyWith(obligatoire: v),
-                    );
-                  },
-                );
-
-              default:
-                return const SizedBox.shrink();
-            }
-          } else {
-            return const SizedBox.shrink();
-          }
+          return const SizedBox.shrink();
         },
       ),
       body: Container(
@@ -299,6 +148,7 @@ class _ModificateursSupplementsScreenState
                   )
                 else
                   AppBar(
+                    leading: SizedBox.shrink(),
                     actions: [
                       ActionButton(onPressed: () {}, text: 'Reorganiser'),
                       ActionButton(
@@ -380,6 +230,244 @@ class _ModificateursSupplementsScreenState
           ),
         ],
       ),
+    );
+  }
+
+  Widget _endDrawer() {
+    return BlocBuilder<DrawerBloc, DrawerState>(
+      builder: (context, state) {
+        if (state is DrawerCreateCategorieDeModificateur) {
+          final createModel = state.modificateur;
+          return Drawer(
+            width: MediaQuery.of(context).size.width * .33,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      'Créer une nouvelle categorie',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: name,
+                    decoration: InputDecoration(
+                      labelText: 'Nom',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[50],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  SalleIdsPicker(
+                    salles: salles,
+                    selectedSalleIds: createModel.sallesIDS!,
+                    onSelectionChanged: (updatedSalleIds) {
+                      final updated = createModel.copyWith(
+                        sallesIDS: updatedSalleIds,
+                      );
+                      context.read<DrawerBloc>().add(
+                        OpenCreateCategorieDeModificateur(
+                          modificateur: updated,
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: ListTile(
+                      trailing: InkWell(
+                        onTap: () {
+                          openColorPicker(
+                            context: context,
+                            currentColor: createModel.color ?? Colors.pink,
+                            onColorSelected: (Color selectedColor) {
+                              final updated = createModel.copyWith(
+                                color: selectedColor,
+                              );
+                              context.read<DrawerBloc>().add(
+                                OpenCreateCategorieDeModificateur(
+                                  modificateur: updated,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: createModel.color,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.black26),
+                          ),
+                        ),
+                      ),
+                      title: const Text('Couleur'),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: ListTile(
+                      title: const Text('Type de selection'),
+                      trailing: DropdownButton<String>(
+                        underline: const SizedBox(),
+                        value: createModel.typeDeSelection,
+                        style: AppTextStyle.indingosubHeading,
+                        items:
+                            optiontypeDeSelection
+                                .map(
+                                  (v) => DropdownMenuItem(
+                                    value: v,
+                                    child: Text(v),
+                                  ),
+                                )
+                                .toList(),
+                        onChanged: (v) {
+                          if (v != null) {
+                            final updated = createModel.copyWith(
+                              typeDeSelection: v,
+                            );
+                            context.read<DrawerBloc>().add(
+                              OpenCreateCategorieDeModificateur(
+                                modificateur: updated,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: ListTile(
+                      title: const Text('Obligatoire'),
+                      trailing: Switch(
+                        activeColor: AppColors.primary,
+                        value: createModel.obligatoire!,
+                        onChanged: (value) {
+                          final updated = createModel.copyWith(
+                            obligatoire: value,
+                          );
+                          context.read<DrawerBloc>().add(
+                            OpenCreateCategorieDeModificateur(
+                              modificateur: updated,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  CreateButton(
+                    onPressed: () {
+                      // Utilisation du Provider pour créer la catégorie
+                      final provider =
+                          context.read<CategorieModificateurProvider>();
+                      provider.create(createModel.copyWith(nom: name.text));
+                      _scaffoldKey.currentState?.closeEndDrawer();
+                    },
+                    buttonText: 'Créer une nouvelle catégorie de prix',
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        if (state is DrawerUpdateCategorieDeModificateur) {
+          switch (state.attributeName) {
+            case 'nom':
+              return UpdateAttributeDrawer(
+                fieldType: FieldType.string,
+                label: 'nom',
+                initialValue: state.modificateur.nom!,
+                onSaved: (v) {
+                  final provider =
+                      context.read<CategorieModificateurProvider>();
+                  provider.update(state.modificateur.copyWith(nom: v));
+                },
+              );
+            case 'salle':
+              return UpdateAttributeDrawer(
+                fieldType: FieldType.choice,
+                label: 'Salle',
+                options: salles,
+                initialValue: state.modificateur.sallesIDS,
+                onSaved: (v) {
+                  final provider =
+                      context.read<CategorieModificateurProvider>();
+                  provider.update(state.modificateur.copyWith(sallesIDS: v));
+                },
+              );
+            case 'couleur':
+              return UpdateAttributeDrawer(
+                fieldType: FieldType.color,
+                label: 'Couleur',
+                initialValue: state.modificateur.color!,
+                onSaved: (v) {
+                  final provider =
+                      context.read<CategorieModificateurProvider>();
+                  provider.update(state.modificateur.copyWith(color: v));
+                },
+              );
+            case 'typeDeSelection':
+              return UpdateAttributeDrawer(
+                fieldType: FieldType.dropdown,
+                label: 'Type de selection',
+                options: optiontypeDeSelection,
+                initialValue: state.modificateur.typeDeSelection!,
+                onSaved: (v) {
+                  final provider =
+                      context.read<CategorieModificateurProvider>();
+                  provider.update(
+                    state.modificateur.copyWith(typeDeSelection: v),
+                  );
+                },
+              );
+            case 'obligatoire':
+              return UpdateAttributeDrawer(
+                fieldType: FieldType.boolean,
+                label: 'Obligatoire',
+                options: ['true', 'false'],
+                initialValue: state.modificateur.obligatoire!,
+                onSaved: (v) {
+                  final provider =
+                      context.read<CategorieModificateurProvider>();
+                  provider.update(state.modificateur.copyWith(obligatoire: v));
+                },
+              );
+
+            default:
+              return const SizedBox.shrink();
+          }
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
     );
   }
 }

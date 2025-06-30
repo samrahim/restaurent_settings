@@ -3,13 +3,12 @@ import 'package:restaurent/models/taux_tva_model.dart';
 
 class SubCategorieDeModificateur extends Equatable {
   final String id;
-  final int categorieId;
+
   final String nom;
   final double prix;
   final TauxTvaModel tvaModel;
 
   const SubCategorieDeModificateur({
-    required this.categorieId,
     required this.id,
     required this.nom,
     required this.prix,
@@ -17,19 +16,18 @@ class SubCategorieDeModificateur extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, nom, prix, tvaModel, categorieId];
+  List<Object?> get props => [id, nom, prix, tvaModel];
   SubCategorieDeModificateur copyWith({
     String? id,
-    int? categorieId,
     String? nom,
     double? prix,
+    TauxTvaModel? tvaModel,
   }) {
     return SubCategorieDeModificateur(
       id: id ?? this.id,
-      categorieId: categorieId ?? this.categorieId,
       nom: nom ?? this.nom,
       prix: prix ?? this.prix,
-      tvaModel: tvaModel,
+      tvaModel: tvaModel ?? this.tvaModel,
     );
   }
 }

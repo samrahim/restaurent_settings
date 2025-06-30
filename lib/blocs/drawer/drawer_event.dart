@@ -118,3 +118,12 @@ class OpenUpdateCategrieDePrixAttributs extends DrawerEvent {
   @override
   List<Object?> get props => [model, attributeName, currentValue];
 }
+
+class OpenCreateSubCategorieDeModificateur extends DrawerEvent {
+  final String modificateurId;
+
+  OpenCreateSubCategorieDeModificateur({required this.modificateurId});
+
+  @override
+  List<Object?> get props => [modificateurId];
+}
