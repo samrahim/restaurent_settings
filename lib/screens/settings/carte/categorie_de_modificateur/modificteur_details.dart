@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
+import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
 class ModificateurDetails extends StatefulWidget {
@@ -190,10 +191,9 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                   ? widget.modificateur.sallesIDS!
                                       .map(
                                         (id) =>
-                                            salles.firstWhere(
-                                                  (s) => s['id'] == id,
-                                                )['nom']
-                                                as String,
+                                            salles
+                                                .firstWhere((s) => s.id == id)
+                                                .nom,
                                       )
                                       .join(', ')
                                   : 'Aucune salle sélectionnée',

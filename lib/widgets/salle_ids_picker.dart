@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/models/salle_model.dart';
 
 class SalleIdsPicker extends StatelessWidget {
-  final List<Map<String, dynamic>> salles;
+  final List<SalleModel> salles;
   final List<int> selectedSalleIds;
   final Function(List<int>) onSelectionChanged;
 
@@ -35,8 +36,8 @@ class SalleIdsPicker extends StatelessWidget {
               separatorBuilder: (_, __) => const SizedBox(width: 8),
               itemBuilder: (_, i) {
                 final salle = salles[i];
-                final id = salle['id'] as int;
-                final nom = salle['nom'] as String;
+                final id = salle.id;
+                final nom = salle.nom;
                 final selected = selectedSalleIds.contains(id);
                 return ChoiceChip(
                   label: Text(nom),

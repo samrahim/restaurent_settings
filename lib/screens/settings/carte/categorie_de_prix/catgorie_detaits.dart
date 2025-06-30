@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
+import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/widgets/button_supprimer.dart';
 import 'package:restaurent/widgets/custom_list_tile.dart';
 
@@ -368,12 +369,13 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                                       .salleIDS!
                                                       .map(
                                                         (id) =>
-                                                            salles.firstWhere(
+                                                            salles
+                                                                .firstWhere(
                                                                   (s) =>
-                                                                      s['id'] ==
+                                                                      s.id ==
                                                                       id,
-                                                                )['nom']
-                                                                as String,
+                                                                )
+                                                                .nom,
                                                       )
                                                       .join(', ')
                                                   : 'Aucune salle sélectionnée',

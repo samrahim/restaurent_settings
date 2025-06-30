@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
+import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/providers/categorie_de_modificateur.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificteur_details.dart';
 import 'package:restaurent/widgets/salle_ids_picker.dart';

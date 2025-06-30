@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/moyen_de_paiement_model.dart';
+import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/providers/moyen_de_paiement_provider.dart';
 
 import '../../../widgets/widgets.dart';
@@ -339,8 +340,8 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                     (_, __) => const SizedBox(width: 8),
                                 itemBuilder: (_, i) {
                                   final salle = salles[i];
-                                  final id = salle['id'] as int;
-                                  final nom = salle['nom'] as String;
+                                  final id = salle.id;
+                                  final nom = salle.nom;
                                   final selected = m.sallesIDS!.contains(id);
                                   return ChoiceChip(
                                     label: Text(nom),
@@ -897,11 +898,11 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                             ? m.sallesIDS!
                                                 .map(
                                                   (id) =>
-                                                      salles.firstWhere(
-                                                            (s) =>
-                                                                s['id'] == id,
-                                                          )['nom']
-                                                          as String,
+                                                      salles
+                                                          .firstWhere(
+                                                            (s) => s.id == id,
+                                                          )
+                                                          .nom,
                                                 )
                                                 .join(', ')
                                             : 'Aucune salle sélectionnée',

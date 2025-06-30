@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pattern_lock/pattern_lock.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/widgets/create_button.dart';
 import 'package:restaurent/widgets/show_picket.dart';
 
@@ -45,14 +46,14 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
     if (widget.fieldType == FieldType.choice) {
       if (widget.options != null &&
           widget.options!.isNotEmpty &&
-          widget.options!.first is Map) {
+          widget.options!.first is SalleModel) {
+        print('update drawer');
         // salles: list of ids
         _selectedChoices =
             widget.initialValue != null
                 ? List<int>.from(widget.initialValue)
                 : <int>[];
       } else {
-        // string options (e.g. jours)
         _selectedChoices =
             widget.initialValue != null
                 ? List<String>.from(widget.initialValue)
@@ -174,9 +175,9 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                   spacing: 8,
                   children:
                       widget.options!.map((option) {
-                        if (option is Map) {
-                          final int id = option['id'];
-                          final String label = option['nom'];
+                        if (option is SalleModel) {
+                          final int id = option.id;
+                          final String label = option.nom;
                           final bool isSelected = _selectedChoices.contains(id);
                           return ChoiceChip(
                             label: Text(label),
