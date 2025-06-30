@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ConfigurationCommandeScreen extends StatelessWidget {
+  const ConfigurationCommandeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,8 +97,8 @@ class ConfigurationCommandeScreen extends StatelessWidget {
         onPressed: () {
           // Save settings
         },
-        child: const Icon(Icons.save),
         tooltip: 'Enregistrer les modifications',
+        child: const Icon(Icons.save),
       ),
     );
   }

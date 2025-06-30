@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class InformationsGeneralesScreen extends StatelessWidget {
+  const InformationsGeneralesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,8 +64,8 @@ class InformationsGeneralesScreen extends StatelessWidget {
         onPressed: () {
           // Save changes
         },
-        child: const Icon(Icons.save),
         tooltip: 'Enregistrer les modifications',
+        child: const Icon(Icons.save),
       ),
     );
   }

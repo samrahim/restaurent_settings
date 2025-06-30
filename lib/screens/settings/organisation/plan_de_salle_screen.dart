@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PlanDeSalleScreen extends StatelessWidget {
+  const PlanDeSalleScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,8 +33,8 @@ class PlanDeSalleScreen extends StatelessWidget {
         onPressed: () {
           // Save layout
         },
-        child: const Icon(Icons.save),
         tooltip: 'Enregistrer le plan',
+        child: const Icon(Icons.save),
       ),
     );
   }

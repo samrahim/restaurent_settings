@@ -46,6 +46,9 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   pattern_lock: ^2.0.0
   http: ^1.4.0
+  lan_scanner: ^4.0.0+1
+  permission_handler: ^12.0.0+1
+  network_info_plus: ^6.1.4
 
 dev_dependencies:
   flutter_test:

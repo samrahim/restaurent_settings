@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PeripheriquesScreen extends StatelessWidget {
+  const PeripheriquesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,8 +55,8 @@ class PeripheriquesScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        child: const Icon(Icons.add_circle_outline),
         tooltip: 'Ajouter un périphérique',
+        child: const Icon(Icons.add_circle_outline),
       ),
     );
   }

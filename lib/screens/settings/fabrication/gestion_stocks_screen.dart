@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GestionStocksScreen extends StatelessWidget {
+  const GestionStocksScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +36,8 @@ class GestionStocksScreen extends StatelessWidget {
         onPressed: () {
           // Add new inventory item
         },
-        child: const Icon(Icons.add),
         tooltip: 'Ajouter un produit',
+        child: const Icon(Icons.add),
       ),
     );
   }

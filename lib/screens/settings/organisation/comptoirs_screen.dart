@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ComptoirsScreen extends StatelessWidget {
+  const ComptoirsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +50,8 @@ class ComptoirsScreen extends StatelessWidget {
         onPressed: () {
           // Add new counter
         },
-        child: const Icon(Icons.add),
         tooltip: 'Ajouter un comptoir',
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -134,7 +136,7 @@ class ComptoirsScreen extends StatelessWidget {
               ],
             ),
           ),
-          ButtonBar(
+          OverflowBar(
             children: [
               TextButton.icon(
                 onPressed: () {

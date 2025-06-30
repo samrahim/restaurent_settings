@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MesPreferencesScreen extends StatelessWidget {
+  const MesPreferencesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,8 +34,8 @@ class MesPreferencesScreen extends StatelessWidget {
         onPressed: () {
           // Save preferences
         },
-        child: const Icon(Icons.save),
         tooltip: 'Enregistrer les préférences',
+        child: const Icon(Icons.save),
       ),
     );
   }

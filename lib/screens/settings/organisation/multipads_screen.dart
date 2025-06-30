@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MultipadsScreen extends StatelessWidget {
+  const MultipadsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,8 +61,8 @@ class MultipadsScreen extends StatelessWidget {
         onPressed: () {
           // Add new device
         },
-        child: const Icon(Icons.add),
         tooltip: 'Ajouter un multipad',
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -181,7 +183,7 @@ class MultipadsScreen extends StatelessWidget {
               ],
             ),
           ),
-          ButtonBar(
+          OverflowBar(
             children: [
               TextButton.icon(
                 onPressed: () {

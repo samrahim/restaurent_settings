@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CategoriesProduitScreen extends StatelessWidget {
+  const CategoriesProduitScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,8 +69,8 @@ class CategoriesProduitScreen extends StatelessWidget {
         onPressed: () {
           // Add new category
         },
-        child: const Icon(Icons.add),
         tooltip: 'Ajouter une catégorie',
+        child: const Icon(Icons.add),
       ),
     );
   }

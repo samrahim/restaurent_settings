@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class VerrouillageScreen extends StatelessWidget {
+  const VerrouillageScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,8 +34,8 @@ class VerrouillageScreen extends StatelessWidget {
         onPressed: () {
           // Save settings
         },
-        child: const Icon(Icons.save),
         tooltip: 'Enregistrer les modifications',
+        child: const Icon(Icons.save),
       ),
     );
   }

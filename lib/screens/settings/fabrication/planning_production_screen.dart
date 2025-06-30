@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PlanningProductionScreen extends StatelessWidget {
+  const PlanningProductionScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +36,8 @@ class PlanningProductionScreen extends StatelessWidget {
         onPressed: () {
           // Add new task
         },
-        child: const Icon(Icons.add),
         tooltip: 'Ajouter une tâche',
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -232,7 +234,7 @@ class PlanningProductionScreen extends StatelessWidget {
               ],
             ),
           ),
-          ButtonBar(
+          OverflowBar(
             children: [
               TextButton.icon(
                 onPressed: () {

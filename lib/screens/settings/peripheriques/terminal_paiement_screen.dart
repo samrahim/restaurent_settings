@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TerminalPaiementScreen extends StatelessWidget {
+  const TerminalPaiementScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +36,8 @@ class TerminalPaiementScreen extends StatelessWidget {
         onPressed: () {
           // Test connection
         },
-        child: const Icon(Icons.sync),
         tooltip: 'Tester la connexion',
+        child: const Icon(Icons.sync),
       ),
     );
   }

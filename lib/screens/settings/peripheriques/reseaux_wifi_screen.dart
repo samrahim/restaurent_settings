@@ -1,6 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 
-class ReseauxWiFiScreen extends StatelessWidget {
+class ReseauxWiFiScreen extends StatefulWidget {
+  const ReseauxWiFiScreen({super.key});
+
+  @override
+  State<ReseauxWiFiScreen> createState() => _ReseauxWiFiScreenState();
+}
+
+class _ReseauxWiFiScreenState extends State<ReseauxWiFiScreen> {
+  String wifiName = '';
+  final NetworkInfo networkInfo = NetworkInfo();
+  Future<void> _getWifiName() async {
+    try {
+      final name = await networkInfo.getWifiName();
+      if (name != null) {
+        setState(() {
+          wifiName = name;
+        });
+      }
+    } catch (e) {
+      print('Erreur lors de la récupération du nom du WiFi: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    _getWifiName();
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +64,8 @@ class ReseauxWiFiScreen extends StatelessWidget {
         onPressed: () {
           // Scan for networks
         },
-        child: const Icon(Icons.refresh),
         tooltip: 'Actualiser les réseaux',
+        child: const Icon(Icons.refresh),
       ),
     );
   }
@@ -44,7 +74,7 @@ class ReseauxWiFiScreen extends StatelessWidget {
     return Card(
       child: SwitchListTile(
         title: const Text('WiFi'),
-        subtitle: const Text('Activé - Connecté à "Restaurant_Staff"'),
+        subtitle: Text('Activé - Connecté à $wifiName'),
         value: true,
         secondary: const Icon(Icons.wifi),
         onChanged: (bool value) {

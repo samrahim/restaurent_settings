@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ImpressionTicketScreen extends StatelessWidget {
+  const ImpressionTicketScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +36,8 @@ class ImpressionTicketScreen extends StatelessWidget {
         onPressed: () {
           // Print test ticket
         },
-        child: const Icon(Icons.print),
         tooltip: 'Imprimer un ticket test',
+        child: const Icon(Icons.print),
       ),
     );
   }

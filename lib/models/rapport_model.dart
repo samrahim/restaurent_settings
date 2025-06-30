@@ -17,7 +17,7 @@ class RapportModel extends Equatable {
   final bool informationDuTicketMoyenComptoirSurPlace;
   final bool informationDuTicketMoyenComptoirAEmporter;
 
-  RapportModel({
+  const RapportModel({
     required this.impresstionDesAnnulations,
     required this.impressionDuTop10Produits,
     required this.impressionDuTop10ProduitsEnValeur,

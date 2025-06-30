@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SuiviCommandesScreen extends StatelessWidget {
+  const SuiviCommandesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,8 +34,8 @@ class SuiviCommandesScreen extends StatelessWidget {
         onPressed: () {
           // Refresh orders
         },
-        child: const Icon(Icons.refresh),
         tooltip: 'Rafraîchir les commandes',
+        child: const Icon(Icons.refresh),
       ),
     );
   }

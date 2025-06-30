@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AfficheurClientScreen extends StatelessWidget {
+  const AfficheurClientScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +36,8 @@ class AfficheurClientScreen extends StatelessWidget {
         onPressed: () {
           // Test display
         },
-        child: const Icon(Icons.preview),
         tooltip: 'Tester l\'affichage',
+        child: const Icon(Icons.preview),
       ),
     );
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GrilleProduitScreen extends StatelessWidget {
+  const GrilleProduitScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -27,8 +29,8 @@ class GrilleProduitScreen extends StatelessWidget {
           onPressed: () {
             // Add new product
           },
-          child: const Icon(Icons.add),
           tooltip: 'Ajouter un produit',
+          child: const Icon(Icons.add),
         ),
       ),
     );
@@ -172,7 +174,7 @@ class GrilleProduitScreen extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          ButtonBar(
+          OverflowBar(
             children: [
               IconButton(
                 icon: const Icon(Icons.edit, size: 20),

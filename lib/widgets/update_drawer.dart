@@ -12,13 +12,13 @@ class UpdateAttributeDrawer extends StatefulWidget {
   final void Function(dynamic) onSaved;
 
   const UpdateAttributeDrawer({
-    Key? key,
+    super.key,
     required this.label,
     required this.initialValue,
     required this.fieldType,
     this.options,
     required this.onSaved,
-  }) : super(key: key);
+  });
 
   @override
   State<UpdateAttributeDrawer> createState() => _UpdateAttributeDrawerState();

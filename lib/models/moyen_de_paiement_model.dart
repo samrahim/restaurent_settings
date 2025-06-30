@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:restaurent/consts.dart';
 
 class MoyenDePaiementModel extends Equatable {
   final String? id;

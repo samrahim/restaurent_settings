@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class RemisesScreen extends StatelessWidget {
+  const RemisesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,8 +31,8 @@ class RemisesScreen extends StatelessWidget {
         onPressed: () {
           // Add new discount
         },
-        child: const Icon(Icons.add),
         tooltip: 'Ajouter une remise',
+        child: const Icon(Icons.add),
       ),
     );
   }

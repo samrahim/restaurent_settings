@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ProduitsScreen extends StatelessWidget {
+  const ProduitsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,8 +44,8 @@ class ProduitsScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        child: const Icon(Icons.add),
         tooltip: 'Ajouter un produit',
+        child: const Icon(Icons.add),
       ),
     );
   }

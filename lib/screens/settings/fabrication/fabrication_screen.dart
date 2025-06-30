@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FabricationScreen extends StatelessWidget {
+  const FabricationScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,8 +57,8 @@ class FabricationScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        child: const Icon(Icons.add),
         tooltip: 'Ajouter un point de fabrication',
+        child: const Icon(Icons.add),
       ),
     );
   }

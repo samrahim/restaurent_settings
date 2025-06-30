@@ -7,11 +7,11 @@ class SalleIdsPicker extends StatelessWidget {
   final Function(List<int>) onSelectionChanged;
 
   const SalleIdsPicker({
-    Key? key,
+    super.key,
     required this.salles,
     required this.selectedSalleIds,
     required this.onSelectionChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

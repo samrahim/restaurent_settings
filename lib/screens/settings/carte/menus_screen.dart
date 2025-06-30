@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MenusScreen extends StatelessWidget {
+  const MenusScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,8 +44,8 @@ class MenusScreen extends StatelessWidget {
         onPressed: () {
           // Add new menu
         },
-        child: const Icon(Icons.add),
         tooltip: 'Ajouter un menu',
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -130,7 +132,7 @@ class MenusScreen extends StatelessWidget {
                       .toList(),
             ),
           ),
-          ButtonBar(
+          OverflowBar(
             children: [
               TextButton.icon(
                 onPressed: () {

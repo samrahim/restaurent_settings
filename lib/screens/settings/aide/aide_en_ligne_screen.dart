@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AideEnLigneScreen extends StatelessWidget {
+  const AideEnLigneScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,8 +65,8 @@ class AideEnLigneScreen extends StatelessWidget {
         onPressed: () {
           // Contact support
         },
-        child: const Icon(Icons.chat),
         tooltip: 'Chat avec le support',
+        child: const Icon(Icons.chat),
       ),
     );
   }

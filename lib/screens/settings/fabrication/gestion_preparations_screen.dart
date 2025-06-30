@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GestionPreparationsScreen extends StatelessWidget {
+  const GestionPreparationsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,8 +34,8 @@ class GestionPreparationsScreen extends StatelessWidget {
         onPressed: () {
           // Save configuration
         },
-        child: const Icon(Icons.save),
         tooltip: 'Enregistrer les modifications',
+        child: const Icon(Icons.save),
       ),
     );
   }

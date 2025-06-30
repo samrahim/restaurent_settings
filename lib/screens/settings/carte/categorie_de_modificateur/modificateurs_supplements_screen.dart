@@ -350,32 +350,30 @@ class _ModificateursSupplementsScreenState
             margin: const EdgeInsets.all(18),
             child: Column(
               children: [
-                ...provider.allcategories
-                    .map(
-                      (e) => Column(
-                        children: [
-                          GestureDetector(
-                            child: ListTile(
-                              title: Text(
-                                e.nom!,
-                                style: AppTextStyle.indingoHeading,
-                              ),
-                              trailing: const Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.indigo,
-                              ),
-                            ),
-                            onTap: () {
-                              provider.select(e);
-                            },
+                ...provider.allcategories.map(
+                  (e) => Column(
+                    children: [
+                      GestureDetector(
+                        child: ListTile(
+                          title: Text(
+                            e.nom!,
+                            style: AppTextStyle.indingoHeading,
                           ),
-                          e != provider.allcategories.last
-                              ? const Divider()
-                              : const SizedBox(),
-                        ],
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.indigo,
+                          ),
+                        ),
+                        onTap: () {
+                          provider.select(e);
+                        },
                       ),
-                    )
-                    .toList(),
+                      e != provider.allcategories.last
+                          ? const Divider()
+                          : const SizedBox(),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

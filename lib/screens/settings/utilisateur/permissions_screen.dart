@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PermissionsScreen extends StatelessWidget {
+  const PermissionsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,8 +82,8 @@ class PermissionsScreen extends StatelessWidget {
         onPressed: () {
           // Save permissions
         },
-        child: const Icon(Icons.save),
         tooltip: 'Enregistrer les modifications',
+        child: const Icon(Icons.save),
       ),
     );
   }

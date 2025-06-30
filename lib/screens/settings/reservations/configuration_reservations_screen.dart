@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ConfigurationReservationsScreen extends StatelessWidget {
+  const ConfigurationReservationsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +36,8 @@ class ConfigurationReservationsScreen extends StatelessWidget {
         onPressed: () {
           // Save configuration
         },
-        child: const Icon(Icons.save),
         tooltip: 'Enregistrer les modifications',
+        child: const Icon(Icons.save),
       ),
     );
   }

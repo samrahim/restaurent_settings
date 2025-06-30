@@ -84,8 +84,9 @@ class _TauxTVAScreenState extends State<TauxTVAScreen> {
                             ),
                             initialValue: tva.tauxTva.toStringAsFixed(2),
                             validator: (value) {
-                              if (value == null || value.isEmpty)
+                              if (value == null || value.isEmpty) {
                                 return 'Ce champ est obligatoire';
+                              }
                               try {
                                 double.parse(value);
                                 return null;

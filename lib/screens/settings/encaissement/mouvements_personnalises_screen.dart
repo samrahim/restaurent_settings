@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MouvementsPersonnalisesScreen extends StatelessWidget {
+  const MouvementsPersonnalisesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,8 +34,8 @@ class MouvementsPersonnalisesScreen extends StatelessWidget {
         onPressed: () {
           // Add new custom movement
         },
-        child: const Icon(Icons.add),
         tooltip: 'Ajouter un mouvement',
+        child: const Icon(Icons.add),
       ),
     );
   }

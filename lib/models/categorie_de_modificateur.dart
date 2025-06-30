@@ -11,7 +11,7 @@ class CategorieDeModificateur extends Equatable {
   final String? typeDeSelection;
   final bool? obligatoire;
   final Color? color;
-
+  final List<SubCategorieDeModificateur> subCategories;
   const CategorieDeModificateur({
     required this.id,
     required this.nom,
