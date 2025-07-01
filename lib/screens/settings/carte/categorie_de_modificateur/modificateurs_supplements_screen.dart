@@ -46,7 +46,6 @@ class _ModificateursSupplementsScreenState
       endDrawer: _endDrawer(),
       drawer: BlocBuilder<DrawerBloc, DrawerState>(
         builder: (context, state) {
-          print('we build');
           if (state is DrawerCreateSubCategorieDeModificateur) {
             return Drawer(
               width: MediaQuery.of(context).size.width * .33,
@@ -94,24 +93,40 @@ class _ModificateursSupplementsScreenState
                     const SizedBox(height: 16),
                     CreateButton(
                       onPressed: () {
+                        final updatedModificateur = modificateur.copyWith(
+                          subCategories: [
+                            ...modificateur.subCategories,
+                            SubCategorieDeModificateur(
+                              id: modificateur.subCategories.length.toString(),
+                              nom: supplement.text,
+                              prix: double.tryParse(prix.text) ?? 0.0,
+                              tvaModel: tauxTvaList[1],
+                            ),
+                          ],
+                        );
+
                         final provider =
                             context.read<CategorieModificateurProvider>();
                         provider.update(
-                          modificateur.copyWith(
+                          state.modificateur.copyWith(
                             subCategories: [
-                              ...modificateur.subCategories,
+                              ...state.modificateur.subCategories,
                               SubCategorieDeModificateur(
                                 id:
-                                    modificateur.subCategories.length
+                                    state.modificateur.subCategories.length
                                         .toString(),
                                 nom: supplement.text,
-                                prix: 12.2,
+                                prix: double.tryParse(prix.text) ?? 0.0,
                                 tvaModel: tauxTvaList[1],
                               ),
                             ],
                           ),
                         );
-                        _scaffoldKey.currentState?.closeEndDrawer();
+
+                        supplement.clear();
+                        prix.clear();
+
+                        _scaffoldKey.currentState?.closeDrawer();
                       },
                       buttonText:
                           'Créer une nouvelle sous-catégorie de modificateurs',

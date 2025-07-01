@@ -76,7 +76,7 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
       if (event is OpenCreateSubCategorieDeModificateur) {
         emit(
           DrawerCreateSubCategorieDeModificateur(
-            modificateurId: event.modificateurId,
+            modificateur: event.modificateur,
           ),
         );
       }

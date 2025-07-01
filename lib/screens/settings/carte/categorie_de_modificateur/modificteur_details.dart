@@ -76,7 +76,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                             onPressed: () {
                               context.read<DrawerBloc>().add(
                                 OpenCreateSubCategorieDeModificateur(
-                                  modificateurId: widget.modificateur.id!,
+                                  modificateur: widget.modificateur,
                                 ),
                               );
 
@@ -98,9 +98,11 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                           return Column(
                             children: [
                               _buildModifierTile(
-                                widget.modificateur.subCategories[index],
+                                widget.modificateur.subCategories[index].nom,
                               ),
-                              if (index != 4) const Divider(),
+                              if (index !=
+                                  widget.modificateur.subCategories.length - 1)
+                                const Divider(),
                             ],
                           );
                         },
@@ -126,12 +128,12 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                       color: Colors.white,
                       child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: widget.modificateur.subCategories.length,
+                        itemCount: widget.modificateur.produits.length,
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
                               _buildModifierTile(
-                                widget.modificateur.subCategories[index],
+                                widget.modificateur.produits[index].nom ?? '',
                               ),
                               if (index !=
                                   widget.modificateur.subCategories.length)
@@ -328,9 +330,9 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
     );
   }
 
-  Widget _buildModifierTile(SubCategorieDeModificateur subCategorie) {
+  Widget _buildModifierTile(String nom) {
     return ListTile(
-      title: Text(subCategorie.nom, style: AppTextStyle.indingosubHeading),
+      title: Text(nom, style: AppTextStyle.indingosubHeading),
       trailing: const Icon(Icons.drag_handle),
     );
   }
