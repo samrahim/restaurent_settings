@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ActionButton extends StatefulWidget {
-  void Function()? onPressed;
-  String text;
-  ActionButton({super.key, required this.onPressed, required this.text});
+  final void Function()? onPressed;
+  final String text;
+  const ActionButton({super.key, required this.onPressed, required this.text});
 
   @override
   State<ActionButton> createState() => _ActionButtonState();

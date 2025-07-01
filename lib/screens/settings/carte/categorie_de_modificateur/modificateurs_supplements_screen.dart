@@ -8,8 +8,9 @@ import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
 import 'package:restaurent/models/taux_tva_model.dart';
 import 'package:restaurent/providers/categorie_de_modificateur.dart';
+import 'package:restaurent/providers/taux_tva_provider.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificteur_details.dart';
-import 'package:restaurent/widgets/salle_ids_picker.dart';
+import 'package:restaurent/widgets/salles_picker.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
 class ModificateursSupplementsScreen extends StatefulWidget {
@@ -39,6 +40,8 @@ class _ModificateursSupplementsScreenState
     produits: [],
   );
 
+  TauxTvaModel tvaModel = tauxTvaList[0];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,68 +55,89 @@ class _ModificateursSupplementsScreenState
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const SizedBox(height: 10),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: Text(
-                        'Créer une nouvelle sous-catégorie',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                    Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          child: Text(
+                            'Créer une nouvelle sous-catégorie',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: supplement,
-                      decoration: InputDecoration(
-                        labelText: 'Nom',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[50],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: prix,
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: supplement,
 
-                      decoration: InputDecoration(
-                        labelText: 'Prix',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          decoration: InputDecoration(
+                            labelText: 'Nom',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[50],
+                          ),
                         ),
-                        filled: true,
-                        fillColor: Colors.grey[50],
-                      ),
-                    ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: prix,
 
-                    const SizedBox(height: 16),
+                          decoration: InputDecoration(
+                            labelText: 'Prix',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[50],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        DropdownButtonFormField<TauxTvaModel>(
+                          isExpanded: true,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                color: AppColors.greyaccent!,
+                              ),
+                            ),
+                            labelText: 'Selectionner TVA',
+                          ),
+                          value: tvaModel,
+                          items:
+                              context.read<TauxEtTvaProvider>().tauxTvas.map((
+                                item,
+                              ) {
+                                return DropdownMenuItem(
+                                  value: item,
+                                  child: Text(item.tauxTva.toString()),
+                                );
+                              }).toList(),
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                tvaModel = value;
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                     CreateButton(
                       onPressed: () {
-                        final updatedModificateur = modificateur.copyWith(
-                          subCategories: [
-                            ...modificateur.subCategories,
-                            SubCategorieDeModificateur(
-                              id: modificateur.subCategories.length.toString(),
-                              nom: supplement.text,
-                              prix: double.tryParse(prix.text) ?? 0.0,
-                              tvaModel: tauxTvaList[1],
-                            ),
-                          ],
-                        );
-
-                        final provider =
-                            context.read<CategorieModificateurProvider>();
-                        provider.update(
+                        context.read<CategorieModificateurProvider>().update(
                           state.modificateur.copyWith(
                             subCategories: [
                               ...state.modificateur.subCategories,
                               SubCategorieDeModificateur(
                                 id:
-                                    state.modificateur.subCategories.length
+                                    (state.modificateur.subCategories.length +
+                                            1)
                                         .toString(),
                                 nom: supplement.text,
                                 prix: double.tryParse(prix.text) ?? 0.0,
@@ -256,7 +280,7 @@ class _ModificateursSupplementsScreenState
           return Drawer(
             width: MediaQuery.of(context).size.width * .33,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
                   const SizedBox(height: 10),

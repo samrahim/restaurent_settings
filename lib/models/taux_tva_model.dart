@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 
 class TauxTvaModel extends Equatable {
-  final String id;
-  final double tauxTva;
-  final int elementsInclus;
+  final String? id;
+  final double? tauxTva;
+  final int? elementsInclus;
 
   const TauxTvaModel({
     required this.tauxTva,

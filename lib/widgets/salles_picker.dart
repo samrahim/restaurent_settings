@@ -44,11 +44,25 @@ class SalleIdsPicker extends StatelessWidget {
                   selected: selected,
                   selectedColor: AppColors.indingo200,
                   onSelected: (sel) {
-                    final updatedSalleIds =
-                        sel
-                            ? [...selectedSalleIds, id]
-                            : selectedSalleIds.where((e) => e != id).toList();
-                    onSelectionChanged(updatedSalleIds);
+                    if (salle.nom == 'Toutes') {
+                      final updatedSalleIds = sel ? [id] : [];
+                      onSelectionChanged(updatedSalleIds as List<int>);
+                    } else {
+                      final updatedSalleIds =
+                          sel
+                              ? [
+                                ...selectedSalleIds.where(
+                                  (e) =>
+                                      e !=
+                                      salles
+                                          .firstWhere((s) => s.nom == 'Toutes')
+                                          .id,
+                                ),
+                                id,
+                              ]
+                              : selectedSalleIds.where((e) => e != id).toList();
+                      onSelectionChanged(updatedSalleIds);
+                    }
                   },
                 );
               },

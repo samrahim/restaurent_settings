@@ -39,16 +39,12 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
     );
     _boolValue = widget.initialValue == true || widget.initialValue == 'true';
     _selectedColor =
-        widget.initialValue is Color
-            ? widget.initialValue
-            : Colors.blue; // Default color
+        widget.initialValue is Color ? widget.initialValue : Colors.blue;
 
     if (widget.fieldType == FieldType.choice) {
       if (widget.options != null &&
           widget.options!.isNotEmpty &&
           widget.options!.first is SalleModel) {
-        print('update drawer');
-        // salles: list of ids
         _selectedChoices =
             widget.initialValue != null
                 ? List<int>.from(widget.initialValue)
@@ -185,10 +181,38 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                             selectedColor: AppColors.indingo200,
                             onSelected: (selected) {
                               setState(() {
-                                if (selected) {
-                                  _selectedChoices.add(id);
+                                if (option.nom == 'Toutes') {
+                                  if (selected) {
+                                    _selectedChoices = [option.id];
+                                  } else {
+                                    _selectedChoices.remove(option.id);
+                                  }
+                                } else if (option is SalleModel) {
+                                  if (selected) {
+                                    _selectedChoices =
+                                        _selectedChoices
+                                            .where(
+                                              (id) =>
+                                                  id !=
+                                                  widget.options!
+                                                      .firstWhere(
+                                                        (s) =>
+                                                            s is SalleModel &&
+                                                            s.nom == 'Toutes',
+                                                      )
+                                                      .id,
+                                            )
+                                            .toList();
+                                    _selectedChoices.add(option.id);
+                                  } else {
+                                    _selectedChoices.remove(option.id);
+                                  }
                                 } else {
-                                  _selectedChoices.remove(id);
+                                  if (selected) {
+                                    _selectedChoices.add(option.toString());
+                                  } else {
+                                    _selectedChoices.remove(option.toString());
+                                  }
                                 }
                               });
                             },

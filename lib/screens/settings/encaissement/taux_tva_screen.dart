@@ -82,7 +82,7 @@ class _TauxTVAScreenState extends State<TauxTVAScreen> {
                             keyboardType: TextInputType.numberWithOptions(
                               decimal: true,
                             ),
-                            initialValue: tva.tauxTva.toStringAsFixed(2),
+                            initialValue: tva.tauxTva!.toStringAsFixed(2),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Ce champ est obligatoire';

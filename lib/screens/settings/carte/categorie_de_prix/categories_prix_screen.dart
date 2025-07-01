@@ -8,7 +8,7 @@ import 'package:restaurent/providers/categorie_de_prix_provider.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_prix/catgorie_detaits.dart';
 import 'package:restaurent/widgets/widgets.dart';
 import 'package:restaurent/consts.dart';
-import 'package:restaurent/widgets/salle_ids_picker.dart';
+import 'package:restaurent/widgets/salles_picker.dart';
 
 class CategoriesPrixScreen extends StatefulWidget {
   const CategoriesPrixScreen({super.key});
@@ -51,15 +51,21 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(16),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        'Nouvelle catégorie de prix',
-                        style: Theme.of(context).textTheme.titleLarge,
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        child: Text(
+                          'Créer une nouvelle catégorie de prix',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
+
                       const SizedBox(height: 24),
 
-                      // Nom
                       TextFormField(
                         initialValue: m.nom,
                         decoration: InputDecoration(

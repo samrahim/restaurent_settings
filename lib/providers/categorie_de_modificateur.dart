@@ -40,6 +40,7 @@ class CategorieModificateurProvider extends ChangeNotifier {
         _allcategories.map((cat) {
           return cat.id == updated.id ? updated : cat;
         }).toList();
+
     _selected = updated;
     notifyListeners();
   }
