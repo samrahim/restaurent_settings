@@ -62,35 +62,27 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                           ),
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 4.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: AppColors.greyaccent!,
-                            width: .9,
-                          ),
-                        ),
-                        child: TextFormField(
-                          controller: nameController,
-                          decoration: InputDecoration(
-                            labelText: 'Nom de la catégorie',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          onChanged: (value) {
-                            final updated = m.copyWith(nom: value);
-                            context.read<DrawerBloc>().add(
-                              OpenCreatePaiementMethodeDrawer(model: updated),
-                            );
-                          },
-                        ),
+
+                      CustomTextField(
+                        controller: nameController,
+                        label: 'Nom de la catégorie',
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Nom de la catégorie est requis';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          final updated = m.copyWith(nom: value);
+                          context.read<DrawerBloc>().add(
+                            OpenCreatePaiementMethodeDrawer(model: updated),
+                          );
+                        },
                       ),
 
                       Container(
-                        margin: EdgeInsets.symmetric(vertical: 4.0),
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
@@ -131,7 +123,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                       ),
 
                       Container(
-                        margin: EdgeInsets.symmetric(vertical: 4.0),
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
@@ -173,7 +165,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                       ),
 
                       Container(
-                        margin: EdgeInsets.symmetric(vertical: 4.0),
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
@@ -198,7 +190,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                       ),
 
                       Container(
-                        margin: EdgeInsets.symmetric(vertical: 4.0),
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
@@ -223,7 +215,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                       ),
 
                       Container(
-                        margin: EdgeInsets.symmetric(vertical: 4.0),
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
@@ -267,7 +259,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                       ),
 
                       Container(
-                        margin: EdgeInsets.symmetric(vertical: 4.0),
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
@@ -292,7 +284,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                       ),
 
                       Container(
-                        margin: EdgeInsets.symmetric(vertical: 4.0),
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
@@ -327,7 +319,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                         },
                       ),
                       Container(
-                        margin: EdgeInsets.symmetric(vertical: 4.0),
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),

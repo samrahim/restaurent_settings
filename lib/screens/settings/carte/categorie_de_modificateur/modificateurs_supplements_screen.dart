@@ -282,6 +282,7 @@ class _ModificateursSupplementsScreenState
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10),
                   const Padding(
@@ -295,17 +296,18 @@ class _ModificateursSupplementsScreenState
                     ),
                   ),
                   const SizedBox(height: 16),
-                  TextField(
+                  CustomTextField(
                     controller: name,
-                    decoration: InputDecoration(
-                      labelText: 'Nom',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                    ),
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return 'Nom de la categorie est requis';
+                      }
+                      return null;
+                    },
+                    hint: 'Nom',
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
+
                   const SizedBox(height: 16),
                   SalleIdsPicker(
                     salles: salles,

@@ -3,6 +3,7 @@ import 'package:pattern_lock/pattern_lock.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/widgets/create_button.dart';
+import 'package:restaurent/widgets/custom_text_field.dart';
 import 'package:restaurent/widgets/show_picket.dart';
 
 class UpdateAttributeDrawer extends StatefulWidget {

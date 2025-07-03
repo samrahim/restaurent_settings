@@ -25,6 +25,7 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
   TextEditingController qrCode = TextEditingController();
   String role = roleList[0];
   String group = groupeList[0];
+  final _formKey = GlobalKey<FormState>();
   @override
   void dispose() {
     nom.dispose();
@@ -42,139 +43,136 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                child: Text(
-                  'Créer un nouvel utilisateur',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Text(
+                    'Créer un nouveau utilisateur',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
 
-              TextField(
-                controller: nom,
-                decoration: InputDecoration(
-                  labelText: 'Nom',
-                  border: OutlineInputBorder(
+                CustomTextField(
+                  controller: nom,
+                  label: "Nom",
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Le nom d\'utilisateur est requis';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                CustomTextField(
+                  controller: prenom,
+                  label: "Prénom",
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Le prénom d\'utilisateur est requis';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 16),
+
+                // Dropdown Groupe
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 4.0),
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade400),
+                    color: Colors.grey[50],
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[50],
+                  child: DropdownButtonFormField<String>(
+                    value: group,
+                    decoration: const InputDecoration(
+                      labelText: 'Groupe',
+                      border: InputBorder.none,
+                    ),
+                    items:
+                        groupeList
+                            .map(
+                              (grp) => DropdownMenuItem(
+                                value: grp,
+                                child: Text(grp),
+                              ),
+                            )
+                            .toList(),
+                    onChanged: (value) => setState(() => group = value!),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
+                CustomTextField(
+                  controller: motPasseChiffre,
+                  label: "Mot de passe chiffre",
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Le mot de passe est requis';
+                    }
+                    if (!RegExp(r'^-?\d+$').hasMatch(value)) {
+                      return 'Minimum entier de 8 chaine';
+                    }
 
-              TextField(
-                controller: prenom,
-                decoration: InputDecoration(
-                  labelText: 'Prénom',
-                  border: OutlineInputBorder(
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 16),
+
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade400),
+                    color: Colors.grey[50],
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[50],
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Dropdown Groupe
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 4.0),
-
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade400),
-                  color: Colors.grey[50],
-                ),
-                child: DropdownButtonFormField<String>(
-                  value: group,
-                  decoration: const InputDecoration(
-                    labelText: 'Groupe',
-                    border: InputBorder.none,
+                  child: DropdownButtonFormField<String>(
+                    value: role,
+                    decoration: const InputDecoration(
+                      labelText: 'Rôle',
+                      border: InputBorder.none,
+                    ),
+                    items:
+                        roleList
+                            .map(
+                              (r) => DropdownMenuItem(value: r, child: Text(r)),
+                            )
+                            .toList(),
+                    onChanged: (value) => setState(() => role = value!),
                   ),
-                  items:
-                      groupeList
-                          .map(
-                            (grp) =>
-                                DropdownMenuItem(value: grp, child: Text(grp)),
-                          )
-                          .toList(),
-                  onChanged: (value) => setState(() => group = value!),
                 ),
-              ),
-              const SizedBox(height: 16),
 
-              TextField(
-                controller: motPasseSchema,
-                decoration: InputDecoration(
-                  labelText: 'Mot de passe Schema',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey[50],
+                const SizedBox(height: 24),
+                CreateButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      final provider = context.read<UtilisateurProvider>();
+                      provider.createUtilisateur(
+                        groupe: group,
+                        motPasseChiffre: motPasseChiffre.text,
+                        nom: nom.text,
+                        prenom: prenom.text,
+                        qrCode: qrCode.text,
+                        role: role,
+                        motPasseSchema: motPasseSchema.text,
+                      );
+                      _scaffoldKey.currentState?.closeEndDrawer();
+                    }
+                  },
+                  buttonText: "Ajouter",
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              TextField(
-                controller: motPasseChiffre,
-                decoration: InputDecoration(
-                  labelText: 'Mot de passe chiffre',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey[50],
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Dropdown Rôle
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade400),
-                  color: Colors.grey[50],
-                ),
-                child: DropdownButtonFormField<String>(
-                  value: role,
-                  decoration: const InputDecoration(
-                    labelText: 'Rôle',
-                    border: InputBorder.none,
-                  ),
-                  items:
-                      roleList
-                          .map(
-                            (r) => DropdownMenuItem(value: r, child: Text(r)),
-                          )
-                          .toList(),
-                  onChanged: (value) => setState(() => role = value!),
-                ),
-              ),
-
-              const SizedBox(height: 24),
-              CreateButton(
-                onPressed: () {
-                  final provider = context.read<UtilisateurProvider>();
-                  provider.createUtilisateur(
-                    groupe: group,
-                    motPasseChiffre: motPasseChiffre.text,
-                    nom: nom.text,
-                    prenom: prenom.text,
-                    qrCode: qrCode.text,
-                    role: role,
-                    motPasseSchema: motPasseSchema.text,
-                  );
-                  _scaffoldKey.currentState?.closeEndDrawer();
-                },
-                buttonText: "Ajouter",
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

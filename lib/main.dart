@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:network_tools_flutter/network_tools_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 import 'screens/reglage_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final appDocDir = await getApplicationDocumentsDirectory();
+  await configureNetworkTools(appDocDir.path, enableDebugging: true);
   runApp(const MyApp());
 }
 

@@ -4,7 +4,6 @@ import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
 import 'package:restaurent/models/salle_model.dart';
-import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
 class ModificateurDetails extends StatefulWidget {
@@ -26,125 +25,121 @@ class ModificateurDetails extends StatefulWidget {
 class _ModificateurDetailsState extends State<ModificateurDetails> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey.shade100,
-      child: Row(
+    return Scaffold(
+      body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             flex: 3,
-            child: Container(
-              decoration: BoxDecoration(color: Colors.grey.shade100),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'CATÉGORIE DE MODIFICATEURS',
-                            style: AppTextStyle.greysubHeading,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    Container(
-                      color: Colors.grey.shade400,
-                      child: ListTile(
-                        title: Text(
-                          'Informations générales',
-                          style: AppTextStyle.indingoHeading,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'CATÉGORIE DE MODIFICATEURS',
+                          style: AppTextStyle.greysubHeading,
                         ),
-                        trailing: const Icon(Icons.chevron_right),
-                      ),
+                      ],
                     ),
+                  ),
 
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'MODIFICATEURS / SUPPLÉMENTS',
-                            style: AppTextStyle.greysubHeading,
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              context.read<DrawerBloc>().add(
-                                OpenCreateSubCategorieDeModificateur(
-                                  modificateur: widget.modificateur,
-                                ),
-                              );
-
-                              widget.scaffoldKey.currentState!.openDrawer();
-                            },
-                            icon: Icon(Icons.add, color: Colors.red),
-                          ),
-                        ],
+                  Container(
+                    color: Colors.grey.shade400,
+                    child: ListTile(
+                      title: Text(
+                        'Informations générales',
+                        style: AppTextStyle.indingoHeading,
                       ),
+                      trailing: const Icon(Icons.chevron_right),
                     ),
+                  ),
 
-                    Container(
-                      color: Colors.white,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: widget.modificateur.subCategories.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              _buildModifierTile(
-                                widget.modificateur.subCategories[index].nom,
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'MODIFICATEURS / SUPPLÉMENTS',
+                          style: AppTextStyle.greysubHeading,
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            context.read<DrawerBloc>().add(
+                              OpenCreateSubCategorieDeModificateur(
+                                modificateur: widget.modificateur,
                               ),
-                              if (index !=
-                                  widget.modificateur.subCategories.length - 1)
-                                const Divider(),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
+                            );
 
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('PRODUITS', style: AppTextStyle.greysubHeading),
-
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.add, color: Colors.red),
-                          ),
-                        ],
-                      ),
+                            widget.scaffoldKey.currentState!.openDrawer();
+                          },
+                          icon: Icon(Icons.add, color: Colors.red),
+                        ),
+                      ],
                     ),
+                  ),
 
-                    Container(
-                      color: Colors.white,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: widget.modificateur.produits.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              _buildModifierTile(
-                                widget.modificateur.produits[index].nom ?? '',
-                              ),
-                              if (index !=
-                                  widget.modificateur.subCategories.length)
-                                const Divider(),
-                            ],
-                          );
-                        },
-                      ),
+                  Container(
+                    color: Colors.white,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: widget.modificateur.subCategories.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            _buildModifierTile(
+                              widget.modificateur.subCategories[index].nom,
+                            ),
+                            if (index !=
+                                widget.modificateur.subCategories.length - 1)
+                              const Divider(),
+                          ],
+                        );
+                      },
                     ),
-                  ],
-                ),
+                  ),
+
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('PRODUITS', style: AppTextStyle.greysubHeading),
+
+                        IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.add, color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Container(
+                    color: Colors.white,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: widget.modificateur.produits.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            _buildModifierTile(
+                              widget.modificateur.produits[index].nom ?? '',
+                            ),
+                            if (index !=
+                                widget.modificateur.subCategories.length)
+                              const Divider(),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
