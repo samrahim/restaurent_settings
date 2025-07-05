@@ -5,10 +5,10 @@ import 'package:restaurent/models/produits_model.dart';
 import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
 
 enum AffectationMode {
-  pourtout,
-  pourseulement,
-  pourtoutsauf,
-  ajouteralisteexistante,
+  Pour_tout,
+  Pour_seulement,
+  Pour_tout_sauf,
+  Ajouter_a_liste_existante,
 }
 
 class CategorieDeModificateur extends Equatable {
@@ -87,7 +87,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     obligatoire: true,
     color: Colors.pink,
     produits: [],
-    affectationMode: AffectationMode.pourtout,
+    affectationMode: AffectationMode.Ajouter_a_liste_existante,
   ),
   CategorieDeModificateur(
     subCategories: [],
@@ -99,7 +99,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     obligatoire: false,
     color: Colors.purpleAccent,
     produits: [],
-    affectationMode: AffectationMode.ajouteralisteexistante,
+    affectationMode: AffectationMode.Ajouter_a_liste_existante,
   ),
   CategorieDeModificateur(
     subCategories: [],
@@ -111,7 +111,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     obligatoire: false,
     color: Colors.deepOrangeAccent,
     produits: [],
-    affectationMode: AffectationMode.pourtoutsauf,
+    affectationMode: AffectationMode.Pour_tout_sauf,
   ),
   CategorieDeModificateur(
     subCategories: [],
@@ -122,7 +122,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     typeDeSelection: optiontypeDeSelection[1],
     obligatoire: true,
     color: Colors.amber,
-    affectationMode: AffectationMode.pourseulement,
+    affectationMode: AffectationMode.Pour_seulement,
     produits: [],
   ),
   CategorieDeModificateur(
@@ -135,6 +135,6 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     obligatoire: false,
     color: Colors.cyan,
     produits: [],
-    affectationMode: AffectationMode.ajouteralisteexistante,
+    affectationMode: AffectationMode.Ajouter_a_liste_existante,
   ),
 ];

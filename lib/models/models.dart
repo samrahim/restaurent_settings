@@ -3,3 +3,6 @@ export 'utilisateur_model.dart';
 export 'categorie_de_prix_model.dart';
 export 'moyen_de_paiement_model.dart';
 export 'produits_model.dart';
+export 'categorie_de_modificateur.dart';
+export 'salle_model.dart';
+export 'sub_categorie_de_modificateur.dart';

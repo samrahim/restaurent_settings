@@ -3,14 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
-import 'package:restaurent/models/categorie_de_modificateur.dart';
-import 'package:restaurent/models/salle_model.dart';
-import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
-import 'package:restaurent/models/taux_tva_model.dart';
-import 'package:restaurent/providers/categorie_de_modificateur.dart';
-import 'package:restaurent/providers/taux_tva_provider.dart';
+import 'package:restaurent/models/models.dart';
+import 'package:restaurent/providers/providers.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificteur_details.dart';
-import 'package:restaurent/widgets/salles_picker.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
 class ModificateursSupplementsScreen extends StatefulWidget {
@@ -38,7 +33,7 @@ class _ModificateursSupplementsScreenState
     typeDeSelection: optiontypeDeSelection[0],
     subCategories: [],
     produits: [],
-    affectationMode: AffectationMode.pourtout,
+    affectationMode: AffectationMode.Pour_tout,
   );
 
   TauxTvaModel tvaModel = tauxTvaList[0];
@@ -495,41 +490,22 @@ class _ModificateursSupplementsScreenState
                 fieldType: FieldType.dropdown,
                 label: 'Affectation mode',
                 options:
-                    AffectationMode.values
-                        .map(
-                          (mode) =>
-                              mode == AffectationMode.pourseulement
-                                  ? 'Pour seulement'
-                                  : mode == AffectationMode.pourtout
-                                  ? 'Pour tout'
-                                  : mode ==
-                                      AffectationMode.ajouteralisteexistante
-                                  ? 'Ajouter a liste existante'
-                                  : mode == AffectationMode.pourseulement
-                                  ? "Pour seulement"
-                                  : 'Pour tout',
-                        )
-                        .toList(),
+                    AffectationMode.values.map((mode) {
+                      // Replace underscores with spaces for display
+                      return mode.name.replaceAll('_', ' ');
+                    }).toList(),
                 initialValue:
-                    state.modificateur.affectationMode! ==
-                            AffectationMode.ajouteralisteexistante
-                        ? 'Ajouter a liste existante'
-                        : state.modificateur.affectationMode! ==
-                            AffectationMode.pourseulement
-                        ? 'Pour seulement'
-                        : state.modificateur.affectationMode! ==
-                            AffectationMode.pourtout
-                        ? 'Pour tout'
-                        : state.modificateur.affectationMode! ==
-                            AffectationMode.pourtoutsauf
-                        ? 'Pour tout sauf'
-                        : 'Affectation mode',
+                    state.modificateur.affectationMode?.name.replaceAll(
+                      '_',
+                      ' ',
+                    ) ??
+                    AffectationMode.Pour_tout.name.replaceAll('_', ' '),
                 onSaved: (v) {
                   final provider =
                       context.read<CategorieModificateurProvider>();
                   final updatedMode = AffectationMode.values.firstWhere(
-                    (mode) => mode.name == v,
-                    orElse: () => AffectationMode.pourtout,
+                    (mode) => mode.name.replaceAll('_', ' ') == v,
+                    orElse: () => AffectationMode.Pour_tout, // Default fallback
                   );
                   provider.update(
                     state.modificateur.copyWith(affectationMode: updatedMode),

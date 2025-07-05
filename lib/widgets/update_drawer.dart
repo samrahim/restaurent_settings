@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pattern_lock/pattern_lock.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/models/models.dart';
 import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/widgets/create_button.dart';
-import 'package:restaurent/widgets/custom_text_field.dart';
 import 'package:restaurent/widgets/show_picket.dart';
 
 class UpdateAttributeDrawer extends StatefulWidget {
@@ -31,10 +31,15 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
   late bool _boolValue;
   late Color _selectedColor;
   late List<dynamic> _selectedChoices;
+  op() {
+    print(widget.options!.first.runtimeType);
+    print(widget.options!.first is AffectationMode);
+  }
 
   @override
   void initState() {
     super.initState();
+    op();
     _controller = TextEditingController(
       text: widget.initialValue?.toString() ?? '',
     );
