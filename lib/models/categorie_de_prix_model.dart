@@ -16,6 +16,7 @@ class CategorieDePrixModel extends Equatable {
   List<int>? salleIDS;
   TimeOfDay? heureDebut;
   TimeOfDay? heureFin;
+
   List<ProduitsModel>? produits;
 
   CategorieDePrixModel({
@@ -70,6 +71,7 @@ class CategorieDePrixModel extends Equatable {
       salleIDS: salleIDS ?? this.salleIDS,
       heureDebut: heureDebut ?? this.heureDebut,
       heureFin: heureFin ?? this.heureFin,
+
       produits: produits ?? this.produits,
     );
   }

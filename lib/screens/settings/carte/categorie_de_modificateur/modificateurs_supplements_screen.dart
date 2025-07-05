@@ -38,6 +38,7 @@ class _ModificateursSupplementsScreenState
     typeDeSelection: optiontypeDeSelection[0],
     subCategories: [],
     produits: [],
+    affectationMode: AffectationMode.pourtout,
   );
 
   TauxTvaModel tvaModel = tauxTvaList[0];
@@ -406,6 +407,43 @@ class _ModificateursSupplementsScreenState
                       border: Border.all(color: Colors.grey),
                     ),
                     child: ListTile(
+                      title: const Text('Affectation mode'),
+                      trailing: DropdownButton<AffectationMode>(
+                        underline: const SizedBox(),
+                        value: createModel.affectationMode,
+                        style: AppTextStyle.indingosubHeading,
+                        items:
+                            AffectationMode.values
+                                .map(
+                                  (v) => DropdownMenuItem(
+                                    value: v,
+                                    child: Text(v.name),
+                                  ),
+                                )
+                                .toList(),
+                        onChanged: (v) {
+                          if (v != null) {
+                            final updated = createModel.copyWith(
+                              affectationMode: v,
+                            );
+                            context.read<DrawerBloc>().add(
+                              OpenCreateCategorieDeModificateur(
+                                modificateur: updated,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: ListTile(
                       title: const Text('Obligatoire'),
                       trailing: Switch(
                         activeColor: AppColors.primary,
@@ -450,6 +488,52 @@ class _ModificateursSupplementsScreenState
                   final provider =
                       context.read<CategorieModificateurProvider>();
                   provider.update(state.modificateur.copyWith(nom: v));
+                },
+              );
+            case 'affectaionMode':
+              return UpdateAttributeDrawer(
+                fieldType: FieldType.dropdown,
+                label: 'Affectation mode',
+                options:
+                    AffectationMode.values
+                        .map(
+                          (mode) =>
+                              mode == AffectationMode.pourseulement
+                                  ? 'Pour seulement'
+                                  : mode == AffectationMode.pourtout
+                                  ? 'Pour tout'
+                                  : mode ==
+                                      AffectationMode.ajouteralisteexistante
+                                  ? 'Ajouter a liste existante'
+                                  : mode == AffectationMode.pourseulement
+                                  ? "Pour seulement"
+                                  : 'Pour tout',
+                        )
+                        .toList(),
+                initialValue:
+                    state.modificateur.affectationMode! ==
+                            AffectationMode.ajouteralisteexistante
+                        ? 'Ajouter a liste existante'
+                        : state.modificateur.affectationMode! ==
+                            AffectationMode.pourseulement
+                        ? 'Pour seulement'
+                        : state.modificateur.affectationMode! ==
+                            AffectationMode.pourtout
+                        ? 'Pour tout'
+                        : state.modificateur.affectationMode! ==
+                            AffectationMode.pourtoutsauf
+                        ? 'Pour tout sauf'
+                        : 'Affectation mode',
+                onSaved: (v) {
+                  final provider =
+                      context.read<CategorieModificateurProvider>();
+                  final updatedMode = AffectationMode.values.firstWhere(
+                    (mode) => mode.name == v,
+                    orElse: () => AffectationMode.pourtout,
+                  );
+                  provider.update(
+                    state.modificateur.copyWith(affectationMode: updatedMode),
+                  );
                 },
               );
             case 'salle':

@@ -97,7 +97,7 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(color: AppColors.greyaccent!),
                   ),
-                  labelText: 'Gestion du trop-perçu',
+                  labelText: widget.label,
                 ),
 
                 value: widget.initialValue,

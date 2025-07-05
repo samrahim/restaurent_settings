@@ -8,9 +8,7 @@ import 'package:restaurent/widgets/widgets.dart';
 
 class ModificateurDetails extends StatefulWidget {
   final CategorieDeModificateur modificateur;
-
   final GlobalKey<ScaffoldState> scaffoldKey;
-
   const ModificateurDetails({
     required this.scaffoldKey,
     super.key,
@@ -274,9 +272,59 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                         },
                         child: CustomListTile(
                           leading: null,
-                          trailing: widget.modificateur.typeDeSelection,
+                          trailing: widget.modificateur.typeDeSelection!,
                           title: Text(
                             'Type de sélection',
+                            style: AppTextStyle.greyHeading,
+                          ),
+                          trailingwidget: null,
+                        ),
+                      ),
+                      const Divider(),
+                      InkWell(
+                        onTap: () {
+                          context.read<DrawerBloc>().add(
+                            OpenUpdateCategorieDeModificateur(
+                              modificateur: widget.modificateur,
+                              attributeName: 'affectaionMode',
+                              currentValue:
+                                  widget.modificateur.affectationMode! ==
+                                          AffectationMode.ajouteralisteexistante
+                                      ? 'Ajouter a liste existante'
+                                      : widget.modificateur.affectationMode! ==
+                                          AffectationMode.pourseulement
+                                      ? 'Pour seulement'
+                                      : widget.modificateur.affectationMode! ==
+                                          AffectationMode.pourtout
+                                      ? 'Pour tout'
+                                      : widget.modificateur.affectationMode! ==
+                                          AffectationMode.pourtoutsauf
+                                      ? 'Pour tout sauf'
+                                      : 'Affectation mode',
+                            ),
+                          );
+                          widget.scaffoldKey.currentState!.openEndDrawer();
+                        },
+                        child: CustomListTile(
+                          leading: null,
+                          trailing:
+                              widget.modificateur.affectationMode != null
+                                  ? widget.modificateur.affectationMode! ==
+                                          AffectationMode.ajouteralisteexistante
+                                      ? 'Ajouter a liste existante'
+                                      : widget.modificateur.affectationMode! ==
+                                          AffectationMode.pourseulement
+                                      ? 'Pour seulement'
+                                      : widget.modificateur.affectationMode! ==
+                                          AffectationMode.pourtout
+                                      ? 'Pour tout'
+                                      : widget.modificateur.affectationMode! ==
+                                          AffectationMode.pourtoutsauf
+                                      ? 'Pour tout sauf'
+                                      : 'Affectation mode'
+                                  : 'Affectation mode non défini',
+                          title: Text(
+                            'Affectaion mode',
                             style: AppTextStyle.greyHeading,
                           ),
                           trailingwidget: null,
@@ -310,13 +358,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                 ),
                 const SizedBox(height: 24),
 
-                ButtonSupprimer(
-                  style: null,
-                  text: 'Supprimer',
-                  onTap: () {
-                    // TODO: Implémenter la suppression
-                  },
-                ),
+                ButtonSupprimer(style: null, text: 'Supprimer', onTap: () {}),
               ],
             ),
           ),
@@ -332,14 +374,3 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
     );
   }
 }
-
-List<String> produits = [
-  'La cote de veau',
-  'L\'entrecôte grillée',
-  'Magret de canard',
-  'Parmentier de canard',
-  'Steak tartare',
-  'Tartare de saumons',
-];
-
-List<String> modifiers = ['Bleu', 'Saignant', 'Bien cuit', 'Très cuit', 'Rosé'];

@@ -8,7 +8,6 @@ import 'package:restaurent/providers/categorie_de_prix_provider.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_prix/catgorie_detaits.dart';
 import 'package:restaurent/widgets/widgets.dart';
 import 'package:restaurent/consts.dart';
-import 'package:restaurent/widgets/salles_picker.dart';
 
 class CategoriesPrixScreen extends StatefulWidget {
   const CategoriesPrixScreen({super.key});

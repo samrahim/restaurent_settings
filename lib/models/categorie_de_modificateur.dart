@@ -4,6 +4,13 @@ import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/produits_model.dart';
 import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
 
+enum AffectationMode {
+  pourtout,
+  pourseulement,
+  pourtoutsauf,
+  ajouteralisteexistante,
+}
+
 class CategorieDeModificateur extends Equatable {
   final String? id;
   final String? nom;
@@ -14,7 +21,8 @@ class CategorieDeModificateur extends Equatable {
   final Color? color;
   final List<ProduitsModel> produits;
   final List<SubCategorieDeModificateur> subCategories;
-  const CategorieDeModificateur({
+  AffectationMode? affectationMode;
+  CategorieDeModificateur({
     required this.id,
     required this.nom,
     required this.icon,
@@ -24,6 +32,7 @@ class CategorieDeModificateur extends Equatable {
     required this.color,
     required this.subCategories,
     required this.produits,
+    required this.affectationMode,
   });
 
   CategorieDeModificateur copyWith({
@@ -36,6 +45,7 @@ class CategorieDeModificateur extends Equatable {
     List<int>? sallesIDS,
     List<SubCategorieDeModificateur>? subCategories,
     List<ProduitsModel>? produits,
+    AffectationMode? affectationMode,
   }) {
     return CategorieDeModificateur(
       id: id ?? this.id,
@@ -47,6 +57,7 @@ class CategorieDeModificateur extends Equatable {
       obligatoire: obligatoire ?? this.obligatoire,
       color: color ?? this.color,
       produits: produits ?? this.produits,
+      affectationMode: affectationMode ?? this.affectationMode,
     );
   }
 
@@ -60,6 +71,7 @@ class CategorieDeModificateur extends Equatable {
     obligatoire,
     color,
     subCategories,
+    affectationMode,
     produits,
   ];
 }
@@ -75,6 +87,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     obligatoire: true,
     color: Colors.pink,
     produits: [],
+    affectationMode: AffectationMode.pourtout,
   ),
   CategorieDeModificateur(
     subCategories: [],
@@ -86,6 +99,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     obligatoire: false,
     color: Colors.purpleAccent,
     produits: [],
+    affectationMode: AffectationMode.ajouteralisteexistante,
   ),
   CategorieDeModificateur(
     subCategories: [],
@@ -97,6 +111,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     obligatoire: false,
     color: Colors.deepOrangeAccent,
     produits: [],
+    affectationMode: AffectationMode.pourtoutsauf,
   ),
   CategorieDeModificateur(
     subCategories: [],
@@ -107,6 +122,7 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     typeDeSelection: optiontypeDeSelection[1],
     obligatoire: true,
     color: Colors.amber,
+    affectationMode: AffectationMode.pourseulement,
     produits: [],
   ),
   CategorieDeModificateur(
@@ -119,5 +135,6 @@ List<CategorieDeModificateur> categoriesdemodificateursList = [
     obligatoire: false,
     color: Colors.cyan,
     produits: [],
+    affectationMode: AffectationMode.ajouteralisteexistante,
   ),
 ];
