@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
 
 class CategorieModificateurProvider extends ChangeNotifier {
@@ -20,6 +23,20 @@ class CategorieModificateurProvider extends ChangeNotifier {
   }
 
   void loadAll() async {
+    print('we send request ');
+    final response = await client.get(
+      Uri.parse('${baseUrl}modificateurs/categories'),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load categories');
+    }
+
+    final List<dynamic> categoriesJson = json.decode(response.body);
+    final List<CategorieDeModificateur> categoriesdemodificateursList =
+        categoriesJson
+            .map((json) => CategorieDeModificateur.fromJson(json))
+            .toList();
+
     _allcategories = categoriesdemodificateursList;
     _selected = null;
     notifyListeners();

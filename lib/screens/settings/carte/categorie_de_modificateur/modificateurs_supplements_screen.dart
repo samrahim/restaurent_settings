@@ -25,15 +25,16 @@ class _ModificateursSupplementsScreenState
 
   CategorieDeModificateur modificateur = CategorieDeModificateur(
     id: '',
-    color: Colors.pink,
-    icon: null,
+    color: '',
+    icone: '',
     nom: '',
     obligatoire: true,
     sallesIDS: [],
-    typeDeSelection: optiontypeDeSelection[0],
-    subCategories: [],
-    produits: [],
+    typeSelection: optiontypeDeSelection[0],
+    modificateurs: [],
+    produitsIds: [],
     affectationMode: AffectationMode.Pour_tout,
+    salleIds: [],
   );
 
   TauxTvaModel tvaModel = tauxTvaList[0];
@@ -128,16 +129,17 @@ class _ModificateursSupplementsScreenState
                       onPressed: () {
                         context.read<CategorieModificateurProvider>().update(
                           state.modificateur.copyWith(
-                            subCategories: [
-                              ...state.modificateur.subCategories,
+                            modificateurs: [
+                              ...state.modificateur.modificateurs,
                               SubCategorieDeModificateur(
                                 id:
-                                    (state.modificateur.subCategories.length +
+                                    (state.modificateur.modificateurs.length +
                                             1)
                                         .toString(),
                                 nom: supplement.text,
                                 prix: double.tryParse(prix.text) ?? 0.0,
-                                tvaModel: tauxTvaList[1],
+                                tvaValue: tauxTvaList[1].tauxTva ?? 0.0,
+                                actif: true,
                               ),
                             ],
                           ),
@@ -331,11 +333,9 @@ class _ModificateursSupplementsScreenState
                         onTap: () {
                           openColorPicker(
                             context: context,
-                            currentColor: createModel.color ?? Colors.pink,
+                            currentColor: Colors.pink,
                             onColorSelected: (Color selectedColor) {
-                              final updated = createModel.copyWith(
-                                color: selectedColor,
-                              );
+                              final updated = createModel.copyWith(color: '');
                               context.read<DrawerBloc>().add(
                                 OpenCreateCategorieDeModificateur(
                                   modificateur: updated,
@@ -348,7 +348,7 @@ class _ModificateursSupplementsScreenState
                           width: 30,
                           height: 30,
                           decoration: BoxDecoration(
-                            color: createModel.color,
+                            color: Colors.pink,
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.black26),
                           ),
@@ -368,7 +368,7 @@ class _ModificateursSupplementsScreenState
                       title: const Text('Type de selection'),
                       trailing: DropdownButton<String>(
                         underline: const SizedBox(),
-                        value: createModel.typeDeSelection,
+                        value: createModel.typeSelection,
                         style: AppTextStyle.indingosubHeading,
                         items:
                             optiontypeDeSelection
@@ -382,7 +382,7 @@ class _ModificateursSupplementsScreenState
                         onChanged: (v) {
                           if (v != null) {
                             final updated = createModel.copyWith(
-                              typeDeSelection: v,
+                              typeSelection: v,
                             );
                             context.read<DrawerBloc>().add(
                               OpenCreateCategorieDeModificateur(
@@ -478,7 +478,7 @@ class _ModificateursSupplementsScreenState
               return UpdateAttributeDrawer(
                 fieldType: FieldType.string,
                 label: 'nom',
-                initialValue: state.modificateur.nom!,
+                initialValue: state.modificateur.nom,
                 onSaved: (v) {
                   final provider =
                       context.read<CategorieModificateurProvider>();
@@ -491,7 +491,6 @@ class _ModificateursSupplementsScreenState
                 label: 'Affectation mode',
                 options:
                     AffectationMode.values.map((mode) {
-                      // Replace underscores with spaces for display
                       return mode.name.replaceAll('_', ' ');
                     }).toList(),
                 initialValue:
@@ -540,12 +539,12 @@ class _ModificateursSupplementsScreenState
                 fieldType: FieldType.dropdown,
                 label: 'Type de selection',
                 options: optiontypeDeSelection,
-                initialValue: state.modificateur.typeDeSelection!,
+                initialValue: state.modificateur.typeSelection!,
                 onSaved: (v) {
                   final provider =
                       context.read<CategorieModificateurProvider>();
                   provider.update(
-                    state.modificateur.copyWith(typeDeSelection: v),
+                    state.modificateur.copyWith(typeSelection: v),
                   );
                 },
               );

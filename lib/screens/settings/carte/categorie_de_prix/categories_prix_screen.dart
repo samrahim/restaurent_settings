@@ -20,10 +20,10 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   CategorieDePrixModel model = CategorieDePrixModel(
-    produits: [],
     id: categoriesPrixList.length.toString(),
     nom: '',
     nomCourt: '',
+    actif: false,
     status: false,
     afficherNomCourtEnCommande: false,
     afficherNomCourtEnEncaissement: false,
@@ -34,6 +34,9 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
     salleIDS: [],
     heureDebut: const TimeOfDay(hour: 12, minute: 00),
     heureFin: const TimeOfDay(hour: 12, minute: 00),
+    priorite: 10,
+    jourFerie: false,
+    produitsIds: [],
   );
 
   @override
@@ -107,8 +110,8 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                     ...[
                       [
                         'Activer catégorie',
-                        m.status,
-                        (bool v) => m.copyWith(status: v),
+                        m.actif,
+                        (bool v) => m.copyWith(actif: v),
                       ],
                       [
                         'Afficher nom court (Commande)',

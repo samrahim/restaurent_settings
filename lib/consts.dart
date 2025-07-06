@@ -152,7 +152,7 @@ Map<String, Map<String, dynamic>> routes = {
 };
 
 List<String> roleList = ['Administrateur', 'Serveur', 'Responsable de salle'];
-const String baseUrl = 'http://localhost:8080/api/';
+const String baseUrl = 'http://51.15.211.239:8444/api/v1/';
 
 class AppTextStyle {
   static TextStyle? indingoHeading = TextStyle(

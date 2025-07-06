@@ -87,15 +87,15 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: widget.modificateur.subCategories.length,
+                      itemCount: widget.modificateur.modificateurs.length,
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
                             _buildModifierTile(
-                              widget.modificateur.subCategories[index].nom,
+                              widget.modificateur.modificateurs[index].nom,
                             ),
                             if (index !=
-                                widget.modificateur.subCategories.length - 1)
+                                widget.modificateur.modificateurs.length - 1)
                               const Divider(),
                           ],
                         );
@@ -109,7 +109,6 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('PRODUITS', style: AppTextStyle.greysubHeading),
-
                         IconButton(
                           onPressed: () {},
                           icon: Icon(Icons.add, color: Colors.red),
@@ -118,23 +117,31 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                     ),
                   ),
 
-                  Container(
-                    color: Colors.white,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: widget.modificateur.produits.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            _buildModifierTile(
-                              widget.modificateur.produits[index].nom ?? '',
-                            ),
-                            if (index !=
-                                widget.modificateur.subCategories.length)
-                              const Divider(),
-                          ],
-                        );
-                      },
+                  Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount:
+                            widget.modificateur.produitsIds!.isNotEmpty
+                                ? widget.modificateur.produitsIds!.length
+                                : 0,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              _buildModifierTile(
+                                widget.modificateur.produitsIds![index]
+                                    .toString(),
+                              ),
+                              index !=
+                                      widget.modificateur.produitsIds!.length -
+                                          1
+                                  ? const Divider()
+                                  : SizedBox.shrink(),
+                            ],
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -240,7 +247,11 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                     OpenUpdateCategorieDeModificateur(
                                       modificateur: widget.modificateur,
                                       attributeName: 'couleur',
-                                      currentValue: widget.modificateur.color,
+                                      currentValue: Color(
+                                        int.parse(
+                                          '0X${widget.modificateur.color!.replaceAll('#', '')}',
+                                        ),
+                                      ),
                                     ),
                                   );
                                   widget.scaffoldKey.currentState!
@@ -257,7 +268,11 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                     width: 30,
                                     height: 30,
                                     decoration: BoxDecoration(
-                                      color: widget.modificateur.color,
+                                      color: Color(
+                                        int.parse(
+                                          '0X${widget.modificateur.color!.replaceAll('#', '')}',
+                                        ),
+                                      ),
                                       shape: BoxShape.circle,
                                       border: Border.all(color: Colors.black26),
                                     ),
@@ -283,7 +298,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                       modificateur: widget.modificateur,
                                       attributeName: 'typeDeSelection',
                                       currentValue:
-                                          widget.modificateur.typeDeSelection,
+                                          widget.modificateur.typeSelection,
                                     ),
                                   );
                                   widget.scaffoldKey.currentState!
@@ -291,8 +306,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                 },
                                 child: CustomListTile(
                                   leading: null,
-                                  trailing:
-                                      widget.modificateur.typeDeSelection!,
+                                  trailing: widget.modificateur.typeSelection!,
                                   title: Text(
                                     'Type de sélection',
                                     style: AppTextStyle.greyHeading,

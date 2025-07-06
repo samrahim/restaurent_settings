@@ -31,15 +31,11 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
   late bool _boolValue;
   late Color _selectedColor;
   late List<dynamic> _selectedChoices;
-  op() {
-    print(widget.options!.first.runtimeType);
-    print(widget.options!.first is AffectationMode);
-  }
 
   @override
   void initState() {
     super.initState();
-    op();
+
     _controller = TextEditingController(
       text: widget.initialValue?.toString() ?? '',
     );
@@ -122,6 +118,8 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                 children: [
                   GestureDetector(
                     onTap: () {
+                      print(_selectedColor);
+                      print(widget.initialValue);
                       openColorPicker(
                         context: context,
                         currentColor: _selectedColor,
