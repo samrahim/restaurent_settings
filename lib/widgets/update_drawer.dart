@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pattern_lock/pattern_lock.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/models.dart';
-import 'package:restaurent/models/salle_model.dart';
-import 'package:restaurent/widgets/create_button.dart';
-import 'package:restaurent/widgets/show_picket.dart';
+import 'package:restaurent/widgets/widgets.dart';
 
 class UpdateAttributeDrawer extends StatefulWidget {
   final String label;
@@ -118,8 +116,6 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      print(_selectedColor);
-                      print(widget.initialValue);
                       openColorPicker(
                         context: context,
                         currentColor: _selectedColor,

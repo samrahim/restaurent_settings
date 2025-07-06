@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/providers/product_provider.dart';
 import 'package:restaurent/providers/providers.dart';
 
 import '../blocs/settings/settings_bloc.dart';
@@ -37,6 +38,11 @@ class ReglageScreen extends StatelessWidget {
           update:
               (_, client, previous) =>
                   CategorieModificateurProvider(client: client),
+        ),
+        ChangeNotifierProxyProvider<http.Client, ProductProvider>(
+          create:
+              (context) => ProductProvider(client: context.read<http.Client>()),
+          update: (_, client, previous) => ProductProvider(client: client),
         ),
         ChangeNotifierProxyProvider<http.Client, MoyenDePaiementProvider>(
           create:

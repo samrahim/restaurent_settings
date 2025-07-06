@@ -23,7 +23,6 @@ class CategorieModificateurProvider extends ChangeNotifier {
   }
 
   void loadAll() async {
-    print('we send request ');
     final response = await client.get(
       Uri.parse('${baseUrl}modificateurs/categories'),
     );

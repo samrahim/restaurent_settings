@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
-import 'package:restaurent/models/categorie_de_modificateur.dart';
-import 'package:restaurent/models/salle_model.dart';
+import 'package:restaurent/models/models.dart';
+import 'package:restaurent/providers/product_provider.dart';
+
 import 'package:restaurent/widgets/widgets.dart';
 
 class ModificateurDetails extends StatefulWidget {
@@ -82,24 +84,26 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                     ),
                   ),
 
-                  Container(
-                    color: Colors.white,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: widget.modificateur.modificateurs.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            _buildModifierTile(
-                              widget.modificateur.modificateurs[index].nom,
-                            ),
-                            if (index !=
-                                widget.modificateur.modificateurs.length - 1)
-                              const Divider(),
-                          ],
-                        );
-                      },
+                  Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: widget.modificateur.modificateurs.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              _buildModifierTile(
+                                widget.modificateur.modificateurs[index].nom,
+                              ),
+                              if (index !=
+                                  widget.modificateur.modificateurs.length - 1)
+                                const Divider(),
+                            ],
+                          );
+                        },
+                      ),
                     ),
                   ),
 
@@ -130,8 +134,14 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                           return Column(
                             children: [
                               _buildModifierTile(
-                                widget.modificateur.produitsIds![index]
-                                    .toString(),
+                                // widget.modificateur.produitsIds![index]
+                                //     .toString(),
+                                Provider.of<ProductProvider>(context)
+                                    .getProductById(
+                                      widget.modificateur.produitsIds![index],
+                                    )!
+                                    .first
+                                    .name!,
                               ),
                               index !=
                                       widget.modificateur.produitsIds!.length -

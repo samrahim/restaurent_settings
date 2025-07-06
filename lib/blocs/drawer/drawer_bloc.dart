@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:restaurent/models/categorie_de_modificateur.dart';
 import 'package:restaurent/models/models.dart';
 
 part 'drawer_event.dart';
