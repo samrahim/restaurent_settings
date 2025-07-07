@@ -539,7 +539,10 @@ class _ModificateursSupplementsScreenState
                 fieldType: FieldType.dropdown,
                 label: 'Type de selection',
                 options: optiontypeDeSelection,
-                initialValue: state.modificateur.typeSelection!,
+                initialValue: state.modificateur.typeSelection!.replaceAll(
+                  '_',
+                  ' ',
+                ),
                 onSaved: (v) {
                   final provider =
                       context.read<CategorieModificateurProvider>();

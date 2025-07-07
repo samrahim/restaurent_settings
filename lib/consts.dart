@@ -218,7 +218,7 @@ const List<String> modeEncaissementList = [
   'Scanner de Ticket Restaurant',
 ];
 
-final List<String> optiontypeDeSelection = ['Un seul choix', 'Multi choix'];
+final List<String> optiontypeDeSelection = ['SINGLE', 'MULTIPLE QUANTITE'];
 
 const List<String> joursSemaine = [
   'Lundi',

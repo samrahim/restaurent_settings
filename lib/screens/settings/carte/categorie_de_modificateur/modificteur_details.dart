@@ -84,26 +84,24 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                     ),
                   ),
 
-                  Expanded(
-                    child: Container(
-                      color: Colors.white,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: widget.modificateur.modificateurs.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              _buildModifierTile(
-                                widget.modificateur.modificateurs[index].nom,
-                              ),
-                              if (index !=
-                                  widget.modificateur.modificateurs.length - 1)
-                                const Divider(),
-                            ],
-                          );
-                        },
-                      ),
+                  Container(
+                    color: Colors.white,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: widget.modificateur.modificateurs.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            _buildModifierTile(
+                              widget.modificateur.modificateurs[index].nom,
+                            ),
+                            if (index !=
+                                widget.modificateur.modificateurs.length - 1)
+                              const Divider(),
+                          ],
+                        );
+                      },
                     ),
                   ),
 
@@ -123,6 +121,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
 
                   Expanded(
                     child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
                       color: Colors.white,
                       child: ListView.builder(
                         shrinkWrap: true,
@@ -131,23 +130,31 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                 ? widget.modificateur.produitsIds!.length
                                 : 0,
                         itemBuilder: (context, index) {
+                          final productList = context
+                              .read<ProductProvider>()
+                              .getProductById(
+                                widget.modificateur.produitsIds![index],
+                              );
+
+                          if (productList == null || productList.isEmpty) {
+                            return ListTile(
+                              title: Text(
+                                'Produit introuvable',
+                                style: AppTextStyle.indingosubHeading,
+                              ),
+                            );
+                          }
+
+                          final product = productList.first;
+
                           return Column(
                             children: [
                               _buildModifierTile(
-                                // widget.modificateur.produitsIds![index]
-                                //     .toString(),
-                                Provider.of<ProductProvider>(context)
-                                    .getProductById(
-                                      widget.modificateur.produitsIds![index],
-                                    )!
-                                    .first
-                                    .name!,
+                                product.name ?? 'Nom non défini',
                               ),
-                              index !=
-                                      widget.modificateur.produitsIds!.length -
-                                          1
-                                  ? const Divider()
-                                  : SizedBox.shrink(),
+                              if (index !=
+                                  widget.modificateur.produitsIds!.length - 1)
+                                const Divider(),
                             ],
                           );
                         },
@@ -307,8 +314,10 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                     OpenUpdateCategorieDeModificateur(
                                       modificateur: widget.modificateur,
                                       attributeName: 'typeDeSelection',
-                                      currentValue:
-                                          widget.modificateur.typeSelection,
+                                      currentValue: widget
+                                          .modificateur
+                                          .typeSelection!
+                                          .replaceAll('_', ' '),
                                     ),
                                   );
                                   widget.scaffoldKey.currentState!
@@ -316,7 +325,8 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                 },
                                 child: CustomListTile(
                                   leading: null,
-                                  trailing: widget.modificateur.typeSelection!,
+                                  trailing: widget.modificateur.typeSelection!
+                                      .replaceAll('_', ' '),
                                   title: Text(
                                     'Type de sélection',
                                     style: AppTextStyle.greyHeading,
