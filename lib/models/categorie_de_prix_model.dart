@@ -105,43 +105,63 @@ class CategorieDePrixModel extends Equatable {
     jourFerie,
     status,
   ];
-  CategorieDePrixModel fromJson(Map<String, dynamic> json) {
+  factory CategorieDePrixModel.fromJson(Map<String, dynamic> json) {
     return CategorieDePrixModel(
       id: json['id'] as String?,
       nom: json['nom'] as String?,
-      nomCourt: json['nom_court'] as String?,
+      nomCourt: json['nomCourt'] as String?,
       actif: json['actif'] as bool?,
-      afficherNomCourtEnCommande:
-          json['afficher_nom_court_en_commande'] as bool?,
+      afficherNomCourtEnCommande: json['afficherNomCourtCommande'] as bool?,
       afficherNomCourtEnEncaissement:
-          json['afficher_nom_court_en_encaissement'] as bool?,
+          json['afficherNomCourtEncaissement'] as bool?,
       afficherNomCourtEnFabrication:
-          json['afficher_nom_court_en_fabrication'] as bool?,
-      actifDansTouteLaJournee: json['actif_dans_toute_la_journee'] as bool?,
-      categorieDePrixActive: json['categorie_de_prix_active'] as bool?,
+          json['afficherNomCourtFabrication'] as bool?,
+      actifDansTouteLaJournee: json['actifTouteJournee'] as bool?,
+      categorieDePrixActive: json['categorieActive'] as bool?,
       joursDactivite:
-          (json['jours_dactivite'] as List<dynamic>?)
+          (json['joursActivite'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList(),
       salleIDS:
-          (json['salle_ids'] as List<dynamic>?)?.map((e) => e as int).toList(),
+          (json['salleIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
       heureDebut:
           json['heureDebut'] != null
-              ? TimeOfDay.fromDateTime(DateTime.parse(json['heure_debut']))
+              ? TimeOfDay.fromDateTime(DateTime.parse(json['heureDebut']))
               : null,
       heureFin:
           json['heureFin'] != null
-              ? TimeOfDay.fromDateTime(DateTime.parse(json['heure_fin']))
+              ? TimeOfDay.fromDateTime(DateTime.parse(json['heureFin']))
               : null,
       priorite: json['priorite'] as int? ?? 0,
       produitsIds:
-          (json['produitsIds'] as List<dynamic>?)
+          (json['produitIds'] as List<dynamic>?)
               ?.map((e) => e as int)
               .toList() ??
           [],
       jourFerie: json['jourFerie'] as bool? ?? false,
       status: json['status'] as bool? ?? false,
     );
+  }
+
+  Map<String, dynamic> toJson(CategorieDePrixModel model) {
+    return {
+      'nom': model.nom,
+      'nomCourt': model.nomCourt,
+      'status': model.status,
+      'afficherNomCourtCommande': model.afficherNomCourtEnCommande,
+      'afficherNomCourtEncaissement': model.afficherNomCourtEnEncaissement,
+      'afficherNomCourtFabrication': model.afficherNomCourtEnFabrication,
+      'actifTouteJournee': model.actifDansTouteLaJournee,
+      'joursActivite':
+          model.joursDactivite?.map((e) => e.toUpperCase()).toList(),
+      'heureDebut': model.heureDebut.toString(),
+      'heureFin': model.heureFin.toString(),
+      'categorieActive': model.categorieDePrixActive,
+      'salleIds': model.salleIDS,
+      'produitIds': model.produitsIds,
+      'actif': model.actif,
+      'jourFerie': model.jourFerie,
+    };
   }
 }
 

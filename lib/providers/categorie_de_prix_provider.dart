@@ -37,9 +37,15 @@ class CategorieDePrixProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadAll() {
-    //FIXME: call API
-
+  void loadAll() async {
+    // final response = await client.get(Uri.parse(baseUrl + '/'));
+    // if (response.statusCode == 200) {
+    //   List data = json.decode(response.body);
+    //   _categories = data.map((e) => CategorieDePrixModel.fromJson(e)).toList();
+    //   notifyListeners();
+    // } else {
+    //   //err section
+    // }
     _categories = categoriesPrixList;
     _selected = null;
     notifyListeners();
