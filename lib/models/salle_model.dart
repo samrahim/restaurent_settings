@@ -18,5 +18,4 @@ List<SalleModel> salles = [
   SalleModel(id: 1, nom: 'Toutes'),
   SalleModel(id: 2, nom: 'Salle principale'),
   SalleModel(id: 3, nom: 'Terrasse'),
-  SalleModel(id: 4, nom: 'Bar'),
 ];

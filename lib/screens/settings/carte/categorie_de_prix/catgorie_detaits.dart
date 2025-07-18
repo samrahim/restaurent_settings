@@ -73,6 +73,7 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
             ),
           ),
         ),
+        const SizedBox(width: 24),
         Expanded(
           flex: 5,
           child: Column(

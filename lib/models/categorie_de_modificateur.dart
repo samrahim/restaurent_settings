@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
 

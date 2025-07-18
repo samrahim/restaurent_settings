@@ -453,7 +453,6 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
           if (state is DrawerCreateUtilisateur) {
             return _buildCreateUtilisateurDrawer(context);
           } else if (state is DrawerUpdateUtilisateurAttributeState) {
-            print('wer are in the state');
             return _buildUpdateAttributeDrawer(context, state);
           } else {
             return SizedBox.shrink();
@@ -534,7 +533,6 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
               context,
               listen: false,
             ).updateUtilisateur(state.utilisateur.copyWith(motPasseSchema: v));
-            print(state.utilisateur.motPasseSchema);
           },
         );
       case 'nom':

@@ -21,7 +21,7 @@ class ProductProvider extends ChangeNotifier {
       _prod = data.map((e) => ProduitsModel.fromJson(e)).toList();
       notifyListeners();
     } catch (e) {
-      print('Error fetching products: $e');
+      throw 'Error fetching products: $e';
     }
   }
 

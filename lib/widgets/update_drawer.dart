@@ -62,7 +62,6 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.initialValue);
     return Drawer(
       width: MediaQuery.of(context).size.width * .33,
       child: Padding(

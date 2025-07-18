@@ -21,15 +21,14 @@ class _PeripheriquesScreenState extends State<PeripheriquesScreen> {
           subnet,
           firstHostId: 1,
           lastHostId: 254,
-          progressCallback:
-              (p) => print('Scanning: ${(p * 100).toStringAsFixed(1)}%'),
+          progressCallback: (p) => {},
         )
         .listen((host) async {
           final name = await host.deviceName;
           setState(() {
             foundHosts.add(host);
           });
-        }, onDone: () => print('Scan terminé.'));
+        }, onDone: () => {});
   }
 
   Future<http.Client> loginRouter() async {

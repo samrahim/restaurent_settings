@@ -194,7 +194,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                               context: context,
                               initialTime: m.heureDebut ?? TimeOfDay.now(),
                             );
-                            if (t != null) {
+                            if (t != null && context.mounted) {
                               context.read<DrawerBloc>().add(
                                 UpdateCreateCategoriePrixModel(
                                   m.copyWith(heureDebut: t),
@@ -224,7 +224,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                               context: context,
                               initialTime: m.heureFin ?? TimeOfDay.now(),
                             );
-                            if (t != null) {
+                            if (t != null && context.mounted) {
                               context.read<DrawerBloc>().add(
                                 UpdateCreateCategoriePrixModel(
                                   m.copyWith(heureFin: t),

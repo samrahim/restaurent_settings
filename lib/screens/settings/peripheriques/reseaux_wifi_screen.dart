@@ -20,14 +20,14 @@ class _ReseauxWiFiScreenState extends State<ReseauxWiFiScreen> {
         });
       }
     } catch (e) {
-      print('Erreur lors de la récupération du nom du WiFi: $e');
+      throw 'Erreur lors de la récupération du nom du WiFi: $e';
     }
   }
 
   @override
   void initState() {
     _getWifiName();
-    // TODO: implement initState
+
     super.initState();
   }
 
