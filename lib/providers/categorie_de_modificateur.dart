@@ -47,6 +47,12 @@ class CategorieModificateurProvider extends ChangeNotifier {
   }
 
   void create(CategorieDeModificateur newModificateur) {
+    print(newModificateur.nom);
+    print(newModificateur.color);
+    print(newModificateur.sallesIDS);
+    print(newModificateur.affectationMode);
+    print(newModificateur.typeSelection);
+
     _allcategories = [..._allcategories, newModificateur];
     notifyListeners();
   }

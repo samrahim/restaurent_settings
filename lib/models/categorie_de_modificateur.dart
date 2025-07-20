@@ -20,7 +20,6 @@ class CategorieDeModificateur extends Equatable {
   final List<String>? produitsIds;
   final List<SubCategorieDeModificateur> modificateurs;
   final AffectationMode? affectationMode;
-  final List<int> salleIds;
 
   const CategorieDeModificateur({
     required this.id,
@@ -33,7 +32,6 @@ class CategorieDeModificateur extends Equatable {
     required this.modificateurs,
     required this.produitsIds,
     required this.affectationMode,
-    required this.salleIds,
   });
 
   CategorieDeModificateur copyWith({
@@ -47,7 +45,6 @@ class CategorieDeModificateur extends Equatable {
     List<SubCategorieDeModificateur>? modificateurs,
     List<String>? produitsIds,
     AffectationMode? affectationMode,
-    List<int>? salleIds,
   }) {
     return CategorieDeModificateur(
       id: id ?? this.id,
@@ -60,7 +57,6 @@ class CategorieDeModificateur extends Equatable {
       color: color ?? this.color,
       produitsIds: produitsIds ?? this.produitsIds,
       affectationMode: affectationMode ?? this.affectationMode,
-      salleIds: salleIds ?? this.salleIds,
     );
   }
 
@@ -82,7 +78,6 @@ class CategorieDeModificateur extends Equatable {
         (e) => e.toString() == 'AffectationMode.${json['affectationMode']}',
         orElse: () => AffectationMode.Pour_tout,
       ),
-      salleIds: List<int>.from(json['salleIds'] ?? []),
     );
   }
 
@@ -98,7 +93,6 @@ class CategorieDeModificateur extends Equatable {
       'modificateurs': modificateurs.map((e) => e.toJson()).toList(),
       'produitsIds': produitsIds,
       'affectationMode': affectationMode?.toString().split('.').last,
-      'salleIds': salleIds,
     };
   }
 
@@ -114,74 +108,5 @@ class CategorieDeModificateur extends Equatable {
     modificateurs,
     affectationMode,
     produitsIds,
-    salleIds,
   ];
 }
-
-List<CategorieDeModificateur> categoriesdemodificateursList = [
-  CategorieDeModificateur(
-    modificateurs: [],
-    id: '1',
-    nom: 'Cuisson',
-    icone: null,
-    sallesIDS: [2],
-    typeSelection: optiontypeDeSelection[0],
-    obligatoire: true,
-    color: '',
-    produitsIds: [],
-    affectationMode: AffectationMode.Ajouter_a_liste_existante,
-    salleIds: [],
-  ),
-  CategorieDeModificateur(
-    modificateurs: [],
-    id: '2',
-    nom: 'Sauces',
-    icone: null,
-    sallesIDS: [1],
-    typeSelection: optiontypeDeSelection[1],
-    obligatoire: false,
-    color: '',
-    produitsIds: [],
-    affectationMode: AffectationMode.Ajouter_a_liste_existante,
-    salleIds: [],
-  ),
-  CategorieDeModificateur(
-    modificateurs: [],
-    id: '3',
-    nom: 'Supplements payants',
-    icone: null,
-    sallesIDS: [2],
-    typeSelection: optiontypeDeSelection[1],
-    obligatoire: false,
-    color: '',
-    produitsIds: [],
-    affectationMode: AffectationMode.Pour_tout_sauf,
-    salleIds: [],
-  ),
-  CategorieDeModificateur(
-    modificateurs: [],
-    id: '4',
-    nom: 'Accompagnement',
-    icone: null,
-    sallesIDS: [1, 2],
-    typeSelection: optiontypeDeSelection[1],
-    obligatoire: true,
-    color: '',
-    affectationMode: AffectationMode.Pour_seulement,
-    salleIds: [],
-    produitsIds: [],
-  ),
-  CategorieDeModificateur(
-    modificateurs: [],
-    id: '5',
-    nom: 'Glaces',
-    icone: null,
-    sallesIDS: [2],
-    typeSelection: optiontypeDeSelection[1],
-    obligatoire: false,
-    color: '',
-    produitsIds: [],
-    salleIds: [],
-    affectationMode: AffectationMode.Ajouter_a_liste_existante,
-  ),
-];

@@ -25,103 +25,103 @@ class ModificateurDetails extends StatefulWidget {
 class _ModificateurDetailsState extends State<ModificateurDetails> {
   @override
   Widget build(BuildContext context) {
+    print(widget.modificateur.id);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           flex: 3,
           child: Card(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'CATÉGORIE DE MODIFICATEURS',
-                        style: AppTextStyle.greysubHeading,
-                      ),
-                    ],
-                  ),
-                ),
-
-                Container(
-                  color: Colors.grey.shade400,
-                  child: ListTile(
-                    title: Text(
-                      'Informations générales',
-                      style: AppTextStyle.indingoHeading,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'CATÉGORIE DE MODIFICATEURS',
+                          style: AppTextStyle.greysubHeading,
+                        ),
+                      ],
                     ),
-                    trailing: const Icon(Icons.chevron_right),
                   ),
-                ),
 
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'MODIFICATEURS / SUPPLÉMENTS',
-                        style: AppTextStyle.greysubHeading,
+                  Container(
+                    color: Colors.grey.shade400,
+                    child: ListTile(
+                      title: Text(
+                        'Informations générales',
+                        style: AppTextStyle.indingoHeading,
                       ),
-                      IconButton(
-                        onPressed: () {
-                          context.read<DrawerBloc>().add(
-                            OpenCreateSubCategorieDeModificateur(
-                              modificateur: widget.modificateur,
-                            ),
-                          );
-
-                          widget.scaffoldKey.currentState!.openDrawer();
-                        },
-                        icon: Icon(Icons.add, color: Colors.red),
-                      ),
-                    ],
+                      trailing: const Icon(Icons.chevron_right),
+                    ),
                   ),
-                ),
 
-                Container(
-                  color: Colors.white,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: widget.modificateur.modificateurs.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          _buildModifierTile(
-                            widget.modificateur.modificateurs[index].nom,
-                          ),
-                          if (index !=
-                              widget.modificateur.modificateurs.length - 1)
-                            const Divider(),
-                        ],
-                      );
-                    },
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'MODIFICATEURS / SUPPLÉMENTS',
+                          style: AppTextStyle.greysubHeading,
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            context.read<DrawerBloc>().add(
+                              OpenCreateSubCategorieDeModificateur(
+                                modificateur: widget.modificateur,
+                              ),
+                            );
+
+                            widget.scaffoldKey.currentState!.openDrawer();
+                          },
+                          icon: Icon(Icons.add, color: Colors.red),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
 
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('PRODUITS', style: AppTextStyle.greysubHeading),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.add, color: Colors.red),
-                      ),
-                    ],
-                  ),
-                ),
-
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
+                  Container(
                     color: Colors.white,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: widget.modificateur.modificateurs.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            _buildModifierTile(
+                              widget.modificateur.modificateurs[index].nom,
+                            ),
+                            if (index !=
+                                widget.modificateur.modificateurs.length - 1)
+                              const Divider(),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('PRODUITS', style: AppTextStyle.greysubHeading),
+                        IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.add, color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(
+                    height: 200,
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount:
@@ -159,8 +159,8 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                       },
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -283,10 +283,8 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                   width: 30,
                                   height: 30,
                                   decoration: BoxDecoration(
-                                    color: Color(
-                                      int.parse(
-                                        '0X${widget.modificateur.color!.replaceAll('#', '')}',
-                                      ),
+                                    color: hexToColor(
+                                      widget.modificateur.color!,
                                     ),
                                     shape: BoxShape.circle,
                                     border: Border.all(color: Colors.black26),

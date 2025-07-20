@@ -26,7 +26,10 @@ class SalleIdsPicker extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Disponible dans les salles'),
+          Text(
+            'Disponible dans les salles',
+            style: AppTextStyle.indingosubHeading,
+          ),
           const SizedBox(height: 8),
           SizedBox(
             height: 40,
@@ -40,29 +43,28 @@ class SalleIdsPicker extends StatelessWidget {
                 final nom = salle.nom;
                 final selected = selectedSalleIds.contains(id);
                 return ChoiceChip(
-                  label: Text(nom),
+                  label: Text(
+                    nom,
+                    style:
+                        selected
+                            ? AppTextStyle.greysubHeading.copyWith(
+                              color: Colors.white,
+                              fontSize: 16,
+                            )
+                            : AppTextStyle.greysubHeading.copyWith(
+                              color: Colors.grey.shade600,
+                              fontSize: 16,
+                            ),
+                  ),
                   selected: selected,
-                  selectedColor: AppColors.indingo200,
+                  selectedColor: AppTextStyle.indingosubHeading.color,
+                  showCheckmark: false,
                   onSelected: (sel) {
-                    if (salle.nom == 'Toutes') {
-                      final updatedSalleIds = sel ? [id] : [];
-                      onSelectionChanged(updatedSalleIds as List<int>);
-                    } else {
-                      final updatedSalleIds =
-                          sel
-                              ? [
-                                ...selectedSalleIds.where(
-                                  (e) =>
-                                      e !=
-                                      salles
-                                          .firstWhere((s) => s.nom == 'Toutes')
-                                          .id,
-                                ),
-                                id,
-                              ]
-                              : selectedSalleIds.where((e) => e != id).toList();
-                      onSelectionChanged(updatedSalleIds);
-                    }
+                    final updatedSalleIds =
+                        sel
+                            ? [...selectedSalleIds.where((e) => e != id), id]
+                            : selectedSalleIds.where((e) => e != id).toList();
+                    onSelectionChanged(updatedSalleIds);
                   },
                 );
               },

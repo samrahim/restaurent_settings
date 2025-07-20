@@ -54,14 +54,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       child: Text(
                         'Créer une nouvelle catégorie de prix',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: AppTextStyle.indingoHeading,
                       ),
                     ),
 
@@ -71,6 +68,8 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                       initialValue: m.nom,
                       decoration: InputDecoration(
                         labelText: 'Nom',
+                        labelStyle: AppTextStyle.indingosubHeading,
+
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -89,6 +88,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                     TextFormField(
                       initialValue: m.nomCourt,
                       decoration: InputDecoration(
+                        labelStyle: AppTextStyle.indingosubHeading,
                         labelText: 'Nom court',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -106,7 +106,6 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Switches
                     ...[
                       [
                         'Activer catégorie',
@@ -156,9 +155,15 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                             child: CustomListTile(
                               leading: null,
                               trailing: null,
-                              title: Text(label),
+                              title: Text(
+                                label,
+                                style: AppTextStyle.indingosubHeading,
+                              ),
                               trailingwidget: Switch(
-                                activeColor: AppColors.primary,
+                                inactiveTrackColor: Colors.grey[300],
+
+                                activeColor:
+                                    AppTextStyle.indingosubHeading.color,
                                 value: value,
                                 onChanged: (v) {
                                   context.read<DrawerBloc>().add(
@@ -173,7 +178,6 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                       );
                     }),
 
-                    // Plages horaires si ni journée ni nuit
                     if (!m.actifDansTouteLaJournee!) ...[
                       Container(
                         decoration: BoxDecoration(
@@ -184,10 +188,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                         child: ListTile(
                           title: Text(
                             'Heure début',
-                            style: AppTextStyle.greysubHeading,
+                            style: AppTextStyle.indingosubHeading,
                           ),
                           trailing: Text(
                             m.heureDebut?.format(context) ?? '--:--',
+                            style: AppTextStyle.indingosubHeading,
                           ),
                           onTap: () async {
                             final t = await showTimePicker(
@@ -214,10 +219,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                         child: ListTile(
                           title: Text(
                             'Heure fin',
-                            style: AppTextStyle.greysubHeading,
+                            style: AppTextStyle.indingosubHeading,
                           ),
                           trailing: Text(
                             m.heureFin?.format(context) ?? '--:--',
+                            style: AppTextStyle.indingosubHeading,
                           ),
                           onTap: () async {
                             final t = await showTimePicker(
@@ -262,7 +268,10 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Jours d\'activite'),
+                          Text(
+                            'Jours d\'activite',
+                            style: AppTextStyle.indingosubHeading,
+                          ),
                           const SizedBox(height: 8),
                           SizedBox(
                             height: 40,
@@ -275,9 +284,26 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                                 final d = joursSemaine[i];
                                 final selected = m.joursDactivite!.contains(d);
                                 return ChoiceChip(
-                                  label: Text(d.toString()),
+                                  selectedColor:
+                                      AppTextStyle.indingosubHeading.color,
+                                  showCheckmark: false,
+                                  label: Text(
+                                    d.toString(),
+                                    style:
+                                        selected
+                                            ? AppTextStyle.greysubHeading
+                                                .copyWith(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                )
+                                            : AppTextStyle.greysubHeading
+                                                .copyWith(
+                                                  fontSize: 16,
+                                                  color: Colors.grey.shade600,
+                                                ),
+                                  ),
                                   selected: selected,
-                                  selectedColor: AppColors.indingo200,
+
                                   onSelected: (sel) {
                                     final jours = List<String>.from(
                                       m.joursDactivite!,
@@ -302,7 +328,6 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                     const SizedBox(height: 24),
                     CreateButton(
                       onPressed: () {
-                        // Utilisation du Provider au lieu du BLoC
                         final provider =
                             context.read<CategorieDePrixProvider>();
                         provider.create(m);

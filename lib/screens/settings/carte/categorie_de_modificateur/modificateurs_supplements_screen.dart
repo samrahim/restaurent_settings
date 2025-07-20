@@ -34,7 +34,6 @@ class _ModificateursSupplementsScreenState
     modificateurs: [],
     produitsIds: [],
     affectationMode: AffectationMode.Pour_tout,
-    salleIds: [],
   );
 
   TauxTvaModel tvaModel = tauxTvaList[0];
@@ -283,44 +282,28 @@ class _ModificateursSupplementsScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(vertical: 16.0),
                     child: Text(
                       'Créer une nouvelle categorie',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppTextStyle.indingoHeading,
                     ),
                   ),
                   const SizedBox(height: 16),
-                  CustomTextField(
+                  TextFormField(
                     controller: name,
-                    validator: (v) {
-                      if (v == null || v.isEmpty) {
-                        return 'Nom de la categorie est requis';
-                      }
-                      return null;
-                    },
-                    hint: 'Nom',
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      labelText: 'Nom',
+                      labelStyle: AppTextStyle.indingosubHeading,
+
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[50],
+                    ),
                   ),
 
-                  const SizedBox(height: 16),
-                  SalleIdsPicker(
-                    salles: salles,
-                    selectedSalleIds: createModel.sallesIDS!,
-                    onSelectionChanged: (updatedSalleIds) {
-                      final updated = createModel.copyWith(
-                        sallesIDS: updatedSalleIds,
-                      );
-                      context.read<DrawerBloc>().add(
-                        OpenCreateCategorieDeModificateur(
-                          modificateur: updated,
-                        ),
-                      );
-                    },
-                  ),
                   const SizedBox(height: 16),
                   Container(
                     decoration: BoxDecoration(
@@ -354,7 +337,10 @@ class _ModificateursSupplementsScreenState
                           ),
                         ),
                       ),
-                      title: const Text('Couleur'),
+                      title: Text(
+                        'Couleur',
+                        style: AppTextStyle.indingosubHeading,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -365,7 +351,10 @@ class _ModificateursSupplementsScreenState
                       border: Border.all(color: Colors.grey),
                     ),
                     child: ListTile(
-                      title: const Text('Type de selection'),
+                      title: Text(
+                        'Type de selection',
+                        style: AppTextStyle.indingosubHeading,
+                      ),
                       trailing: DropdownButton<String>(
                         underline: const SizedBox(),
                         value: createModel.typeSelection,
@@ -395,6 +384,7 @@ class _ModificateursSupplementsScreenState
                     ),
                   ),
                   const SizedBox(height: 16),
+
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -402,46 +392,14 @@ class _ModificateursSupplementsScreenState
                       border: Border.all(color: Colors.grey),
                     ),
                     child: ListTile(
-                      title: const Text('Affectation mode'),
-                      trailing: DropdownButton<AffectationMode>(
-                        underline: const SizedBox(),
-                        value: createModel.affectationMode,
+                      title: Text(
+                        'Obligatoire',
                         style: AppTextStyle.indingosubHeading,
-                        items:
-                            AffectationMode.values
-                                .map(
-                                  (v) => DropdownMenuItem(
-                                    value: v,
-                                    child: Text(v.name),
-                                  ),
-                                )
-                                .toList(),
-                        onChanged: (v) {
-                          if (v != null) {
-                            final updated = createModel.copyWith(
-                              affectationMode: v,
-                            );
-                            context.read<DrawerBloc>().add(
-                              OpenCreateCategorieDeModificateur(
-                                modificateur: updated,
-                              ),
-                            );
-                          }
-                        },
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: ListTile(
-                      title: const Text('Obligatoire'),
                       trailing: Switch(
-                        activeColor: AppColors.primary,
+                        inactiveTrackColor: Colors.grey[300],
+
+                        activeColor: AppTextStyle.indingosubHeading.color,
                         value: createModel.obligatoire!,
                         onChanged: (value) {
                           final updated = createModel.copyWith(
@@ -456,6 +414,68 @@ class _ModificateursSupplementsScreenState
                       ),
                     ),
                   ),
+                  const SizedBox(height: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        'Affectation mode',
+                        style: AppTextStyle.indingosubHeading,
+                      ),
+                      trailing: DropdownButton<AffectationMode>(
+                        underline: const SizedBox(),
+                        value: createModel.affectationMode,
+                        style: AppTextStyle.indingosubHeading,
+                        items:
+                            AffectationMode.values
+                                .map(
+                                  (v) => DropdownMenuItem(
+                                    value: v,
+                                    child: Text(v.name.replaceAll("_", " ")),
+                                  ),
+                                )
+                                .toList(),
+                        onChanged: (v) {
+                          if (v != null) {
+                            final updated = createModel.copyWith(
+                              affectationMode: AffectationMode.values
+                                  .firstWhere(
+                                    (mode) => mode.name == v.name,
+                                    orElse: () => AffectationMode.Pour_tout,
+                                  ),
+                            );
+                            context.read<DrawerBloc>().add(
+                              OpenCreateCategorieDeModificateur(
+                                modificateur: updated,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  createModel.affectationMode == AffectationMode.Pour_tout
+                      ? SizedBox.shrink()
+                      : SalleIdsPicker(
+                        salles: salles,
+                        selectedSalleIds: createModel.sallesIDS!,
+                        onSelectionChanged: (updatedSalleIds) {
+                          final updated = createModel.copyWith(
+                            sallesIDS: updatedSalleIds,
+                          );
+                          context.read<DrawerBloc>().add(
+                            OpenCreateCategorieDeModificateur(
+                              modificateur: updated,
+                            ),
+                          );
+                        },
+                      ),
+
                   const SizedBox(height: 32),
                   CreateButton(
                     onPressed: () {

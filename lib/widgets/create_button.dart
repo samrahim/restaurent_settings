@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurent/consts.dart';
 
 class CreateButton extends StatelessWidget {
   final void Function()? onPressed;
@@ -17,7 +18,7 @@ class CreateButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: AppTextStyle.indingosubHeading.color,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         child: Text(

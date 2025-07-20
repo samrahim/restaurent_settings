@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurent/consts.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -36,8 +37,7 @@ class CustomTextField extends StatelessWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,
-        errorStyle: const TextStyle(fontSize: 20),
-        hintText: hint,
+        labelStyle: AppTextStyle.indingosubHeading,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         filled: true,
         fillColor: Colors.grey[50],
