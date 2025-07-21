@@ -99,16 +99,20 @@ Map<String, Map<String, dynamic>> routes = {
       'label': 'Liste des périphériques',
       'content': PeripheriquesScreen(),
     },
-    'option-2': {'label': 'Réseaux WiFi', 'content': ReseauxWiFiScreen()},
-    'option-3': {
+    'option-2': {
+      'label': 'Liste des imprimante',
+      'content': ImprimanteScreen(),
+    },
+    'option-3': {'label': 'Réseaux WiFi', 'content': ReseauxWiFiScreen()},
+    'option-4': {
       'label': 'Afficheur client',
       'content': AfficheurClientScreen(),
     },
-    'option-4': {
+    'option-5': {
       'label': 'Terminal de paiement',
       'content': TerminalPaiementScreen(),
     },
-    'option-5': {'label': 'Scanner', 'content': ScannerScreen()},
+    'option-6': {'label': 'Scanner', 'content': ScannerScreen()},
   },
   'Tickets de caisse et rapports': {
     'option-1': {

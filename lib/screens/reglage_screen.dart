@@ -18,6 +18,7 @@ class ReglageScreen extends StatelessWidget {
               (_) => SettingsProvider(initialSettings: routes)..loadSettings(),
         ),
         ChangeNotifierProvider(create: (_) => DrawerProvider()),
+        ChangeNotifierProvider(create: (_) => ImprimanteDrawerProvider()),
         ChangeNotifierProxyProvider<http.Client, CategorieDePrixProvider>(
           create:
               (context) =>

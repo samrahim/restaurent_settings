@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/models.dart';
@@ -32,8 +31,8 @@ class _ModificateursSupplementsScreenState
     typeSelection: optiontypeDeSelection[0],
     modificateurs: [],
     produitsIds: [],
-    salleMode: SalleMode.Pour_tout,
-    produitMode: SalleMode.Pour_tout,
+    salleMode: SalleMode.POUR_TOUT,
+    produitMode: SalleMode.POUR_TOUT,
   );
 
   TauxTvaModel tvaModel = tauxTvaList[0];
@@ -279,7 +278,7 @@ class _ModificateursSupplementsScreenState
           final createModel = state.modificateur;
 
           return Drawer(
-            width: MediaQuery.of(context).size.width * .33,
+            width: MediaQuery.of(context).size.width * 0.3,
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -412,7 +411,7 @@ class _ModificateursSupplementsScreenState
                     ),
                   ),
                   const SizedBox(height: 16),
-                  createModel.salleMode == SalleMode.Pour_tout
+                  createModel.salleMode == SalleMode.POUR_TOUT
                       ? const SizedBox.shrink()
                       : SalleIdsPicker(
                         salles: salles,
@@ -517,14 +516,14 @@ class _ModificateursSupplementsScreenState
         return model.copyWith(
           salleMode: SalleMode.values.firstWhere(
             (mode) => mode.name.replaceAll('_', ' ') == value,
-            orElse: () => SalleMode.Pour_tout,
+            orElse: () => SalleMode.POUR_TOUT,
           ),
         );
       case 'produitMode':
         return model.copyWith(
           produitMode: SalleMode.values.firstWhere(
             (mode) => mode.name.replaceAll('_', ' ') == value,
-            orElse: () => SalleMode.Pour_tout,
+            orElse: () => SalleMode.POUR_TOUT,
           ),
         );
       case 'typeDeSelection':

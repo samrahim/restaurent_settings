@@ -48,6 +48,7 @@ class CategorieModificateurProvider extends ChangeNotifier {
   }
 
   void create(CategorieDeModificateur newModificateur) async {
+    print(newModificateur.toJson());
     _allcategories = [..._allcategories, newModificateur];
     notifyListeners();
   }

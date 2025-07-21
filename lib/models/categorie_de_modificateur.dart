@@ -3,10 +3,10 @@ import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
 
 enum SalleMode {
-  Pour_tout,
-  Pour_seulement,
-  Pour_tout_sauf,
-  Ajouter_a_liste_existante,
+  POUR_TOUT,
+  POUR_SEULEMENT,
+  POUR_TOUT_SAUF,
+  AJOUTER_A_LIST_EXSISTANTE,
 }
 
 class CategorieDeModificateur extends Equatable {
@@ -82,12 +82,12 @@ class CategorieDeModificateur extends Equatable {
           json['produitMode'] != null
               ? SalleMode.values.firstWhere(
                 (e) => e.toString() == 'produitMode.${json['produitMode']}',
-                orElse: () => SalleMode.Pour_tout,
+                orElse: () => SalleMode.POUR_TOUT,
               )
               : null,
       salleMode: SalleMode.values.firstWhere(
         (e) => e.toString() == 'salleMode.${json['salleMode']}',
-        orElse: () => SalleMode.Pour_tout,
+        orElse: () => SalleMode.POUR_TOUT,
       ),
     );
   }
@@ -98,7 +98,12 @@ class CategorieDeModificateur extends Equatable {
       'nom': nom,
       'icone': icone,
       'salleIds': sallesIDS,
-      'typeSelection': typeSelection,
+      'typeSelection':
+          typeSelection == 'SINGLE'
+              ? "SINGLE"
+              : typeSelection == "MULTIPLE QUANTITE"
+              ? 'MULTIPLE_QUANTITE'
+              : null,
       'obligatoire': obligatoire,
       'couleur': couleur,
       'modificateurs': modificateurs.map((e) => e.toJson()).toList(),

@@ -5,3 +5,4 @@ export 'taux_tva_provider.dart';
 export 'utilisateur_provider.dart';
 export 'settings_provider.dart';
 export 'drawer_provider.dart';
+export 'imprimante_provider.dart';

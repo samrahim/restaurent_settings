@@ -105,6 +105,16 @@ class DrawerProvider with ChangeNotifier {
     _state = DrawerInitial();
     notifyListeners();
   }
+
+  void openCreateImprimantDrawer() {
+    _state = DrawerCreateImprimant();
+    notifyListeners();
+  }
+}
+
+class DrawerCreateImprimant extends DrawerState {
+  @override
+  List<Object?> get props => [];
 }
 
 sealed class DrawerState extends Equatable {}

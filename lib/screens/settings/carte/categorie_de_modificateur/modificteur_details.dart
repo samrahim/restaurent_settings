@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/models.dart';
@@ -25,7 +24,6 @@ class ModificateurDetails extends StatefulWidget {
 class _ModificateurDetailsState extends State<ModificateurDetails> {
   @override
   Widget build(BuildContext context) {
-    print(widget.modificateur.sallesIDS);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -173,254 +171,258 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
             children: [
               Expanded(
                 child: Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: Colors.white,
-                        ),
-                        child: Column(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                context
-                                    .read<DrawerProvider>()
-                                    .openUpdateCategorieDeModificateur(
-                                      widget.modificateur,
-                                      'nom',
-                                      widget.modificateur.nom,
-                                    );
-                                widget.scaffoldKey.currentState!
-                                    .openEndDrawer();
-                              },
-                              child: CustomListTile(
-                                trailingwidget: null,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(top: 4),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.white,
+                          ),
+                          child: Column(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  context
+                                      .read<DrawerProvider>()
+                                      .openUpdateCategorieDeModificateur(
+                                        widget.modificateur,
+                                        'nom',
+                                        widget.modificateur.nom,
+                                      );
+                                  widget.scaffoldKey.currentState!
+                                      .openEndDrawer();
+                                },
+                                child: CustomListTile(
+                                  trailingwidget: null,
+                                  title: Text(
+                                    'Nom',
+                                    style: AppTextStyle.greyHeading,
+                                  ),
+                                  leading: null,
+                                  trailing: widget.modificateur.nom,
+                                ),
+                              ),
+                              const Divider(),
+                              CustomListTile(
+                                trailingwidget: const Icon(
+                                  Icons.restaurant,
+                                  color: Colors.indigo,
+                                ),
                                 title: Text(
-                                  'Nom',
+                                  'Icone',
                                   style: AppTextStyle.greyHeading,
                                 ),
                                 leading: null,
-                                trailing: widget.modificateur.nom,
+                                trailing: null,
                               ),
-                            ),
-                            const Divider(),
-                            CustomListTile(
-                              trailingwidget: const Icon(
-                                Icons.restaurant,
-                                color: Colors.indigo,
-                              ),
-                              title: Text(
-                                'Icone',
-                                style: AppTextStyle.greyHeading,
-                              ),
-                              leading: null,
-                              trailing: null,
-                            ),
-                            widget.modificateur.salleMode == SalleMode.Pour_tout
-                                ? SizedBox.shrink()
-                                : const Divider(),
+                              widget.modificateur.salleMode ==
+                                      SalleMode.POUR_TOUT
+                                  ? SizedBox.shrink()
+                                  : const Divider(),
 
-                            widget.modificateur.salleMode == SalleMode.Pour_tout
-                                ? SizedBox.shrink()
-                                : InkWell(
-                                  onTap: () {
-                                    context
-                                        .read<DrawerProvider>()
-                                        .openUpdateCategorieDeModificateur(
-                                          widget.modificateur,
-                                          'salle',
+                              widget.modificateur.salleMode ==
+                                      SalleMode.POUR_TOUT
+                                  ? SizedBox.shrink()
+                                  : InkWell(
+                                    onTap: () {
+                                      context
+                                          .read<DrawerProvider>()
+                                          .openUpdateCategorieDeModificateur(
+                                            widget.modificateur,
+                                            'salle',
 
-                                          widget.modificateur.sallesIDS,
-                                        );
-                                    widget.scaffoldKey.currentState!
-                                        .openEndDrawer();
-                                  },
-                                  child: CustomListTile(
-                                    title: Text(
-                                      'Afficher dans les salles et comptoirs',
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    leading: null,
-                                    trailing:
-                                        widget.modificateur.sallesIDS != null
-                                            ? widget.modificateur.sallesIDS!
-                                                .map(
-                                                  (id) =>
-                                                      salles
-                                                          .firstWhere(
-                                                            (s) => s.id == id,
-                                                          )
-                                                          .nom,
-                                                )
-                                                .join(', ')
-                                            : 'Aucune salle sélectionnée',
-                                    trailingwidget: null,
-                                  ),
-                                ),
-                            const Divider(),
-
-                            InkWell(
-                              onTap: () {
-                                context
-                                    .read<DrawerProvider>()
-                                    .openUpdateCategorieDeModificateur(
-                                      widget.modificateur,
-                                      'couleur',
-                                      Color(
-                                        int.parse(
-                                          '0X${widget.modificateur.couleur!.replaceAll('#', '')}',
-                                        ),
+                                            widget.modificateur.sallesIDS,
+                                          );
+                                      widget.scaffoldKey.currentState!
+                                          .openEndDrawer();
+                                    },
+                                    child: CustomListTile(
+                                      title: Text(
+                                        'Afficher dans les salles et comptoirs',
+                                        style: AppTextStyle.greyHeading,
                                       ),
-                                    );
-                                widget.scaffoldKey.currentState!
-                                    .openEndDrawer();
-                              },
-                              child: CustomListTile(
-                                leading: null,
-                                trailing: null,
-                                title: Text(
-                                  "Couleur",
-                                  style: AppTextStyle.greyHeading,
-                                ),
-                                trailingwidget: Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: hexToColor(
-                                      widget.modificateur.couleur!,
+                                      leading: null,
+                                      trailing:
+                                          widget.modificateur.sallesIDS != null
+                                              ? widget.modificateur.sallesIDS!
+                                                  .map(
+                                                    (id) =>
+                                                        salles
+                                                            .firstWhere(
+                                                              (s) => s.id == id,
+                                                            )
+                                                            .nom,
+                                                  )
+                                                  .join(', ')
+                                              : 'Aucune salle sélectionnée',
+                                      trailingwidget: null,
                                     ),
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.black26),
+                                  ),
+                              const Divider(),
+
+                              InkWell(
+                                onTap: () {
+                                  context
+                                      .read<DrawerProvider>()
+                                      .openUpdateCategorieDeModificateur(
+                                        widget.modificateur,
+                                        'couleur',
+                                        Color(
+                                          int.parse(
+                                            '0X${widget.modificateur.couleur!.replaceAll('#', '')}',
+                                          ),
+                                        ),
+                                      );
+                                  widget.scaffoldKey.currentState!
+                                      .openEndDrawer();
+                                },
+                                child: CustomListTile(
+                                  leading: null,
+                                  trailing: null,
+                                  title: Text(
+                                    "Couleur",
+                                    style: AppTextStyle.greyHeading,
+                                  ),
+                                  trailingwidget: Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: hexToColor(
+                                        widget.modificateur.couleur!,
+                                      ),
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: Colors.black26),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 32),
-                      Container(
-                        margin: const EdgeInsets.only(top: 4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: Colors.white,
-                        ),
-                        child: Column(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                context
-                                    .read<DrawerProvider>()
-                                    .openUpdateCategorieDeModificateur(
-                                      widget.modificateur,
-                                      'typeDeSelection',
-                                      widget.modificateur.typeSelection!
-                                          .replaceAll('_', ' '),
-                                    );
-                                widget.scaffoldKey.currentState!
-                                    .openEndDrawer();
-                              },
-                              child: CustomListTile(
-                                leading: null,
-                                trailing: widget.modificateur.typeSelection!
-                                    .replaceAll('_', ' '),
-                                title: Text(
-                                  'Type de sélection',
-                                  style: AppTextStyle.greyHeading,
+                        const SizedBox(height: 32),
+                        Container(
+                          margin: const EdgeInsets.only(top: 4),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.white,
+                          ),
+                          child: Column(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  context
+                                      .read<DrawerProvider>()
+                                      .openUpdateCategorieDeModificateur(
+                                        widget.modificateur,
+                                        'typeDeSelection',
+                                        widget.modificateur.typeSelection!
+                                            .replaceAll('_', ' '),
+                                      );
+                                  widget.scaffoldKey.currentState!
+                                      .openEndDrawer();
+                                },
+                                child: CustomListTile(
+                                  leading: null,
+                                  trailing: widget.modificateur.typeSelection!
+                                      .replaceAll('_', ' '),
+                                  title: Text(
+                                    'Type de sélection',
+                                    style: AppTextStyle.greyHeading,
+                                  ),
+                                  trailingwidget: null,
                                 ),
-                                trailingwidget: null,
                               ),
-                            ),
-                            const Divider(),
-                            InkWell(
-                              onTap: () {
-                                context
-                                    .read<DrawerProvider>()
-                                    .openUpdateCategorieDeModificateur(
-                                      widget.modificateur,
-                                      'affectaionMode',
-                                      widget.modificateur.salleMode!.name
-                                          .replaceAll('_', ''),
-                                    );
-                                widget.scaffoldKey.currentState!
-                                    .openEndDrawer();
-                              },
-                              child: CustomListTile(
-                                leading: null,
-                                trailing: widget.modificateur.salleMode!.name
-                                    .replaceAll('_', ' '),
-                                title: Text(
-                                  'Affectaion mode',
-                                  style: AppTextStyle.greyHeading,
+                              const Divider(),
+                              InkWell(
+                                onTap: () {
+                                  context
+                                      .read<DrawerProvider>()
+                                      .openUpdateCategorieDeModificateur(
+                                        widget.modificateur,
+                                        'affectaionMode',
+                                        widget.modificateur.salleMode!.name
+                                            .replaceAll('_', ''),
+                                      );
+                                  widget.scaffoldKey.currentState!
+                                      .openEndDrawer();
+                                },
+                                child: CustomListTile(
+                                  leading: null,
+                                  trailing: widget.modificateur.salleMode!.name
+                                      .replaceAll('_', ' '),
+                                  title: Text(
+                                    'Affectaion mode',
+                                    style: AppTextStyle.greyHeading,
+                                  ),
+                                  trailingwidget: null,
                                 ),
-                                trailingwidget: null,
                               ),
-                            ),
-                            const Divider(),
-                            InkWell(
-                              onTap: () {
-                                print('Produit mode tapped');
-                                print(widget.modificateur.produitMode);
-                                context
-                                    .read<DrawerProvider>()
-                                    .openUpdateCategorieDeModificateur(
-                                      widget.modificateur,
-                                      'produitMode',
-                                      widget.modificateur.produitMode!.name
-                                          .replaceAll('_', ''),
-                                    );
-                                widget.scaffoldKey.currentState!
-                                    .openEndDrawer();
-                              },
-                              child: CustomListTile(
-                                leading: null,
-                                trailing: widget.modificateur.salleMode!.name
-                                    .replaceAll('_', ' '),
-                                title: Text(
-                                  'Produits mode',
-                                  style: AppTextStyle.greyHeading,
+                              const Divider(),
+                              InkWell(
+                                onTap: () {
+                                  print('Produit mode tapped');
+                                  print(widget.modificateur.produitMode);
+                                  context
+                                      .read<DrawerProvider>()
+                                      .openUpdateCategorieDeModificateur(
+                                        widget.modificateur,
+                                        'produitMode',
+                                        widget.modificateur.produitMode!.name
+                                            .replaceAll('_', ''),
+                                      );
+                                  widget.scaffoldKey.currentState!
+                                      .openEndDrawer();
+                                },
+                                child: CustomListTile(
+                                  leading: null,
+                                  trailing: widget.modificateur.salleMode!.name
+                                      .replaceAll('_', ' '),
+                                  title: Text(
+                                    'Produits mode',
+                                    style: AppTextStyle.greyHeading,
+                                  ),
+                                  trailingwidget: null,
                                 ),
-                                trailingwidget: null,
                               ),
-                            ),
 
-                            InkWell(
-                              onTap: () {
-                                context
-                                    .read<DrawerProvider>()
-                                    .openUpdateCategorieDeModificateur(
-                                      widget.modificateur,
-                                      'obligatoire',
+                              InkWell(
+                                onTap: () {
+                                  context
+                                      .read<DrawerProvider>()
+                                      .openUpdateCategorieDeModificateur(
+                                        widget.modificateur,
+                                        'obligatoire',
 
-                                      widget.modificateur.obligatoire,
-                                    );
-                                widget.scaffoldKey.currentState!
-                                    .openEndDrawer();
-                              },
-                              child: CustomListTile(
-                                leading: 'Obligatoire',
-                                trailing: null,
-                                title: null,
-                                trailingwidget: Switch(
-                                  activeTrackColor: AppColors.primary,
-                                  value: widget.modificateur.obligatoire!,
-                                  onChanged: null,
+                                        widget.modificateur.obligatoire,
+                                      );
+                                  widget.scaffoldKey.currentState!
+                                      .openEndDrawer();
+                                },
+                                child: CustomListTile(
+                                  leading: 'Obligatoire',
+                                  trailing: null,
+                                  title: null,
+                                  trailingwidget: Switch(
+                                    activeTrackColor: AppColors.primary,
+                                    value: widget.modificateur.obligatoire!,
+                                    onChanged: null,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 24),
-                      ButtonSupprimer(
-                        style: null,
-                        text: 'Supprimer',
-                        onTap: () {},
-                      ),
-                    ],
+                        const SizedBox(height: 24),
+                        ButtonSupprimer(
+                          style: null,
+                          text: 'Supprimer',
+                          onTap: () {},
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
