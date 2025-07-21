@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
 
-enum AffectationMode {
+enum SalleMode {
   Pour_tout,
   Pour_seulement,
   Pour_tout_sauf,
@@ -16,10 +16,11 @@ class CategorieDeModificateur extends Equatable {
   final List<int>? sallesIDS;
   final String? typeSelection;
   final bool? obligatoire;
-  final String? color;
+  final String? couleur;
   final List<String>? produitsIds;
   final List<SubCategorieDeModificateur> modificateurs;
-  final AffectationMode? affectationMode;
+  final SalleMode? salleMode;
+  final SalleMode? produitMode;
 
   const CategorieDeModificateur({
     required this.id,
@@ -28,23 +29,25 @@ class CategorieDeModificateur extends Equatable {
     required this.sallesIDS,
     required this.typeSelection,
     required this.obligatoire,
-    required this.color,
+    required this.couleur,
     required this.modificateurs,
     required this.produitsIds,
-    required this.affectationMode,
+    required this.salleMode,
+    required this.produitMode,
   });
 
   CategorieDeModificateur copyWith({
     String? id,
     String? nom,
-    String? color,
+    String? couleur,
     String? icone,
     bool? obligatoire,
     String? typeSelection,
     List<int>? sallesIDS,
     List<SubCategorieDeModificateur>? modificateurs,
     List<String>? produitsIds,
-    AffectationMode? affectationMode,
+    SalleMode? salleMode,
+    SalleMode? produitMode,
   }) {
     return CategorieDeModificateur(
       id: id ?? this.id,
@@ -54,9 +57,10 @@ class CategorieDeModificateur extends Equatable {
       sallesIDS: sallesIDS ?? this.sallesIDS,
       typeSelection: typeSelection ?? this.typeSelection,
       obligatoire: obligatoire ?? this.obligatoire,
-      color: color ?? this.color,
+      couleur: couleur ?? this.couleur,
       produitsIds: produitsIds ?? this.produitsIds,
-      affectationMode: affectationMode ?? this.affectationMode,
+      salleMode: salleMode ?? this.salleMode,
+      produitMode: produitMode ?? this.produitMode,
     );
   }
 
@@ -68,15 +72,22 @@ class CategorieDeModificateur extends Equatable {
       sallesIDS: List<int>.from(json['sallesIDS'] ?? []),
       typeSelection: json['typeSelection'],
       obligatoire: json['obligatoire'],
-      color: json['couleur'],
+      couleur: json['couleur'],
       modificateurs:
           (json['modificateurs'] as List)
               .map((e) => SubCategorieDeModificateur.fromJson(e))
               .toList(),
       produitsIds: List<String>.from(json['produitIds'] ?? []),
-      affectationMode: AffectationMode.values.firstWhere(
-        (e) => e.toString() == 'AffectationMode.${json['affectationMode']}',
-        orElse: () => AffectationMode.Pour_tout,
+      produitMode:
+          json['produitMode'] != null
+              ? SalleMode.values.firstWhere(
+                (e) => e.toString() == 'produitMode.${json['produitMode']}',
+                orElse: () => SalleMode.Pour_tout,
+              )
+              : null,
+      salleMode: SalleMode.values.firstWhere(
+        (e) => e.toString() == 'salleMode.${json['salleMode']}',
+        orElse: () => SalleMode.Pour_tout,
       ),
     );
   }
@@ -86,13 +97,14 @@ class CategorieDeModificateur extends Equatable {
       'id': id,
       'nom': nom,
       'icone': icone,
-      'sallesIDS': sallesIDS,
+      'salleIds': sallesIDS,
       'typeSelection': typeSelection,
       'obligatoire': obligatoire,
-      'couleur': color,
+      'couleur': couleur,
       'modificateurs': modificateurs.map((e) => e.toJson()).toList(),
-      'produitsIds': produitsIds,
-      'affectationMode': affectationMode?.toString().split('.').last,
+      'produitIds': produitsIds,
+      'salleMode': salleMode?.toString().split('.').last,
+      'produitMode': produitMode?.toString().split('.').last,
     };
   }
 
@@ -104,9 +116,9 @@ class CategorieDeModificateur extends Equatable {
     sallesIDS,
     typeSelection,
     obligatoire,
-    color,
+    couleur,
     modificateurs,
-    affectationMode,
+    salleMode,
     produitsIds,
   ];
 }

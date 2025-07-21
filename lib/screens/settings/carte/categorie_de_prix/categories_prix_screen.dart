@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
 import 'package:restaurent/models/salle_model.dart';
-import 'package:restaurent/providers/categorie_de_prix_provider.dart';
+import 'package:restaurent/providers/providers.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_prix/catgorie_detaits.dart';
 import 'package:restaurent/widgets/widgets.dart';
 import 'package:restaurent/consts.dart';
@@ -43,8 +41,10 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: BlocBuilder<DrawerBloc, DrawerState>(
-        builder: (context, state) {
+      endDrawer: Consumer<DrawerProvider>(
+        builder: (context, drawerProvider, _) {
+          final state = drawerProvider.state;
+
           if (state is DrawerCreateCategoriePrix) {
             final m = state.model;
             return Drawer(
@@ -77,9 +77,9 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                         fillColor: Colors.grey[50],
                       ),
                       onChanged: (v) {
-                        context.read<DrawerBloc>().add(
-                          UpdateCreateCategoriePrixModel(m.copyWith(nom: v)),
-                        );
+                        context
+                            .read<DrawerProvider>()
+                            .updateCreateCategoriePrixModel(m.copyWith(nom: v));
                       },
                     ),
                     const SizedBox(height: 16),
@@ -97,11 +97,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                         fillColor: Colors.grey[50],
                       ),
                       onChanged: (v) {
-                        context.read<DrawerBloc>().add(
-                          UpdateCreateCategoriePrixModel(
-                            m.copyWith(nomCourt: v),
-                          ),
-                        );
+                        context
+                            .read<DrawerProvider>()
+                            .updateCreateCategoriePrixModel(
+                              m.copyWith(nomCourt: v),
+                            );
                       },
                     ),
                     const SizedBox(height: 16),
@@ -166,9 +166,9 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                                     AppTextStyle.indingosubHeading.color,
                                 value: value,
                                 onChanged: (v) {
-                                  context.read<DrawerBloc>().add(
-                                    UpdateCreateCategoriePrixModel(copy(v)),
-                                  );
+                                  context
+                                      .read<DrawerProvider>()
+                                      .updateCreateCategoriePrixModel(copy(v));
                                 },
                               ),
                             ),
@@ -200,11 +200,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                               initialTime: m.heureDebut ?? TimeOfDay.now(),
                             );
                             if (t != null && context.mounted) {
-                              context.read<DrawerBloc>().add(
-                                UpdateCreateCategoriePrixModel(
-                                  m.copyWith(heureDebut: t),
-                                ),
-                              );
+                              context
+                                  .read<DrawerProvider>()
+                                  .updateCreateCategoriePrixModel(
+                                    m.copyWith(heureDebut: t),
+                                  );
                             }
                           },
                         ),
@@ -231,11 +231,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                               initialTime: m.heureFin ?? TimeOfDay.now(),
                             );
                             if (t != null && context.mounted) {
-                              context.read<DrawerBloc>().add(
-                                UpdateCreateCategoriePrixModel(
-                                  m.copyWith(heureFin: t),
-                                ),
-                              );
+                              context
+                                  .read<DrawerProvider>()
+                                  .updateCreateCategoriePrixModel(
+                                    m.copyWith(heureFin: t),
+                                  );
                             }
                           },
                         ),
@@ -247,11 +247,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                       salles: salles,
                       selectedSalleIds: m.salleIDS!,
                       onSelectionChanged: (selectedIds) {
-                        context.read<DrawerBloc>().add(
-                          UpdateCreateCategoriePrixModel(
-                            m.copyWith(salleIDS: selectedIds),
-                          ),
-                        );
+                        context
+                            .read<DrawerProvider>()
+                            .updateCreateCategoriePrixModel(
+                              m.copyWith(salleIDS: selectedIds),
+                            );
                       },
                     ),
                     const SizedBox(height: 16),
@@ -311,11 +311,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                                     sel
                                         ? jours.add(d.toString())
                                         : jours.remove(d);
-                                    context.read<DrawerBloc>().add(
-                                      UpdateCreateCategoriePrixModel(
-                                        m.copyWith(joursDactivite: jours),
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .updateCreateCategoriePrixModel(
+                                          m.copyWith(joursDactivite: jours),
+                                        );
                                   },
                                 );
                               },
@@ -475,9 +475,10 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                       ActionButton(onPressed: () {}, text: "Reorganiser"),
                       ActionButton(
                         onPressed: () {
-                          context.read<DrawerBloc>().add(
-                            OpenCreateCategoriePrixDrawer(model: model),
-                          );
+                          context
+                              .read<DrawerProvider>()
+                              .openCreateCategoriePrixDrawer(model);
+
                           _scaffoldKey.currentState?.openEndDrawer();
                         },
                         text: "Nouveau",

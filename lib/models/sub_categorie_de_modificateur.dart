@@ -15,7 +15,7 @@ class SubCategorieDeModificateur extends Equatable {
   });
   factory SubCategorieDeModificateur.fromJson(Map<String, dynamic> json) {
     return SubCategorieDeModificateur(
-      id: json['id'] ?? '',
+      id: json['id'] ?? "",
       nom: json['nom'] ?? '',
       prix: (json['prix'] ?? 0).toDouble(),
       tvaValue: (json['tauxTva'] ?? 0).toDouble(),
@@ -23,13 +23,7 @@ class SubCategorieDeModificateur extends Equatable {
     );
   }
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'nom': nom,
-      'prix': prix,
-      'tauxTva': tvaValue,
-      'actif': actif,
-    };
+    return {'nom': nom, 'prix': prix, 'tauxTva': tvaValue, 'actif': actif};
   }
 
   @override

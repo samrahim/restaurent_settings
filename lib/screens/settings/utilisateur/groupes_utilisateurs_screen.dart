@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/utilisateur_model.dart';
+import 'package:restaurent/providers/providers.dart';
 import 'package:restaurent/providers/utilisateur_provider.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
@@ -441,15 +441,16 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
         actions: [
           ActionButton(
             onPressed: () {
-              context.read<DrawerBloc>().add(OpenCreateUtilisateurDrawer());
+              context.read<DrawerProvider>().openCreateUtilisateurDrawer();
               _scaffoldKey.currentState?.openEndDrawer();
             },
             text: "Nouveau",
           ),
         ],
       ),
-      endDrawer: BlocBuilder<DrawerBloc, DrawerState>(
-        builder: (context, state) {
+      endDrawer: Consumer<DrawerProvider>(
+        builder: (context, drawerProvider, _) {
+          final state = drawerProvider.state;
           if (state is DrawerCreateUtilisateur) {
             return _buildCreateUtilisateurDrawer(context);
           } else if (state is DrawerUpdateUtilisateurAttributeState) {
@@ -572,12 +573,10 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
   }) {
     return InkWell(
       onTap: () {
-        context.read<DrawerBloc>().add(
-          OpenUpdateUtilisateurAttributeDrawer(
-            utilisateur: user,
-            attributeName: attributeName,
-            currentValue: value,
-          ),
+        context.read<DrawerProvider>().openUpdateUtilisateurAttributeDrawer(
+          user,
+          attributeName,
+          value,
         );
         _scaffoldKey.currentState?.openEndDrawer();
       },

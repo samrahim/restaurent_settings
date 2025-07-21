@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/providers/product_provider.dart';
 import 'package:restaurent/providers/providers.dart';
-
-import '../blocs/settings/settings_bloc.dart';
 
 class ReglageScreen extends StatelessWidget {
   const ReglageScreen({super.key});
@@ -17,12 +13,11 @@ class ReglageScreen extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<http.Client>(create: (_) => http.Client()),
-        BlocProvider(create: (_) => DrawerBloc()),
-        BlocProvider(
+        ChangeNotifierProvider(
           create:
-              (_) => SettingsBloc(initialSettings: routes)..add(LoadSettings()),
+              (_) => SettingsProvider(initialSettings: routes)..loadSettings(),
         ),
-
+        ChangeNotifierProvider(create: (_) => DrawerProvider()),
         ChangeNotifierProxyProvider<http.Client, CategorieDePrixProvider>(
           create:
               (context) =>
@@ -106,24 +101,24 @@ class _ReglageViewState extends State<ReglageView>
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SettingsBloc, SettingsState>(
-      listener: (context, state) {
-        if (state is SettingsLoaded) {
-          _initializeControllers(state.settings);
-          _mainTabController?.animateTo(state.selectedMainTab);
-          _subTabControllers?[state.selectedMainTab].animateTo(
-            state.selectedSubTab,
-          );
-        }
-      },
-      builder: (context, state) {
-        if (state is! SettingsLoaded ||
-            _mainTabController == null ||
-            _subTabControllers == null) {
+    return Consumer<SettingsProvider>(
+      builder: (context, provider, child) {
+        final settings = provider.settings;
+
+        if (settings.isEmpty) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final mainCategories = state.settings.keys.toList();
+        // Important : initialiser les contrôleurs si nécessaire
+        if (_mainTabController == null || _subTabControllers == null) {
+          _initializeControllers(settings);
+          _mainTabController?.animateTo(provider.selectedMainTab);
+          _subTabControllers?[provider.selectedMainTab].animateTo(
+            provider.selectedSubTab,
+          );
+        }
+
+        final mainCategories = settings.keys.toList();
 
         return Scaffold(
           appBar: AppBar(
@@ -136,16 +131,16 @@ class _ReglageViewState extends State<ReglageView>
                       .map((category) => Tab(text: category))
                       .toList(),
               onTap: (index) {
-                context.read<SettingsBloc>().add(ChangeMainTab(index));
+                provider.changeMainTab(index);
               },
             ),
           ),
           body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
             controller: _mainTabController,
+            physics: const NeverScrollableScrollPhysics(),
             children: List.generate(mainCategories.length, (mainIndex) {
               final category = mainCategories[mainIndex];
-              final categoryOptions = state.settings[category]!;
+              final categoryOptions = settings[category]!;
               final subTabs = categoryOptions.entries.toList();
 
               return Column(
@@ -154,23 +149,20 @@ class _ReglageViewState extends State<ReglageView>
                     child: TabBar(
                       controller: _subTabControllers![mainIndex],
                       isScrollable: false,
-
                       tabs:
                           subTabs.map((entry) {
                             final label = entry.value['label'] ?? entry.key;
                             return Tab(text: label.toString());
                           }).toList(),
                       onTap: (index) {
-                        context.read<SettingsBloc>().add(
-                          ChangeSubTab(mainIndex, index),
-                        );
+                        provider.changeSubTab(mainIndex, index);
                       },
                     ),
                   ),
                   Expanded(
                     child: TabBarView(
-                      physics: NeverScrollableScrollPhysics(),
                       controller: _subTabControllers![mainIndex],
+                      physics: const NeverScrollableScrollPhysics(),
                       children:
                           subTabs.map((entry) {
                             return entry.value['content'] as Widget;

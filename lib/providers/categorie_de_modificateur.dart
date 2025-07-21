@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
 
@@ -46,21 +47,35 @@ class CategorieModificateurProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void create(CategorieDeModificateur newModificateur) {
-    print(newModificateur.nom);
-    print(newModificateur.color);
-    print(newModificateur.sallesIDS);
-    print(newModificateur.affectationMode);
-    print(newModificateur.typeSelection);
-
+  void create(CategorieDeModificateur newModificateur) async {
     _allcategories = [..._allcategories, newModificateur];
     notifyListeners();
   }
 
-  void update(CategorieDeModificateur updated) {
+  void update(CategorieDeModificateur updated) async {
+    print("updated id ${updated.id}");
+    String mo = json.encode(updated.toJson());
+    print(mo);
+    Response response = await http.post(
+      Uri.parse('${baseUrl}modificateurs/categories/createOrUpdate'),
+      headers: {'Content-Type': 'application/json'},
+      body: mo,
+    );
+    print("response.body ${response.body}");
+    final Map<String, dynamic> responseJson = json.decode(response.body);
+    if (response.statusCode != 200) {
+      final CategorieDeModificateur res = CategorieDeModificateur.fromJson(
+        responseJson,
+      );
+      print(res.nom);
+    }
     _allcategories =
-        _allcategories.map((cat) {
-          return cat.id == updated.id ? updated : cat;
+        _allcategories.map((e) {
+          if (e.id == updated.id) {
+            e = updated;
+            return e;
+          }
+          return e;
         }).toList();
 
     _selected = updated;

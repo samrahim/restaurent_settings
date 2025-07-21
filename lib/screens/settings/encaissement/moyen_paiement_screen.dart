@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/moyen_de_paiement_model.dart';
 import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/providers/moyen_de_paiement_provider.dart';
+import 'package:restaurent/providers/providers.dart';
 
 import '../../../widgets/widgets.dart';
 
@@ -39,8 +39,9 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: BlocBuilder<DrawerBloc, DrawerState>(
-        builder: (context, state) {
+      endDrawer: Consumer<DrawerProvider>(
+        builder: (context, drawerProvider, _) {
+          final state = drawerProvider.state;
           if (state is DrawerCreatePaiementMethode) {
             final m = state.model;
 
@@ -75,9 +76,9 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                         },
                         onChanged: (value) {
                           final updated = m.copyWith(nom: value);
-                          context.read<DrawerBloc>().add(
-                            OpenCreatePaiementMethodeDrawer(model: updated),
-                          );
+                          context
+                              .read<DrawerProvider>()
+                              .openCreatePaiementMethodeDrawer(updated);
                         },
                       ),
 
@@ -114,9 +115,9 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                           onChanged: (v) {
                             if (v != null) {
                               final updated = m.copyWith(modeEncaissement: v);
-                              context.read<DrawerBloc>().add(
-                                OpenCreatePaiementMethodeDrawer(model: updated),
-                              );
+                              context
+                                  .read<DrawerProvider>()
+                                  .openCreatePaiementMethodeDrawer(updated);
                             }
                           },
                         ),
@@ -156,9 +157,9 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                           onChanged: (v) {
                             if (v != null) {
                               final updated = m.copyWith(getsionDuTropPercu: v);
-                              context.read<DrawerBloc>().add(
-                                OpenCreatePaiementMethodeDrawer(model: updated),
-                              );
+                              context
+                                  .read<DrawerProvider>()
+                                  .openCreatePaiementMethodeDrawer(updated);
                             }
                           },
                         ),
@@ -182,9 +183,9 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                             final updated = m.copyWith(
                               ouvertureDeTiroirCaisse: v,
                             );
-                            context.read<DrawerBloc>().add(
-                              OpenCreatePaiementMethodeDrawer(model: updated),
-                            );
+                            context
+                                .read<DrawerProvider>()
+                                .openCreatePaiementMethodeDrawer(updated);
                           },
                         ),
                       ),
@@ -207,9 +208,9 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                             final updated = m.copyWith(
                               disponibleEnModeExpress: v,
                             );
-                            context.read<DrawerBloc>().add(
-                              OpenCreatePaiementMethodeDrawer(model: updated),
-                            );
+                            context
+                                .read<DrawerProvider>()
+                                .openCreatePaiementMethodeDrawer(updated);
                           },
                         ),
                       ),
@@ -250,9 +251,9 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                               final updated = m.copyWith(
                                 variationDuMoyenDePaiement: v,
                               );
-                              context.read<DrawerBloc>().add(
-                                OpenCreatePaiementMethodeDrawer(model: updated),
-                              );
+                              context
+                                  .read<DrawerProvider>()
+                                  .openCreatePaiementMethodeDrawer(updated);
                             }
                           },
                         ),
@@ -276,9 +277,9 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                             final updated = m.copyWith(
                               compterAlaFinDuService: v,
                             );
-                            context.read<DrawerBloc>().add(
-                              OpenCreatePaiementMethodeDrawer(model: updated),
-                            );
+                            context
+                                .read<DrawerProvider>()
+                                .openCreatePaiementMethodeDrawer(updated);
                           },
                         ),
                       ),
@@ -301,9 +302,9 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                             final updated = m.copyWith(
                               rensignerleFondDeCaisee: v,
                             );
-                            context.read<DrawerBloc>().add(
-                              OpenCreatePaiementMethodeDrawer(model: updated),
-                            );
+                            context
+                                .read<DrawerProvider>()
+                                .openCreatePaiementMethodeDrawer(updated);
                           },
                         ),
                       ),
@@ -313,9 +314,9 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                         selectedSalleIds: m.sallesIDS ?? [],
                         onSelectionChanged: (newSalles) {
                           final updated = m.copyWith(sallesIDS: newSalles);
-                          context.read<DrawerBloc>().add(
-                            OpenCreatePaiementMethodeDrawer(model: updated),
-                          );
+                          context
+                              .read<DrawerProvider>()
+                              .openCreatePaiementMethodeDrawer(updated);
                         },
                       ),
                       Container(
@@ -334,9 +335,9 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                           value: m.actif ?? false,
                           onChanged: (v) {
                             final updated = m.copyWith(actif: v);
-                            context.read<DrawerBloc>().add(
-                              OpenCreatePaiementMethodeDrawer(model: updated),
-                            );
+                            context
+                                .read<DrawerProvider>()
+                                .openCreatePaiementMethodeDrawer(updated);
                           },
                         ),
                       ),
@@ -532,8 +533,8 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
           ActionButton(onPressed: () {}, text: 'Reorganiser'),
           ActionButton(
             onPressed: () {
-              context.read<DrawerBloc>().add(
-                OpenCreatePaiementMethodeDrawer(model: _emptyModel),
+              context.read<DrawerProvider>().openCreatePaiementMethodeDrawer(
+                _emptyModel,
               );
               _scaffoldKey.currentState?.openEndDrawer();
             },
@@ -599,13 +600,13 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdatePaiementMethodeDrawer(
-                                        model: m,
-                                        attributeName: 'nom',
-                                        currentValue: m.nom,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdatePaiementMethodeDrawer(
+                                          m,
+                                          'nom',
+                                          m.nom,
+                                        );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
                                   child: CustomListTile(
@@ -641,13 +642,13 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
 
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdatePaiementMethodeDrawer(
-                                        model: m,
-                                        attributeName: 'modeEncaissement',
-                                        currentValue: m.modeEncaissement,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdatePaiementMethodeDrawer(
+                                          m,
+                                          'modeEncaissement',
+                                          m.modeEncaissement,
+                                        );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
                                   child: CustomListTile(
@@ -666,13 +667,13 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                 Divider(),
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdatePaiementMethodeDrawer(
-                                        model: m,
-                                        attributeName: 'GestionDuTropPerçu',
-                                        currentValue: m.getsionDuTropPercu,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdatePaiementMethodeDrawer(
+                                          m,
+                                          'GestionDuTropPerçu',
+                                          m.getsionDuTropPercu,
+                                        );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
                                   child: CustomListTile(
@@ -692,13 +693,13 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                 Divider(),
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdatePaiementMethodeDrawer(
-                                        model: m,
-                                        attributeName: 'OuvertureDuTiroir',
-                                        currentValue: m.ouvertureDeTiroirCaisse,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdatePaiementMethodeDrawer(
+                                          m,
+                                          'OuvertureDuTiroir',
+                                          m.ouvertureDeTiroirCaisse,
+                                        );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
                                   child: SwitchListTile(
@@ -714,14 +715,14 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                 Divider(),
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdatePaiementMethodeDrawer(
-                                        model: m,
-                                        attributeName:
-                                            'DisponibleEnModeExpress',
-                                        currentValue: m.disponibleEnModeExpress,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdatePaiementMethodeDrawer(
+                                          m,
+
+                                          'DisponibleEnModeExpress',
+                                          m.disponibleEnModeExpress,
+                                        );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
                                   child: SwitchListTile(
@@ -740,13 +741,13 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                           const SizedBox(height: 16),
                           InkWell(
                             onTap: () {
-                              context.read<DrawerBloc>().add(
-                                OpenUpdatePaiementMethodeDrawer(
-                                  model: m,
-                                  attributeName: 'VariationsDuMoyenDePaiement',
-                                  currentValue: m.variationDuMoyenDePaiement,
-                                ),
-                              );
+                              context
+                                  .read<DrawerProvider>()
+                                  .openUpdatePaiementMethodeDrawer(
+                                    m,
+                                    'VariationsDuMoyenDePaiement',
+                                    m.variationDuMoyenDePaiement,
+                                  );
                               _scaffoldKey.currentState?.openEndDrawer();
                             },
                             child: Container(
@@ -778,13 +779,13 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdatePaiementMethodeDrawer(
-                                        model: m,
-                                        attributeName: 'CompterALaFinDuService',
-                                        currentValue: m.compterAlaFinDuService,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdatePaiementMethodeDrawer(
+                                          m,
+                                          'CompterALaFinDuService',
+                                          m.compterAlaFinDuService,
+                                        );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
                                   child: SwitchListTile(
@@ -800,14 +801,14 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                 Divider(),
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdatePaiementMethodeDrawer(
-                                        model: m,
-                                        attributeName:
-                                            'RenseignerLeFondDeCaisse',
-                                        currentValue: m.rensignerleFondDeCaisee,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdatePaiementMethodeDrawer(
+                                          m,
+
+                                          'RenseignerLeFondDeCaisse',
+                                          m.rensignerleFondDeCaisee,
+                                        );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
                                   child: SwitchListTile(
@@ -833,14 +834,14 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdatePaiementMethodeDrawer(
-                                        model: m,
-                                        attributeName:
-                                            'DisponibleDansLesSalles',
-                                        currentValue: m.sallesIDS,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdatePaiementMethodeDrawer(
+                                          m,
+
+                                          'DisponibleDansLesSalles',
+                                          m.sallesIDS,
+                                        );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
                                   child: CustomListTile(
@@ -869,13 +870,13 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                 Divider(),
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdatePaiementMethodeDrawer(
-                                        model: m,
-                                        attributeName: 'actif',
-                                        currentValue: m.actif,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdatePaiementMethodeDrawer(
+                                          m,
+                                          'actif',
+                                          m.actif,
+                                        );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
                                   child: SwitchListTile(

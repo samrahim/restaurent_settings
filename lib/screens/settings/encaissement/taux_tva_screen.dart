@@ -1,11 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/taux_tva_model.dart';
+import 'package:restaurent/providers/drawer_provider.dart';
 import 'package:restaurent/providers/taux_tva_provider.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
@@ -34,7 +33,7 @@ class _TauxTVAScreenState extends State<TauxTVAScreen> {
         actions: [
           ActionButton(
             onPressed: () {
-              context.read<DrawerBloc>().add(OpenCreateTauxTvaDrawer());
+              context.read<DrawerProvider>().openCreateTauxTvaDrawer();
               _scaffoldKey.currentState?.openEndDrawer();
             },
             text: 'Nouveau',
@@ -134,20 +133,11 @@ class _TauxTVAScreenState extends State<TauxTVAScreen> {
   }
 
   Widget _buildDrawerWithBloc(BuildContext context) {
-    return BlocListener<DrawerBloc, DrawerState>(
-      listener: (context, state) {
-        if (state is DrawerCreateTauxTva && state.isOpen) {
-          tauxTVAValue.clear();
-        }
+    return Consumer<DrawerProvider>(
+      builder: (context, drawerProvider, _) {
+        final state = drawerProvider.state;
+        return _buildDrawerContent(context, state);
       },
-      child: Drawer(
-        width: MediaQuery.of(context).size.width * 0.3,
-        child: BlocBuilder<DrawerBloc, DrawerState>(
-          builder: (context, state) {
-            return _buildDrawerContent(context, state);
-          },
-        ),
-      ),
     );
   }
 

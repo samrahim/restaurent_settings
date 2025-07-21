@@ -50,7 +50,7 @@ class _PeripheriquesScreenState extends State<PeripheriquesScreen> {
   @override
   void initState() {
     loginRouter();
-    scanWifiDevices();
+    // scanWifiDevices();
     super.initState();
   }
 

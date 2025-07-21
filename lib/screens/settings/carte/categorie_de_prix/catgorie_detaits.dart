@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurent/blocs/drawer/drawer_bloc.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
 import 'package:restaurent/models/salle_model.dart';
+import 'package:restaurent/providers/providers.dart';
 import 'package:restaurent/widgets/button_supprimer.dart';
 import 'package:restaurent/widgets/custom_list_tile.dart';
 
@@ -93,14 +93,14 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdateCategrieDePrixAttributs(
-                                        model: widget.categorieDePrixModel,
-                                        attributeName: 'nom',
-                                        currentValue:
-                                            widget.categorieDePrixModel.nom,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdateCategorieDePrixAttributs(
+                                          widget.categorieDePrixModel,
+                                          'nom',
+
+                                          widget.categorieDePrixModel.nom,
+                                        );
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
@@ -114,16 +114,14 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                 const Divider(),
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdateCategrieDePrixAttributs(
-                                        model: widget.categorieDePrixModel,
-                                        attributeName: 'nom court',
-                                        currentValue:
-                                            widget
-                                                .categorieDePrixModel
-                                                .nomCourt,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdateCategorieDePrixAttributs(
+                                          widget.categorieDePrixModel,
+                                          'nom court',
+
+                                          widget.categorieDePrixModel.nomCourt,
+                                        );
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
@@ -138,16 +136,16 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                 const Divider(),
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdateCategrieDePrixAttributs(
-                                        model: widget.categorieDePrixModel,
-                                        attributeName: 'categorie de prix',
-                                        currentValue:
-                                            widget
-                                                .categorieDePrixModel
-                                                .categorieDePrixActive,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdateCategorieDePrixAttributs(
+                                          widget.categorieDePrixModel,
+                                          'categorie de prix',
+
+                                          widget
+                                              .categorieDePrixModel
+                                              .categorieDePrixActive,
+                                        );
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
@@ -169,17 +167,15 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                 const Divider(),
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdateCategrieDePrixAttributs(
-                                        model: widget.categorieDePrixModel,
-                                        attributeName:
-                                            'Afficher nom court en commande',
-                                        currentValue:
-                                            widget
-                                                .categorieDePrixModel
-                                                .afficherNomCourtEnCommande,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdateCategorieDePrixAttributs(
+                                          widget.categorieDePrixModel,
+                                          'Afficher nom court en commande',
+                                          widget
+                                              .categorieDePrixModel
+                                              .afficherNomCourtEnCommande,
+                                        );
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
@@ -201,17 +197,17 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                 const Divider(),
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdateCategrieDePrixAttributs(
-                                        model: widget.categorieDePrixModel,
-                                        attributeName:
-                                            'Afficher nom court a l\'encaissement',
-                                        currentValue:
-                                            widget
-                                                .categorieDePrixModel
-                                                .afficherNomCourtEnEncaissement,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdateCategorieDePrixAttributs(
+                                          widget.categorieDePrixModel,
+
+                                          'Afficher nom court a l\'encaissement',
+
+                                          widget
+                                              .categorieDePrixModel
+                                              .afficherNomCourtEnEncaissement,
+                                        );
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
@@ -233,17 +229,17 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                 const Divider(),
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdateCategrieDePrixAttributs(
-                                        model: widget.categorieDePrixModel,
-                                        attributeName:
-                                            'Afficher nom court en fabrication',
-                                        currentValue:
-                                            widget
-                                                .categorieDePrixModel
-                                                .afficherNomCourtEnFabrication,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdateCategorieDePrixAttributs(
+                                          widget.categorieDePrixModel,
+
+                                          'Afficher nom court en fabrication',
+
+                                          widget
+                                              .categorieDePrixModel
+                                              .afficherNomCourtEnFabrication,
+                                        );
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
@@ -287,16 +283,16 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                 const Divider(),
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdateCategrieDePrixAttributs(
-                                        model: widget.categorieDePrixModel,
-                                        attributeName: 'jours d\'activite',
-                                        currentValue:
-                                            widget
-                                                .categorieDePrixModel
-                                                .joursDactivite,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdateCategorieDePrixAttributs(
+                                          widget.categorieDePrixModel,
+                                          'jours d\'activite',
+
+                                          widget
+                                              .categorieDePrixModel
+                                              .joursDactivite,
+                                        );
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
@@ -318,16 +314,14 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                 const Divider(),
                                 InkWell(
                                   onTap: () {
-                                    context.read<DrawerBloc>().add(
-                                      OpenUpdateCategrieDePrixAttributs(
-                                        model: widget.categorieDePrixModel,
-                                        attributeName: 'Salles',
-                                        currentValue:
-                                            widget
-                                                .categorieDePrixModel
-                                                .salleIDS,
-                                      ),
-                                    );
+                                    context
+                                        .read<DrawerProvider>()
+                                        .openUpdateCategorieDePrixAttributs(
+                                          widget.categorieDePrixModel,
+                                          'Salles',
+
+                                          widget.categorieDePrixModel.salleIDS,
+                                        );
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
