@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/utilisateur_model.dart';
 import 'package:restaurent/providers/providers.dart';
-import 'package:restaurent/providers/utilisateur_provider.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
 class GroupesUtilisateursScreen extends StatefulWidget {

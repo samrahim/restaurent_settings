@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
 import 'package:restaurent/models/salle_model.dart';
