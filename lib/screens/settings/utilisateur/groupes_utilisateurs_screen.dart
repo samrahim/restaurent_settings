@@ -47,11 +47,11 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 32.0),
                   child: Text(
                     'Créer un nouveau utilisateur',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: AppTextStyle.indingoHeading,
                   ),
                 ),
 

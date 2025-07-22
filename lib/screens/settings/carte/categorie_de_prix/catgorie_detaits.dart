@@ -134,37 +134,7 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                   ),
                                 ),
                                 const Divider(),
-                                InkWell(
-                                  onTap: () {
-                                    context
-                                        .read<DrawerProvider>()
-                                        .openUpdateCategorieDePrixAttributs(
-                                          widget.categorieDePrixModel,
-                                          'categorie de prix',
 
-                                          widget
-                                              .categorieDePrixModel
-                                              .categorieDePrixActive,
-                                        );
-                                    widget.scaffoldKey.currentState
-                                        ?.openEndDrawer();
-                                  },
-                                  child: CustomListTile(
-                                    trailingwidget: Switch(
-                                      activeTrackColor: AppColors.primary,
-                                      value:
-                                          widget
-                                              .categorieDePrixModel
-                                              .categorieDePrixActive!,
-
-                                      onChanged: null,
-                                    ),
-                                    title: null,
-                                    leading: 'Categorie de prix active',
-                                    trailing: null,
-                                  ),
-                                ),
-                                const Divider(),
                                 InkWell(
                                   onTap: () {
                                     context
@@ -201,9 +171,7 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                         .read<DrawerProvider>()
                                         .openUpdateCategorieDePrixAttributs(
                                           widget.categorieDePrixModel,
-
                                           'Afficher nom court a l\'encaissement',
-
                                           widget
                                               .categorieDePrixModel
                                               .afficherNomCourtEnEncaissement,
@@ -338,11 +306,13 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                                 .salleIDS!
                                                 .map(
                                                   (id) =>
-                                                      salles
+                                                      Provider.of<
+                                                            SalleProvider
+                                                          >(context).salles
                                                           .firstWhere(
                                                             (s) => s.id == id,
                                                           )
-                                                          .nom,
+                                                          .name,
                                                 )
                                                 .join(', ')
                                             : 'Aucune salle sélectionnée',

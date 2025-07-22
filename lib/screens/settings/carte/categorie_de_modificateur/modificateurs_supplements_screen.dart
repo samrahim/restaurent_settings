@@ -207,13 +207,23 @@ class _ModificateursSupplementsScreenState
                   ),
                 if (provider.selectedCategorie != null)
                   Expanded(
-                    child: ModificateurDetails(
-                      modificateur: provider.selectedCategorie!,
-
-                      scaffoldKey: _scaffoldKey,
+                    child: FutureBuilder(
+                      future: Future.delayed(const Duration(milliseconds: 100)),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return ModificateurDetails(
+                          modificateur: provider.selectedCategorie!,
+                          scaffoldKey: _scaffoldKey,
+                        );
+                      },
                     ),
                   )
-                else
+                else if (provider.selectedCategorie == null)
                   Expanded(child: _buildCategoriesList(provider)),
               ],
             );
@@ -244,7 +254,7 @@ class _ModificateursSupplementsScreenState
                         GestureDetector(
                           child: ListTile(
                             title: Text(
-                              e.nom!,
+                              e.nom ?? '',
                               style: AppTextStyle.indingoHeading,
                             ),
                             trailing: const Icon(
@@ -321,7 +331,9 @@ class _ModificateursSupplementsScreenState
                         onTap: () {
                           openColorPicker(
                             context: context,
-                            currentColor: Colors.pink,
+                            currentColor: hexToColor(
+                              createModel.couleur ?? '#FFFFFFFF',
+                            ),
                             onColorSelected: (Color selectedColor) {
                               final updated = createModel.copyWith(
                                 couleur: selectedColor.toHex(),
@@ -336,7 +348,9 @@ class _ModificateursSupplementsScreenState
                           width: 30,
                           height: 30,
                           decoration: BoxDecoration(
-                            color: Colors.pink,
+                            color: hexToColor(
+                              createModel.couleur ?? '#FFFFFFFF',
+                            ),
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.black26),
                           ),
@@ -458,7 +472,7 @@ class _ModificateursSupplementsScreenState
                   createModel.salleMode == SalleMode.POUR_TOUT
                       ? const SizedBox.shrink()
                       : SalleIdsPicker(
-                        salles: salles,
+                        salles: Provider.of<SalleProvider>(context).salles,
                         selectedSalleIds: createModel.sallesIDS!,
                         onSelectionChanged: (updatedSalleIds) {
                           final updated = createModel.copyWith(
@@ -523,7 +537,7 @@ class _ModificateursSupplementsScreenState
       case 'obligatoire':
         return ['true', 'false'];
       case 'salle':
-        return salles; // ta variable globale/locale selon ton contexte
+        return Provider.of<SalleProvider>(context).salles;
       default:
         return [];
     }

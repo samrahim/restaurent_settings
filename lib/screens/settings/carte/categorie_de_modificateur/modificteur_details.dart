@@ -217,49 +217,45 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                 leading: null,
                                 trailing: null,
                               ),
-                              widget.modificateur.salleMode ==
-                                      SalleMode.POUR_TOUT
-                                  ? SizedBox.shrink()
-                                  : const Divider(),
+                              const Divider(),
 
-                              widget.modificateur.salleMode ==
-                                      SalleMode.POUR_TOUT
-                                  ? SizedBox.shrink()
-                                  : InkWell(
-                                    onTap: () {
-                                      context
-                                          .read<DrawerProvider>()
-                                          .openUpdateCategorieDeModificateur(
-                                            widget.modificateur,
-                                            'salle',
+                              InkWell(
+                                onTap: () {
+                                  context
+                                      .read<DrawerProvider>()
+                                      .openUpdateCategorieDeModificateur(
+                                        widget.modificateur,
+                                        'salle',
 
-                                            widget.modificateur.sallesIDS,
-                                          );
-                                      widget.scaffoldKey.currentState!
-                                          .openEndDrawer();
-                                    },
-                                    child: CustomListTile(
-                                      title: Text(
-                                        'Afficher dans les salles et comptoirs',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      leading: null,
-                                      trailing:
-                                          widget.modificateur.sallesIDS != null
-                                              ? widget.modificateur.sallesIDS!
-                                                  .map(
-                                                    (id) =>
-                                                        salles
-                                                            .firstWhere(
-                                                              (s) => s.id == id,
-                                                            )
-                                                            .nom,
-                                                  )
-                                                  .join(', ')
-                                              : 'Aucune salle sélectionnée',
-                                      trailingwidget: null,
-                                    ),
+                                        widget.modificateur.sallesIDS,
+                                      );
+                                  widget.scaffoldKey.currentState!
+                                      .openEndDrawer();
+                                },
+                                child: CustomListTile(
+                                  title: Text(
+                                    'Afficher dans les salles et comptoirs',
+                                    style: AppTextStyle.greyHeading,
                                   ),
+                                  leading: null,
+                                  trailing:
+                                      widget.modificateur.sallesIDS != null
+                                          ? widget.modificateur.sallesIDS!
+                                              .map(
+                                                (id) =>
+                                                    Provider.of<SalleProvider>(
+                                                          context,
+                                                        ).salles
+                                                        .firstWhere(
+                                                          (s) => s.id == id,
+                                                        )
+                                                        .name,
+                                              )
+                                              .join(', ')
+                                          : 'Aucune salle sélectionnée',
+                                  trailingwidget: null,
+                                ),
+                              ),
                               const Divider(),
 
                               InkWell(
@@ -334,57 +330,8 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                   trailingwidget: null,
                                 ),
                               ),
-                              const Divider(),
-                              InkWell(
-                                onTap: () {
-                                  context
-                                      .read<DrawerProvider>()
-                                      .openUpdateCategorieDeModificateur(
-                                        widget.modificateur,
-                                        'affectaionMode',
-                                        widget.modificateur.salleMode!.name
-                                            .replaceAll('_', ''),
-                                      );
-                                  widget.scaffoldKey.currentState!
-                                      .openEndDrawer();
-                                },
-                                child: CustomListTile(
-                                  leading: null,
-                                  trailing: widget.modificateur.salleMode!.name
-                                      .replaceAll('_', ' '),
-                                  title: Text(
-                                    'Affectaion mode',
-                                    style: AppTextStyle.greyHeading,
-                                  ),
-                                  trailingwidget: null,
-                                ),
-                              ),
-                              const Divider(),
-                              InkWell(
-                                onTap: () {
-                                  context
-                                      .read<DrawerProvider>()
-                                      .openUpdateCategorieDeModificateur(
-                                        widget.modificateur,
-                                        'produitMode',
-                                        widget.modificateur.produitMode!.name
-                                            .replaceAll('_', ''),
-                                      );
-                                  widget.scaffoldKey.currentState!
-                                      .openEndDrawer();
-                                },
-                                child: CustomListTile(
-                                  leading: null,
-                                  trailing: widget.modificateur.salleMode!.name
-                                      .replaceAll('_', ' '),
-                                  title: Text(
-                                    'Produits mode',
-                                    style: AppTextStyle.greyHeading,
-                                  ),
-                                  trailingwidget: null,
-                                ),
-                              ),
 
+                              Divider(),
                               InkWell(
                                 onTap: () {
                                   context

@@ -308,7 +308,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                       ),
 
                       SalleIdsPicker(
-                        salles: salles,
+                        salles: Provider.of<SalleProvider>(context).salles,
                         selectedSalleIds: m.sallesIDS ?? [],
                         onSelectionChanged: (newSalles) {
                           final updated = m.copyWith(sallesIDS: newSalles);
@@ -499,7 +499,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
               case 'DisponibleDansLesSalles':
                 return UpdateAttributeDrawer(
                   fieldType: FieldType.choice,
-                  options: salles,
+                  options: Provider.of<SalleProvider>(context).salles,
                   label: 'Disponible dans les salles',
                   initialValue: (state.currentValue) as List<int>,
                   onSaved: (v) {
@@ -849,11 +849,13 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                             ? m.sallesIDS!
                                                 .map(
                                                   (id) =>
-                                                      salles
+                                                      Provider.of<
+                                                            SalleProvider
+                                                          >(context).salles
                                                           .firstWhere(
                                                             (s) => s.id == id,
                                                           )
-                                                          .nom,
+                                                          .name,
                                                 )
                                                 .join(', ')
                                             : 'Aucune salle sélectionnée',

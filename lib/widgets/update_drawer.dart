@@ -173,7 +173,7 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                       widget.options!.map((option) {
                         if (option is SalleModel) {
                           final int id = option.id;
-                          final String label = option.nom;
+                          final String label = option.name;
                           final bool isSelected = _selectedChoices.contains(id);
                           return ChoiceChip(
                             label: Text(label),
@@ -181,7 +181,7 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                             selectedColor: AppColors.indingo200,
                             onSelected: (selected) {
                               setState(() {
-                                if (option.nom == 'Toutes') {
+                                if (option.name == 'Toutes') {
                                   if (selected) {
                                     _selectedChoices = [option.id];
                                   } else {
@@ -198,7 +198,7 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                                                       .firstWhere(
                                                         (s) =>
                                                             s is SalleModel &&
-                                                            s.nom == 'Toutes',
+                                                            s.name == 'Toutes',
                                                       )
                                                       .id,
                                             )

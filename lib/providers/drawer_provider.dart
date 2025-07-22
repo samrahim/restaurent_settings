@@ -73,6 +73,7 @@ class DrawerProvider with ChangeNotifier {
     String attributeName,
     dynamic currentValue,
   ) {
+    print('Opening update drawer for ${modificateur.produitMode}');
     _state = DrawerUpdateCategorieDeModificateur(
       modificateur: modificateur,
       attributeName: attributeName,

@@ -70,7 +70,7 @@ class CategorieDeModificateur extends Equatable {
       id: json['id'],
       nom: json['nom'],
       icone: json['icone'],
-      sallesIDS: List<int>.from(json['sallesIDS'] ?? []),
+      sallesIDS: List<int>.from(json['salleIds'] ?? []),
       typeSelection: json['typeSelection'],
       obligatoire: json['obligatoire'],
       couleur: json['couleur'],
@@ -109,8 +109,8 @@ class CategorieDeModificateur extends Equatable {
       'couleur': couleur,
       'modificateurs': modificateurs.map((e) => e.toJson()).toList(),
       'produitIds': produitsIds,
-      'salleMode': salleMode?.toString().split('.').last,
-      'produitMode': produitMode?.toString().split('.').last,
+      'salleMode': salleMode ?? null,
+      'produitMode': produitMode ?? null,
     };
 
     map.removeWhere(

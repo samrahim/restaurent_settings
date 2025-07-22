@@ -2,19 +2,21 @@ import 'package:equatable/equatable.dart';
 
 class SalleModel extends Equatable {
   final int id;
-  final String nom;
+  final String name;
 
-  const SalleModel({required this.id, required this.nom});
+  const SalleModel({required this.id, required this.name});
 
   @override
-  List<Object?> get props => [id, nom];
+  List<Object?> get props => [id, name];
 
-  SalleModel copyWith({int? id, String? nom}) {
-    return SalleModel(id: id ?? this.id, nom: nom ?? this.nom);
+  SalleModel copyWith({int? id, String? name}) {
+    return SalleModel(id: id ?? this.id, name: name ?? this.name);
+  }
+
+  factory SalleModel.fromJson(Map<String, dynamic> json) {
+    return SalleModel(id: json['id'] as int, name: json['name'] as String);
+  }
+  Map<String, dynamic> toJson() {
+    return {'id': id, 'name': name};
   }
 }
-
-List<SalleModel> salles = [
-  SalleModel(id: 1, nom: 'Salle principale'),
-  SalleModel(id: 2, nom: 'Terrasse'),
-];

@@ -40,7 +40,7 @@ class SalleIdsPicker extends StatelessWidget {
               itemBuilder: (_, i) {
                 final salle = salles[i];
                 final id = salle.id;
-                final nom = salle.nom;
+                final nom = salle.name;
                 final selected = selectedSalleIds.contains(id);
                 return ChoiceChip(
                   label: Text(

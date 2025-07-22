@@ -10,7 +10,7 @@ class CategorieDePrixModel extends Equatable {
   final bool? afficherNomCourtEnEncaissement;
   final bool? afficherNomCourtEnFabrication;
   final bool? actifDansTouteLaJournee;
-  final bool? categorieDePrixActive;
+
   final List<String>? joursDactivite;
   final List<int>? salleIDS;
   final TimeOfDay? heureDebut;
@@ -18,7 +18,7 @@ class CategorieDePrixModel extends Equatable {
   final int priorite;
   final List<int> produitsIds;
   final bool jourFerie;
-  final bool? status;
+
   const CategorieDePrixModel({
     required this.id,
     required this.nom,
@@ -28,7 +28,7 @@ class CategorieDePrixModel extends Equatable {
     required this.afficherNomCourtEnEncaissement,
     required this.afficherNomCourtEnFabrication,
     required this.actifDansTouteLaJournee,
-    required this.categorieDePrixActive,
+
     required this.joursDactivite,
     required this.salleIDS,
     required this.heureDebut,
@@ -36,7 +36,6 @@ class CategorieDePrixModel extends Equatable {
     required this.priorite,
     required this.produitsIds,
     required this.jourFerie,
-    required this.status,
   });
   CategorieDePrixModel copyWith({
     String? id,
@@ -51,12 +50,11 @@ class CategorieDePrixModel extends Equatable {
     List<int>? salleIDS,
     TimeOfDay? heureDebut,
     TimeOfDay? heureFin,
-    bool? categorieDePrixActive,
+
     bool? afficherNomCourtEnFabrication,
     int? priorite,
     List<int>? produitsIds,
     bool? jourFerie,
-    bool? status,
   }) {
     return CategorieDePrixModel(
       id: id ?? this.id,
@@ -71,8 +69,7 @@ class CategorieDePrixModel extends Equatable {
           afficherNomCourtEnFabrication ?? this.afficherNomCourtEnFabrication,
       actifDansTouteLaJournee:
           actifDansTouteLaJournee ?? this.actifDansTouteLaJournee,
-      categorieDePrixActive:
-          categorieDePrixActive ?? this.categorieDePrixActive,
+
       joursDactivite: joursDactivite ?? this.joursDactivite,
       salleIDS: salleIDS ?? this.salleIDS,
       heureDebut: heureDebut ?? this.heureDebut,
@@ -80,7 +77,6 @@ class CategorieDePrixModel extends Equatable {
       priorite: priorite ?? this.priorite,
       produitsIds: produitsIds ?? this.produitsIds,
       jourFerie: jourFerie ?? this.jourFerie,
-      status: status ?? this.status,
     );
   }
 
@@ -94,7 +90,7 @@ class CategorieDePrixModel extends Equatable {
     afficherNomCourtEnEncaissement,
     afficherNomCourtEnFabrication,
     actifDansTouteLaJournee,
-    categorieDePrixActive,
+
     joursDactivite,
     salleIDS,
     heureDebut,
@@ -102,7 +98,6 @@ class CategorieDePrixModel extends Equatable {
     produitsIds,
     priorite,
     jourFerie,
-    status,
   ];
   factory CategorieDePrixModel.fromJson(Map<String, dynamic> json) {
     return CategorieDePrixModel(
@@ -116,7 +111,7 @@ class CategorieDePrixModel extends Equatable {
       afficherNomCourtEnFabrication:
           json['afficherNomCourtFabrication'] as bool?,
       actifDansTouteLaJournee: json['actifTouteJournee'] as bool?,
-      categorieDePrixActive: json['categorieActive'] as bool?,
+
       joursDactivite:
           (json['joursActivite'] as List<dynamic>?)
               ?.map((e) => e.toString())
@@ -138,7 +133,6 @@ class CategorieDePrixModel extends Equatable {
               .toList() ??
           [],
       jourFerie: json['jourFerie'] as bool? ?? false,
-      status: json['status'] as bool? ?? false,
     );
   }
 
@@ -146,7 +140,7 @@ class CategorieDePrixModel extends Equatable {
     return {
       'nom': model.nom,
       'nomCourt': model.nomCourt,
-      'status': model.status,
+
       'afficherNomCourtCommande': model.afficherNomCourtEnCommande,
       'afficherNomCourtEncaissement': model.afficherNomCourtEnEncaissement,
       'afficherNomCourtFabrication': model.afficherNomCourtEnFabrication,
@@ -155,7 +149,7 @@ class CategorieDePrixModel extends Equatable {
           model.joursDactivite?.map((e) => e.toUpperCase()).toList(),
       'heureDebut': model.heureDebut.toString(),
       'heureFin': model.heureFin.toString(),
-      'categorieActive': model.categorieDePrixActive,
+
       'salleIds': model.salleIDS,
       'produitIds': model.produitsIds,
       'actif': model.actif,
@@ -174,7 +168,7 @@ List<CategorieDePrixModel> categoriesPrixList = [
     afficherNomCourtEnEncaissement: false,
     afficherNomCourtEnFabrication: true,
     actifDansTouteLaJournee: true,
-    categorieDePrixActive: true,
+
     salleIDS: [1],
     heureDebut: null,
     heureFin: null,
@@ -182,7 +176,6 @@ List<CategorieDePrixModel> categoriesPrixList = [
     joursDactivite: ['Lundi', 'Mardi'],
     priorite: 12,
     jourFerie: false,
-    status: true,
   ),
   CategorieDePrixModel(
     id: '2',
@@ -193,14 +186,14 @@ List<CategorieDePrixModel> categoriesPrixList = [
     afficherNomCourtEnEncaissement: false,
     afficherNomCourtEnFabrication: true,
     actifDansTouteLaJournee: false,
-    categorieDePrixActive: true,
+
     salleIDS: [2, 1],
     heureDebut: TimeOfDay(hour: 17, minute: 0),
     heureFin: TimeOfDay(hour: 19, minute: 0),
     produitsIds: [],
     joursDactivite: ['Lundi', 'Jeudi'],
     priorite: 10,
-    status: true,
+
     jourFerie: false,
   ),
 
@@ -213,7 +206,7 @@ List<CategorieDePrixModel> categoriesPrixList = [
     afficherNomCourtEnEncaissement: false,
     afficherNomCourtEnFabrication: true,
     actifDansTouteLaJournee: false,
-    categorieDePrixActive: true,
+
     salleIDS: [1],
     heureDebut: TimeOfDay(hour: 17, minute: 0),
     heureFin: TimeOfDay(hour: 19, minute: 0),
@@ -221,6 +214,5 @@ List<CategorieDePrixModel> categoriesPrixList = [
     joursDactivite: ['Lundi', 'Jeudi'],
     priorite: 20,
     jourFerie: false,
-    status: true,
   ),
 ];

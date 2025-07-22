@@ -6,3 +6,4 @@ export 'utilisateur_provider.dart';
 export 'settings_provider.dart';
 export 'drawer_provider.dart';
 export 'imprimante_provider.dart';
+export 'salle_provider.dart';

@@ -10,31 +10,39 @@ void openColorPicker({
     context: context,
     builder: (_) {
       Color tempColor = currentColor;
-      return AlertDialog(
-        title: Center(child: Text('Selectioner la couleur de la categorie')),
-        content: SingleChildScrollView(
-          child: ColorPicker(
-            pickerColor: tempColor,
-            onColorChanged: (Color color) {
-              tempColor = color;
-            },
-            enableAlpha: false,
-            pickerAreaHeightPercent: 0.8,
-          ),
-        ),
-        actions: [
-          TextButton(
-            child: Text('Cancel'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          ElevatedButton(
-            child: Text('Select'),
-            onPressed: () {
-              Navigator.of(context).pop();
-              onColorSelected(tempColor);
-            },
-          ),
-        ],
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Center(
+              child: Text('Sélectionner la couleur de la catégorie'),
+            ),
+            content: SingleChildScrollView(
+              child: ColorPicker(
+                pickerColor: tempColor,
+                onColorChanged: (Color color) {
+                  setState(() {
+                    tempColor = color;
+                  });
+                },
+                enableAlpha: false,
+                pickerAreaHeightPercent: 0.8,
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('Annuler'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              ElevatedButton(
+                child: const Text('Sélectionner'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  onColorSelected(tempColor);
+                },
+              ),
+            ],
+          );
+        },
       );
     },
   );

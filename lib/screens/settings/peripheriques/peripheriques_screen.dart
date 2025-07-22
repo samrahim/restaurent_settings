@@ -38,18 +38,18 @@ class _PeripheriquesScreenState extends State<PeripheriquesScreen> {
       'http://192.168.1.1/login.cgi'
       '?username=rahim'
       '&password=rahim_0_admin'
-      '&apply=Save', // selon le paramètre « submit »
+      '&apply=Save',
     );
     final resp = await client.get(uri);
     if (resp.statusCode != 200) {
       throw Exception('Login failed: ${resp.body}');
     }
-    return client; // garde automatiquement les cookies
+    return client;
   }
 
   @override
   void initState() {
-    loginRouter();
+    // loginRouter();
     // scanWifiDevices();
     super.initState();
   }

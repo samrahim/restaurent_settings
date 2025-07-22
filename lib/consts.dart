@@ -234,16 +234,33 @@ const List<String> joursSemaine = [
   'Dimanche',
 ];
 
-Color hexToColor(String hexString) {
+Color hexToColor(String? hexString) {
+  if (hexString == null || hexString.isEmpty) {
+    // Fallback to white if the string is null or empty
+    return const Color(0xFFFFFFFF);
+  }
+
   final buffer = StringBuffer();
-  if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
-  buffer.write(hexString.replaceFirst('#', ''));
-  return Color(int.parse(buffer.toString(), radix: 16));
+  if (hexString.startsWith('#')) {
+    hexString = hexString.substring(1);
+  }
+  if (hexString.length == 6) {
+    buffer.write('ff'); // Add alpha value if not provided
+  }
+  buffer.write(hexString);
+
+  try {
+    return Color(int.parse(buffer.toString(), radix: 16));
+  } catch (e) {
+    // Fallback to white if parsing fails
+    return const Color(0xFFFFFFFF);
+  }
 }
 
 extension ColorExtension on Color {
   String toHex({bool leadingHashSign = true}) {
     return '${leadingHashSign ? '#' : ''}'
+        '${alpha.toRadixString(16).padLeft(2, '0')}'
         '${red.toRadixString(16).padLeft(2, '0')}'
         '${green.toRadixString(16).padLeft(2, '0')}'
         '${blue.toRadixString(16).padLeft(2, '0')}';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
-import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/providers/providers.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_prix/catgorie_detaits.dart';
 import 'package:restaurent/widgets/widgets.dart';
@@ -22,12 +21,12 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
     nom: '',
     nomCourt: '',
     actif: false,
-    status: false,
+
     afficherNomCourtEnCommande: false,
     afficherNomCourtEnEncaissement: false,
     afficherNomCourtEnFabrication: false,
     actifDansTouteLaJournee: false,
-    categorieDePrixActive: false,
+
     joursDactivite: [],
     salleIDS: [],
     heureDebut: const TimeOfDay(hour: 12, minute: 00),
@@ -129,11 +128,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                         (bool v) =>
                             m.copyWith(afficherNomCourtEnFabrication: v),
                       ],
-                      [
-                        'Catégorie active',
-                        m.categorieDePrixActive,
-                        (bool v) => m.copyWith(categorieDePrixActive: v),
-                      ],
+
                       [
                         'Actif toute la journée',
                         m.actifDansTouteLaJournee,
@@ -244,7 +239,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                     ],
 
                     SalleIdsPicker(
-                      salles: salles,
+                      salles: Provider.of<SalleProvider>(context).salles,
                       selectedSalleIds: m.salleIDS!,
                       onSelectionChanged: (selectedIds) {
                         context
@@ -364,18 +359,6 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                   },
                 );
 
-              case 'categorie de prix':
-                return UpdateAttributeDrawer(
-                  label: 'categorie de prix',
-                  initialValue: state.model.categorieDePrixActive,
-                  fieldType: FieldType.boolean,
-                  onSaved: (v) {
-                    final provider = context.read<CategorieDePrixProvider>();
-                    provider.update(
-                      state.model.copyWith(categorieDePrixActive: v),
-                    );
-                  },
-                );
               case 'Afficher nom court en commande':
                 return UpdateAttributeDrawer(
                   label: 'Afficher nom court en commande',
@@ -404,7 +387,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
               case 'Salles':
                 return UpdateAttributeDrawer(
                   label: 'Salles',
-                  options: salles,
+                  options: Provider.of<SalleProvider>(context).salles,
                   initialValue: state.model.salleIDS,
                   fieldType: FieldType.choice,
                   onSaved: (v) {
