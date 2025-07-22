@@ -119,7 +119,6 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                   ),
 
                   SizedBox(
-                    height: 200,
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount:
@@ -363,8 +362,6 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                               const Divider(),
                               InkWell(
                                 onTap: () {
-                                  print('Produit mode tapped');
-                                  print(widget.modificateur.produitMode);
                                   context
                                       .read<DrawerProvider>()
                                       .openUpdateCategorieDeModificateur(

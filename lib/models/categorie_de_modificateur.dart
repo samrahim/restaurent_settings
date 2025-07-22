@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
 
@@ -93,15 +94,15 @@ class CategorieDeModificateur extends Equatable {
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    final map = {
       'id': id,
       'nom': nom,
       'icone': icone,
       'salleIds': sallesIDS,
       'typeSelection':
           typeSelection == 'SINGLE'
-              ? "SINGLE"
-              : typeSelection == "MULTIPLE QUANTITE"
+              ? 'SINGLE'
+              : typeSelection == 'MULTIPLE QUANTITE'
               ? 'MULTIPLE_QUANTITE'
               : null,
       'obligatoire': obligatoire,
@@ -111,6 +112,12 @@ class CategorieDeModificateur extends Equatable {
       'salleMode': salleMode?.toString().split('.').last,
       'produitMode': produitMode?.toString().split('.').last,
     };
+
+    map.removeWhere(
+      (key, value) => value == null || (value is String && value.isEmpty),
+    );
+
+    return map;
   }
 
   @override

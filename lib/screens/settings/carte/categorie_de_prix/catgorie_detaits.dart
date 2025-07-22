@@ -47,7 +47,7 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                   leading: Text(
                     "Information generale",
                     style: AppTextStyle.indingosubHeading.copyWith(
-                      color: AppColors.indingo500,
+                      color: AppColors.indingo400,
                     ),
                   ),
                 ),
@@ -65,7 +65,7 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                   leading: Text(
                     "Produits associés",
                     style: AppTextStyle.indingosubHeading.copyWith(
-                      color: AppColors.indingo500,
+                      color: AppColors.indingo400,
                     ),
                   ),
                 ),

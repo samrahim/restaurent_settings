@@ -192,7 +192,7 @@ class AppColors {
   static final greyaccent = Colors.grey[500];
 
   static Color? indingo200 = Colors.indigo[200];
-  static Color? indingo500 = Colors.indigo[500];
+  static Color? indingo400 = Colors.indigo[400];
   static const Color quaternary = Color(0xFF000000);
   static const Color quinary = Color(0xFF000000);
   static const Color senary = Color(0xFF000000);

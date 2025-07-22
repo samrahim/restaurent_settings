@@ -227,44 +227,46 @@ class _ModificateursSupplementsScreenState
     return Container(
       color: Colors.grey.shade200,
       margin: const EdgeInsets.all(6),
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.white,
-            ),
-            margin: const EdgeInsets.all(18),
-            child: Column(
-              children: [
-                ...provider.allcategories.map(
-                  (e) => Column(
-                    children: [
-                      GestureDetector(
-                        child: ListTile(
-                          title: Text(
-                            e.nom!,
-                            style: AppTextStyle.indingoHeading,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.white,
+              ),
+              margin: const EdgeInsets.all(18),
+              child: Column(
+                children: [
+                  ...provider.allcategories.map(
+                    (e) => Column(
+                      children: [
+                        GestureDetector(
+                          child: ListTile(
+                            title: Text(
+                              e.nom!,
+                              style: AppTextStyle.indingoHeading,
+                            ),
+                            trailing: const Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.indigo,
+                            ),
                           ),
-                          trailing: const Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.indigo,
-                          ),
+                          onTap: () {
+                            provider.select(e);
+                          },
                         ),
-                        onTap: () {
-                          provider.select(e);
-                        },
-                      ),
-                      e != provider.allcategories.last
-                          ? const Divider()
-                          : const SizedBox(),
-                    ],
+                        e != provider.allcategories.last
+                            ? const Divider()
+                            : const SizedBox(),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -303,52 +305,72 @@ class _ModificateursSupplementsScreenState
                     ),
                   ),
                   const SizedBox(height: 16),
-                  ListTile(
-                    title: Text(
-                      'Couleur',
-                      style: AppTextStyle.indingosubHeading,
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 4.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.shade400),
+                      color: Colors.grey[50],
                     ),
-                    trailing: InkWell(
-                      onTap: () {
-                        openColorPicker(
-                          context: context,
-                          currentColor: Colors.pink,
-                          onColorSelected: (Color selectedColor) {
-                            final updated = createModel.copyWith(
-                              couleur: selectedColor.toHex(),
-                            );
-                            context
-                                .read<DrawerProvider>()
-                                .openCreateCategorieDeModificateur(updated);
-                          },
-                        );
-                      },
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: Colors.pink,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.black26),
+                    child: ListTile(
+                      title: Text(
+                        'Couleur',
+                        style: AppTextStyle.indingosubHeading,
+                      ),
+                      trailing: InkWell(
+                        onTap: () {
+                          openColorPicker(
+                            context: context,
+                            currentColor: Colors.pink,
+                            onColorSelected: (Color selectedColor) {
+                              final updated = createModel.copyWith(
+                                couleur: selectedColor.toHex(),
+                              );
+                              context
+                                  .read<DrawerProvider>()
+                                  .openCreateCategorieDeModificateur(updated);
+                            },
+                          );
+                        },
+                        child: Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: Colors.pink,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.black26),
+                          ),
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  ListTile(
-                    title: Text(
-                      'Type de selection',
-                      style: AppTextStyle.indingosubHeading,
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 4.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.shade400),
+                      color: Colors.grey[50],
                     ),
-                    trailing: DropdownButton<String>(
-                      underline: const SizedBox(),
+                    child: DropdownButtonFormField<String>(
                       value: createModel.typeSelection,
-                      style: AppTextStyle.indingosubHeading,
+                      decoration: const InputDecoration(
+                        labelText: 'Type de selection',
+                        border: InputBorder.none,
+                      ),
                       items:
                           optiontypeDeSelection
                               .map(
-                                (v) =>
-                                    DropdownMenuItem(value: v, child: Text(v)),
+                                (v) => DropdownMenuItem(
+                                  value: v,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 16),
+                                    child: Text(
+                                      v,
+                                      style: AppTextStyle.indingosubHeading,
+                                    ),
+                                  ),
+                                ),
                               )
                               .toList(),
                       onChanged: (v) {
@@ -363,40 +385,61 @@ class _ModificateursSupplementsScreenState
                       },
                     ),
                   ),
+
                   const SizedBox(height: 16),
-                  ListTile(
-                    title: Text(
-                      'Obligatoire',
-                      style: AppTextStyle.indingosubHeading,
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 4.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.shade400),
+                      color: Colors.grey[50],
                     ),
-                    trailing: Switch(
-                      value: createModel.obligatoire!,
-                      onChanged: (value) {
-                        final updated = createModel.copyWith(
-                          obligatoire: value,
-                        );
-                        context
-                            .read<DrawerProvider>()
-                            .openCreateCategorieDeModificateur(updated);
-                      },
+                    child: ListTile(
+                      title: Text(
+                        'Obligatoire',
+                        style: AppTextStyle.indingosubHeading,
+                      ),
+                      trailing: Switch(
+                        value: createModel.obligatoire!,
+                        activeColor: AppColors.indingo400,
+                        onChanged: (value) {
+                          final updated = createModel.copyWith(
+                            obligatoire: value,
+                          );
+                          context
+                              .read<DrawerProvider>()
+                              .openCreateCategorieDeModificateur(updated);
+                        },
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  ListTile(
-                    title: Text(
-                      'Affectation mode',
-                      style: AppTextStyle.indingosubHeading,
+
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 4.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.shade400),
+                      color: Colors.grey[50],
                     ),
-                    trailing: DropdownButton<SalleMode>(
-                      underline: const SizedBox(),
+                    child: DropdownButtonFormField<SalleMode>(
                       value: createModel.salleMode,
-                      style: AppTextStyle.indingosubHeading,
+                      decoration: const InputDecoration(
+                        labelText: 'Affectation mode',
+                        border: InputBorder.none,
+                      ),
                       items:
                           SalleMode.values
                               .map(
                                 (v) => DropdownMenuItem(
                                   value: v,
-                                  child: Text(v.name.replaceAll("_", " ")),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 16),
+                                    child: Text(
+                                      v.name.replaceAll("_", " "),
+                                      style: AppTextStyle.indingosubHeading,
+                                    ),
+                                  ),
                                 ),
                               )
                               .toList(),
@@ -410,6 +453,7 @@ class _ModificateursSupplementsScreenState
                       },
                     ),
                   ),
+
                   const SizedBox(height: 16),
                   createModel.salleMode == SalleMode.POUR_TOUT
                       ? const SizedBox.shrink()
@@ -429,12 +473,12 @@ class _ModificateursSupplementsScreenState
                   CreateButton(
                     onPressed: () {
                       context.read<CategorieModificateurProvider>().create(
-                        createModel.copyWith(nom: name.text),
+                        createModel.copyWith(nom: name.text, id: null),
                       );
                       _scaffoldKey.currentState?.closeEndDrawer();
                       context.read<DrawerProvider>().resetDrawer();
                     },
-                    buttonText: 'Créer une nouvelle catégorie de prix',
+                    buttonText: 'Créer une nouvelle catégorie de modificateur',
                   ),
                 ],
               ),

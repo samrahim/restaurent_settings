@@ -48,9 +48,22 @@ class CategorieModificateurProvider extends ChangeNotifier {
   }
 
   void create(CategorieDeModificateur newModificateur) async {
-    print(newModificateur.toJson());
-    _allcategories = [..._allcategories, newModificateur];
-    notifyListeners();
+    final response = await client.post(
+      Uri.parse("${baseUrl}modificateurs/categories/createOrUpdate"),
+      body: json.encode(newModificateur.toJson()),
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      },
+    );
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = json.decode(response.body);
+      CategorieDeModificateur mod = CategorieDeModificateur.fromJson(data);
+      _allcategories = [..._allcategories, mod];
+      notifyListeners();
+    } else {
+      throw '${response.body}';
+    }
   }
 
   void update(CategorieDeModificateur updated) async {
