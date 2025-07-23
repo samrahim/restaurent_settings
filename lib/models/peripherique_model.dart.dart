@@ -12,7 +12,7 @@ class Peripherique extends Equatable {
   final bool? etat;
 
   const Peripherique({
-    required this.id,
+    this.id,
     required this.nom,
     required this.ip,
     required this.port,
@@ -46,21 +46,7 @@ class Peripherique extends Equatable {
 
   @override
   List<Object?> get props => [id, nom, ip, port, typeConnection, etat, model];
-
-  factory Peripherique.fromJson(Map<String, dynamic> json) {
-    return Peripherique(
-      id: json['id'] as int?,
-      nom: json['nom'] as String?,
-      ip: json['ip'] as String?,
-      port: json['port'] as int?,
-      typeConnection: _mapTypeConnection(json['typeConnection'] as String?),
-      model: json['imprimante'] as String?,
-      etat: json['etat'] as bool?,
-    );
-  }
-
-  // Helper function to map JSON values to TypeConnection enum
-  static TypeConnection _mapTypeConnection(String? type) {
+  static TypeConnection? _mapTypeConnectionFromString(String? type) {
     switch (type) {
       case 'TCP_IP':
         return TypeConnection.TCT_IP;
@@ -71,22 +57,48 @@ class Peripherique extends Equatable {
       case 'USB':
         return TypeConnection.USB;
       default:
-        return TypeConnection.BLUETOOTH; // Default fallback
+        return null; // Return null if the string doesn't match any enum value
+    }
+  }
+
+  factory Peripherique.fromJson(Map<String, dynamic> json) {
+    return Peripherique(
+      id: json['id'] as int?,
+      nom: json['nom'] as String? ?? '', // Default to an empty string if null
+      ip: json['ip'] as String? ?? '', // Default to an empty string if null
+      port: json['port'] as int? ?? 0, // Default to 0 if null
+      typeConnection: _mapTypeConnectionFromString(
+        json['typeConnection'] as String?,
+      ),
+      model:
+          json['imprimante'] as String? ??
+          '', // Default to an empty string if null
+      etat: json['etat'] as bool? ?? false, // Default to false if null
+    );
+  }
+
+  // Helper function to map JSON values to TypeConnection enum
+  String? _mapTypeConnection(TypeConnection? type) {
+    switch (type) {
+      case TypeConnection.TCT_IP:
+        return 'TCP_IP';
+      case TypeConnection.BLUETOOTH:
+        return 'BLUETOOTH';
+      case TypeConnection.SERIE:
+        return 'SERIE';
+      case TypeConnection.USB:
+        return 'USB';
+      default:
+        return null;
     }
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'nom': nom,
       'ip': ip,
       'port': port,
-
-      'typeConnection': typeConnection
-          .toString()
-          .split('.')
-          .last
-          .replaceAll("/", "_"),
+      'typeConnection': _mapTypeConnection(typeConnection),
       'etat': etat,
       'imprimante': model,
     };

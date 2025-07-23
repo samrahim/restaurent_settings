@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:esc_pos_printer_plus/esc_pos_printer_plus.dart';
-import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurent/models/peripherique_model.dart.dart';
 
@@ -15,17 +13,25 @@ class ImprimanteProvider with ChangeNotifier {
   List<Peripherique> get peripherique => _peripheriques;
   TypeConnection? selectedType;
   String ip = '';
-  String port = '';
+  int port = 0;
+  bool etat = false;
   ConnectionResult? isValidConnection;
   String machineName = '';
+  String emaplacemt = '';
+
   ImprimanteProvider({required this.client});
 
   void selectType(TypeConnection type) {
     selectedType = type;
     ip = '';
-    port = '';
+    port = 0;
     isValidConnection = ConnectionResult.notStarted;
     machineName = '';
+    notifyListeners();
+  }
+
+  void updateetat() {
+    etat = !etat;
     notifyListeners();
   }
 
@@ -34,7 +40,12 @@ class ImprimanteProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updatePort(String value) {
+  void updateemaplacemt(String value) {
+    emaplacemt = value;
+    notifyListeners();
+  }
+
+  void updatePort(int value) {
     port = value;
     // _checkTCPConnection();
     notifyListeners();
@@ -105,7 +116,38 @@ class ImprimanteProvider with ChangeNotifier {
       ),
     );
     List data = json.decode(response.body);
+    print("res ${response.body}");
     _peripheriques = data.map((e) => Peripherique.fromJson(e)).toList();
     notifyListeners();
+  }
+
+  Future<void> createImprimant() async {
+    print(ip);
+    final p = Peripherique(
+      nom: emaplacemt,
+      ip: ip,
+      port: port,
+      typeConnection: selectedType,
+      etat: etat,
+      model: machineName,
+    );
+    final response = await client.post(
+      Uri.parse(
+        'http://51.15.211.239:8444/api/imprimantes?TypePeripherique=IMPRIMANTE',
+      ),
+      body: json.encode(p.toJson()),
+      headers: {'Content-Type': 'application/json'},
+    );
+    _peripheriques.add(Peripherique.fromJson(json.decode(response.body)));
+    print(
+      "Request Body: ${json.encode(Peripherique(nom: emaplacemt, ip: ip, port: port, typeConnection: selectedType, etat: etat, model: machineName).toJson())}",
+    );
+    machineName = '';
+    ip = '';
+    port = 0;
+    selectedType = null;
+    etat = false;
+    notifyListeners();
+    // print("res ${response.body}");
   }
 }

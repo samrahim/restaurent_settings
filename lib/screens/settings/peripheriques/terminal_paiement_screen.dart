@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurent/consts.dart';
 
 class TerminalPaiementScreen extends StatelessWidget {
   const TerminalPaiementScreen({super.key});
@@ -11,10 +12,7 @@ class TerminalPaiementScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Terminal de paiement',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            Text('Terminal de paiement', style: AppTextStyle.indingoHeading),
             const SizedBox(height: 16),
             Expanded(
               child: ListView(

@@ -30,6 +30,8 @@ class _ImprimanteScreenState extends State<ImprimanteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Imprimantes', style: AppTextStyle.largeindingotext),
+        centerTitle: true,
         actions: [
           ActionButton(
             onPressed: () {
@@ -108,7 +110,6 @@ class _ImprimanteScreenState extends State<ImprimanteScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Dropdown for Type Connection
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 4.0),
                     decoration: BoxDecoration(
@@ -118,15 +119,19 @@ class _ImprimanteScreenState extends State<ImprimanteScreen> {
                     ),
                     child: DropdownButtonFormField<TypeConnection>(
                       value: imprimanteProvider.selectedType,
+
                       decoration: const InputDecoration(
-                        labelText: 'Type de selection',
+                        labelText: 'Type de connection',
                         border: InputBorder.none,
                       ),
                       items:
                           TypeConnection.values.map((type) {
                             return DropdownMenuItem(
                               value: type,
-                              child: Text(type.name.toUpperCase()),
+                              child: Text(
+                                type.name.toUpperCase(),
+                                style: AppTextStyle.indingosubHeading,
+                              ),
                             );
                           }).toList(),
                       onChanged: (v) {
@@ -139,7 +144,6 @@ class _ImprimanteScreenState extends State<ImprimanteScreen> {
 
                   const SizedBox(height: 16),
 
-                  // IP Address Field
                   if (imprimanteProvider.selectedType ==
                       TypeConnection.TCT_IP) ...[
                     TextFormField(
@@ -164,7 +168,6 @@ class _ImprimanteScreenState extends State<ImprimanteScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Port Field
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (v) {
@@ -182,7 +185,7 @@ class _ImprimanteScreenState extends State<ImprimanteScreen> {
                       },
                       keyboardType: TextInputType.number,
                       onChanged: (v) {
-                        imprimanteProvider.updatePort(v);
+                        imprimanteProvider.updatePort(int.parse(v));
                       },
                       decoration: InputDecoration(
                         labelText: 'Port',
@@ -196,31 +199,80 @@ class _ImprimanteScreenState extends State<ImprimanteScreen> {
                     ),
 
                     const SizedBox(height: 8),
-
-                    // Show Print and Save Buttons if IP and Port are Valid
-                    if (ipRegex.hasMatch(imprimanteProvider.ip ?? '') &&
-                        (imprimanteProvider.port.isNotEmpty &&
-                            int.tryParse(imprimanteProvider.port) != null &&
-                            int.parse(imprimanteProvider.port) > 0 &&
-                            int.parse(imprimanteProvider.port) <= 65535)) ...[
-                      TextField(
-                        decoration: const InputDecoration(
-                          labelText: "Nom de la machine",
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 4.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade400),
+                        color: Colors.grey[50],
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          'Etat de l\'imprimante',
+                          style: AppTextStyle.indingosubHeading,
                         ),
-                        onChanged: imprimanteProvider.updateMachineName,
+                        trailing: Switch(
+                          value: imprimanteProvider.etat,
+                          activeColor: AppColors.indingo400,
+                          onChanged: (v) {
+                            imprimanteProvider.updateetat();
+                          },
+                        ),
                       ),
+                    ),
+                    const SizedBox(height: 8),
+                    if (ipRegex.hasMatch(imprimanteProvider.ip) &&
+                        (imprimanteProvider.port != 0 &&
+                            imprimanteProvider.port != 0 &&
+                            imprimanteProvider.port > 0 &&
+                            imprimanteProvider.port <= 65535)) ...[
+                      TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+
+                        onChanged: (v) {
+                          imprimanteProvider.updateMachineName(v);
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Nom de la machine',
+                          labelStyle: AppTextStyle.indingosubHeading,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+
+                        onChanged: (v) {
+                          imprimanteProvider.updateemaplacemt(v);
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Emaplcement de la machine',
+                          labelStyle: AppTextStyle.indingosubHeading,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                        ),
+                      ),
+
                       const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () async {
-                          // await imprimanteProvider.printTestReceipt();
-                        },
-                        child: const Text("Test Print"),
+
+                      CreateButton(
+                        onPressed: () {},
+                        buttonText: "Imprimer test",
                       ),
-                      ElevatedButton(
+
+                      const SizedBox(height: 32),
+                      CreateButton(
                         onPressed: () {
-                          // Add logic for saving the printer
+                          imprimanteProvider.createImprimant();
                         },
-                        child: const Text("Enregistrer"),
+                        buttonText: "Enregistrer",
                       ),
                     ],
                   ],
