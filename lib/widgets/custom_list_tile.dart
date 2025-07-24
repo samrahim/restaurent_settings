@@ -6,6 +6,7 @@ class CustomListTile extends StatelessWidget {
   final String? trailing;
   final Widget? trailingwidget;
   final Widget? title;
+  final VoidCallback? onTap;
 
   const CustomListTile({
     required this.trailingwidget,
@@ -13,11 +14,13 @@ class CustomListTile extends StatelessWidget {
     super.key,
     required this.leading,
     required this.trailing,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: onTap,
       leading:
           leading != null
               ? Text(leading!, style: AppTextStyle.greyHeading)

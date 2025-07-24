@@ -58,6 +58,7 @@ class _RapportScreenState extends State<RapportScreen> {
                   children: [
                     _buildSection('Produits', [
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value: rapportModel.impressionDuTop10Produits,
@@ -77,6 +78,7 @@ class _RapportScreenState extends State<RapportScreen> {
                         trailing: null,
                       ),
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value: rapportModel.impressionDuTop10ProduitsEnValeur,
@@ -96,6 +98,7 @@ class _RapportScreenState extends State<RapportScreen> {
                         trailing: null,
                       ),
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value: rapportModel.impressionDeTousLesProduits,
@@ -115,6 +118,7 @@ class _RapportScreenState extends State<RapportScreen> {
                         trailing: null,
                       ),
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value:
@@ -137,6 +141,7 @@ class _RapportScreenState extends State<RapportScreen> {
                     ]),
                     _buildSection('Catégories', [
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
 
@@ -159,6 +164,7 @@ class _RapportScreenState extends State<RapportScreen> {
                         trailing: null,
                       ),
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value:
@@ -183,6 +189,7 @@ class _RapportScreenState extends State<RapportScreen> {
                     ]),
                     _buildSection('Chiffre d\'affaires', [
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value: rapportModel.impressionDuCAParSalle,
@@ -202,6 +209,7 @@ class _RapportScreenState extends State<RapportScreen> {
                         trailing: null,
                       ),
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value: rapportModel.impressionDuCAParServeur,
@@ -223,6 +231,7 @@ class _RapportScreenState extends State<RapportScreen> {
                     ]),
                     _buildSection('Tickets et paniers', [
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value:
@@ -243,6 +252,7 @@ class _RapportScreenState extends State<RapportScreen> {
                         trailing: null,
                       ),
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value:
@@ -264,6 +274,7 @@ class _RapportScreenState extends State<RapportScreen> {
                         trailing: null,
                       ),
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value:
@@ -285,6 +296,7 @@ class _RapportScreenState extends State<RapportScreen> {
                         trailing: null,
                       ),
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value:
@@ -309,6 +321,7 @@ class _RapportScreenState extends State<RapportScreen> {
                     ]),
                     _buildSection('Autres', [
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value: rapportModel.impresstionDesAnnulations,
@@ -328,6 +341,7 @@ class _RapportScreenState extends State<RapportScreen> {
                         trailing: null,
                       ),
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value: rapportModel.impressionDuMenuMoyen,
@@ -347,6 +361,7 @@ class _RapportScreenState extends State<RapportScreen> {
                         trailing: null,
                       ),
                       CustomListTile(
+                        onTap: null,
                         trailingwidget: Switch(
                           activeColor: AppColors.primary,
                           value: rapportModel.impressionDuFondDeCaisse,

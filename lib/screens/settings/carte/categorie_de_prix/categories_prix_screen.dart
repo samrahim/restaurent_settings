@@ -148,6 +148,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                               border: Border.all(color: Colors.grey),
                             ),
                             child: CustomListTile(
+                              onTap: null,
                               leading: null,
                               trailing: null,
                               title: Text(

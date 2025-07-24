@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/moyen_de_paiement_model.dart';
-import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/providers/providers.dart';
 
 import '../../../widgets/widgets.dart';
@@ -544,11 +543,9 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
         builder: (context, provider, _) {
           final moyens = provider.moyens;
           final m = provider.selected;
-
           if (moyens.isEmpty) {
             return const Center(child: Text("Aucun moyen de paiement"));
           }
-
           return Row(
             children: [
               Expanded(
@@ -596,7 +593,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                             child: Column(
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                InkWell(
+                                CustomListTile(
                                   onTap: () {
                                     context
                                         .read<DrawerProvider>()
@@ -607,21 +604,20 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                         );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
-                                  child: CustomListTile(
-                                    trailing: null,
-                                    title: Text(
-                                      'Nom',
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    trailingwidget: Text(
-                                      m!.nom!,
-                                      style: AppTextStyle.indingosubHeading,
-                                    ),
-                                    leading: null,
+                                  trailing: null,
+                                  title: Text(
+                                    'Nom',
+                                    style: AppTextStyle.greyHeading,
                                   ),
+                                  trailingwidget: Text(
+                                    m!.nom!,
+                                    style: AppTextStyle.indingosubHeading,
+                                  ),
+                                  leading: null,
                                 ),
                                 Divider(),
                                 CustomListTile(
+                                  onTap: null,
                                   trailingwidget:
                                       m.icon != null
                                           ? Image.network(m.icon!)
@@ -638,7 +634,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                 ),
                                 Divider(),
 
-                                InkWell(
+                                CustomListTile(
                                   onTap: () {
                                     context
                                         .read<DrawerProvider>()
@@ -649,21 +645,19 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                         );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
-                                  child: CustomListTile(
-                                    leading: null,
-                                    trailing: null,
-                                    title: Text(
-                                      'Mode d’encaissement',
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    trailingwidget: Text(
-                                      m.modeEncaissement!,
-                                      style: AppTextStyle.indingosubHeading,
-                                    ),
+                                  leading: null,
+                                  trailing: null,
+                                  title: Text(
+                                    'Mode d’encaissement',
+                                    style: AppTextStyle.greyHeading,
+                                  ),
+                                  trailingwidget: Text(
+                                    m.modeEncaissement!,
+                                    style: AppTextStyle.indingosubHeading,
                                   ),
                                 ),
                                 Divider(),
-                                InkWell(
+                                CustomListTile(
                                   onTap: () {
                                     context
                                         .read<DrawerProvider>()
@@ -674,17 +668,15 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                         );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
-                                  child: CustomListTile(
-                                    leading: null,
-                                    trailing: null,
-                                    title: Text(
-                                      'Gestion du trop-perçu',
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    trailingwidget: Text(
-                                      m.getsionDuTropPercu!,
-                                      style: AppTextStyle.indingosubHeading,
-                                    ),
+                                  leading: null,
+                                  trailing: null,
+                                  title: Text(
+                                    'Gestion du trop-perçu',
+                                    style: AppTextStyle.greyHeading,
+                                  ),
+                                  trailingwidget: Text(
+                                    m.getsionDuTropPercu!,
+                                    style: AppTextStyle.indingosubHeading,
                                   ),
                                 ),
 
@@ -737,33 +729,31 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          InkWell(
-                            onTap: () {
-                              context
-                                  .read<DrawerProvider>()
-                                  .openUpdatePaiementMethodeDrawer(
-                                    m,
-                                    'VariationsDuMoyenDePaiement',
-                                    m.variationDuMoyenDePaiement,
-                                  );
-                              _scaffoldKey.currentState?.openEndDrawer();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.white,
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white,
+                            ),
+                            child: CustomListTile(
+                              onTap: () {
+                                context
+                                    .read<DrawerProvider>()
+                                    .openUpdatePaiementMethodeDrawer(
+                                      m,
+                                      'VariationsDuMoyenDePaiement',
+                                      m.variationDuMoyenDePaiement,
+                                    );
+                                _scaffoldKey.currentState?.openEndDrawer();
+                              },
+                              leading: null,
+                              trailing: null,
+                              title: Text(
+                                'Variations du moyen de paiement',
+                                style: AppTextStyle.greyHeading,
                               ),
-                              child: CustomListTile(
-                                leading: null,
-                                trailing: null,
-                                title: Text(
-                                  'Variations du moyen de paiement',
-                                  style: AppTextStyle.greyHeading,
-                                ),
-                                trailingwidget: Text(
-                                  m.variationDuMoyenDePaiement!,
-                                  style: AppTextStyle.indingosubHeading,
-                                ),
+                              trailingwidget: Text(
+                                m.variationDuMoyenDePaiement!,
+                                style: AppTextStyle.indingosubHeading,
                               ),
                             ),
                           ),
@@ -830,7 +820,7 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                             ),
                             child: Column(
                               children: [
-                                InkWell(
+                                CustomListTile(
                                   onTap: () {
                                     context
                                         .read<DrawerProvider>()
@@ -842,29 +832,27 @@ class _MoyenPaiementScreenState extends State<MoyenPaiementScreen> {
                                         );
                                     _scaffoldKey.currentState?.openEndDrawer();
                                   },
-                                  child: CustomListTile(
-                                    leading: null,
-                                    trailing:
-                                        m.sallesIDS != null
-                                            ? m.sallesIDS!
-                                                .map(
-                                                  (id) =>
-                                                      Provider.of<
-                                                            SalleProvider
-                                                          >(context).salles
-                                                          .firstWhere(
-                                                            (s) => s.id == id,
-                                                          )
-                                                          .name,
-                                                )
-                                                .join(', ')
-                                            : 'Aucune salle sélectionnée',
-                                    title: Text(
-                                      'Disponible dans les salles',
-                                      style: AppTextStyle.greyHeading,
-                                    ),
-                                    trailingwidget: null,
+                                  leading: null,
+                                  trailing:
+                                      m.sallesIDS != null
+                                          ? m.sallesIDS!
+                                              .map(
+                                                (id) =>
+                                                    Provider.of<SalleProvider>(
+                                                          context,
+                                                        ).salles
+                                                        .firstWhere(
+                                                          (s) => s.id == id,
+                                                        )
+                                                        .name,
+                                              )
+                                              .join(', ')
+                                          : 'Aucune salle sélectionnée',
+                                  title: Text(
+                                    'Disponible dans les salles',
+                                    style: AppTextStyle.greyHeading,
                                   ),
+                                  trailingwidget: null,
                                 ),
 
                                 Divider(),

@@ -26,6 +26,7 @@ class EnseigneScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     CustomListTile(
+                      onTap: null,
                       trailingwidget: null,
                       leading: 'Nom de l\'enseigne',
                       trailing: "LNE 1",
@@ -33,6 +34,7 @@ class EnseigneScreen extends StatelessWidget {
                     ),
                     Divider(),
                     CustomListTile(
+                      onTap: null,
                       trailingwidget: null,
                       leading: 'Adresse',
                       trailing: "1 Place Laine 1",
@@ -40,6 +42,7 @@ class EnseigneScreen extends StatelessWidget {
                     ),
                     Divider(),
                     CustomListTile(
+                      onTap: null,
                       trailingwidget: null,
                       leading: 'Code Postal',
                       trailing: "330001",
@@ -47,6 +50,7 @@ class EnseigneScreen extends StatelessWidget {
                     ),
                     Divider(),
                     CustomListTile(
+                      onTap: null,
                       trailingwidget: null,
                       leading: 'Ville',
                       trailing: "Bordeaux",
@@ -54,6 +58,7 @@ class EnseigneScreen extends StatelessWidget {
                     ),
                     Divider(),
                     CustomListTile(
+                      onTap: null,
                       trailingwidget: null,
                       leading: 'Telephone',
                       trailing: "010000000",
@@ -61,6 +66,7 @@ class EnseigneScreen extends StatelessWidget {
                     ),
                     Divider(),
                     CustomListTile(
+                      onTap: null,
                       trailingwidget: null,
                       leading: 'Raison sociale',
                       trailing: "Swift",
@@ -68,6 +74,7 @@ class EnseigneScreen extends StatelessWidget {
                     ),
                     Divider(),
                     CustomListTile(
+                      onTap: null,
                       trailingwidget: null,
                       leading: 'RCS',
                       trailing: "Test 1",
@@ -75,6 +82,7 @@ class EnseigneScreen extends StatelessWidget {
                     ),
                     Divider(),
                     CustomListTile(
+                      onTap: null,
                       trailingwidget: null,
                       leading: 'APE',
                       trailing: "Test 1",
@@ -82,6 +90,7 @@ class EnseigneScreen extends StatelessWidget {
                     ),
                     Divider(),
                     CustomListTile(
+                      onTap: null,
                       leading: 'Siret',
                       trailingwidget: null,
                       trailing: "011111",
@@ -89,6 +98,7 @@ class EnseigneScreen extends StatelessWidget {
                     ),
                     Divider(),
                     CustomListTile(
+                      onTap: null,
                       leading: 'Numero de TVA',
                       trailingwidget: null,
                       trailing: "Test 1",
@@ -107,6 +117,7 @@ class EnseigneScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     CustomListTile(
+                      onTap: null,
                       leading: 'Horaires',
                       trailing: "12h00 - 14h00 ",
                       title: null,
@@ -114,6 +125,7 @@ class EnseigneScreen extends StatelessWidget {
                     ),
                     Divider(),
                     CustomListTile(
+                      onTap: null,
                       trailingwidget: Icon(
                         Icons.arrow_forward_ios,
                         color: Colors.indigo.shade400,

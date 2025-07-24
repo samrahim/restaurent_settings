@@ -569,7 +569,7 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
     required UtilisateurModel user,
     required String attributeName,
   }) {
-    return InkWell(
+    return CustomListTile(
       onTap: () {
         context.read<DrawerProvider>().openUpdateUtilisateurAttributeDrawer(
           user,
@@ -578,18 +578,15 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
         );
         _scaffoldKey.currentState?.openEndDrawer();
       },
-      child: CustomListTile(
-        title: Text(title, style: AppTextStyle.greyHeading),
-        trailingwidget: Text(
-          attributeName != 'motPasseSchema' &&
-                  attributeName != 'motPasseChiffre'
-              ? value
-              : "****",
-          style: AppTextStyle.indingosubHeading,
-        ),
-        leading: null,
-        trailing: null,
+      title: Text(title, style: AppTextStyle.greyHeading),
+      trailingwidget: Text(
+        attributeName != 'motPasseSchema' && attributeName != 'motPasseChiffre'
+            ? value
+            : "****",
+        style: AppTextStyle.indingosubHeading,
       ),
+      leading: null,
+      trailing: null,
     );
   }
 }

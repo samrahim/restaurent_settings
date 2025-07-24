@@ -24,7 +24,7 @@ class CategorieDeModificateur extends Equatable {
   final SalleMode? produitMode;
 
   const CategorieDeModificateur({
-    required this.id,
+    this.id,
     required this.nom,
     required this.icone,
     required this.sallesIDS,

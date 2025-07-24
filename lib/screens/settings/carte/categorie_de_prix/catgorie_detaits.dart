@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
-import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/providers/providers.dart';
 import 'package:restaurent/widgets/button_supprimer.dart';
 import 'package:restaurent/widgets/custom_list_tile.dart';
@@ -91,7 +90,7 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                             color: Colors.white,
                             child: Column(
                               children: [
-                                InkWell(
+                                CustomListTile(
                                   onTap: () {
                                     context
                                         .read<DrawerProvider>()
@@ -104,15 +103,13 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
-                                  child: CustomListTile(
-                                    trailingwidget: null,
-                                    title: null,
-                                    leading: 'nom',
-                                    trailing: widget.categorieDePrixModel.nom,
-                                  ),
+                                  trailingwidget: null,
+                                  title: null,
+                                  leading: 'nom',
+                                  trailing: widget.categorieDePrixModel.nom,
                                 ),
                                 const Divider(),
-                                InkWell(
+                                CustomListTile(
                                   onTap: () {
                                     context
                                         .read<DrawerProvider>()
@@ -125,17 +122,15 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
-                                  child: CustomListTile(
-                                    trailingwidget: null,
-                                    leading: 'Nom court',
-                                    title: null,
-                                    trailing:
-                                        widget.categorieDePrixModel.nomCourt,
-                                  ),
+                                  trailingwidget: null,
+                                  leading: 'Nom court',
+                                  title: null,
+                                  trailing:
+                                      widget.categorieDePrixModel.nomCourt,
                                 ),
                                 const Divider(),
 
-                                InkWell(
+                                CustomListTile(
                                   onTap: () {
                                     context
                                         .read<DrawerProvider>()
@@ -149,23 +144,21 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
-                                  child: CustomListTile(
-                                    trailingwidget: Switch(
-                                      activeTrackColor: AppColors.primary,
-                                      value:
-                                          widget
-                                              .categorieDePrixModel
-                                              .afficherNomCourtEnCommande!,
-                                      onChanged: null,
-                                    ),
-                                    title: null,
-                                    leading: 'Afficher nom court en commande',
-                                    trailing: null,
+                                  trailingwidget: Switch(
+                                    activeTrackColor: AppColors.primary,
+                                    value:
+                                        widget
+                                            .categorieDePrixModel
+                                            .afficherNomCourtEnCommande!,
+                                    onChanged: null,
                                   ),
+                                  title: null,
+                                  leading: 'Afficher nom court en commande',
+                                  trailing: null,
                                 ),
 
                                 const Divider(),
-                                InkWell(
+                                CustomListTile(
                                   onTap: () {
                                     context
                                         .read<DrawerProvider>()
@@ -179,23 +172,21 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
-                                  child: CustomListTile(
-                                    trailingwidget: Switch(
-                                      activeTrackColor: AppColors.primary,
-                                      value:
-                                          widget
-                                              .categorieDePrixModel
-                                              .afficherNomCourtEnEncaissement!,
-                                      onChanged: null,
-                                    ),
-                                    title: null,
-                                    leading:
-                                        'Afficher nom court a l\'encaissement',
-                                    trailing: null,
+                                  trailingwidget: Switch(
+                                    activeTrackColor: AppColors.primary,
+                                    value:
+                                        widget
+                                            .categorieDePrixModel
+                                            .afficherNomCourtEnEncaissement!,
+                                    onChanged: null,
                                   ),
+                                  title: null,
+                                  leading:
+                                      'Afficher nom court a l\'encaissement',
+                                  trailing: null,
                                 ),
                                 const Divider(),
-                                InkWell(
+                                CustomListTile(
                                   onTap: () {
                                     context
                                         .read<DrawerProvider>()
@@ -211,20 +202,17 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
-                                  child: CustomListTile(
-                                    trailingwidget: Switch(
-                                      activeTrackColor: AppColors.primary,
-                                      value:
-                                          widget
-                                              .categorieDePrixModel
-                                              .afficherNomCourtEnFabrication!,
-                                      onChanged: null,
-                                    ),
-                                    title: null,
-                                    leading:
-                                        'Afficher nom court en fabrication',
-                                    trailing: null,
+                                  trailingwidget: Switch(
+                                    activeTrackColor: AppColors.primary,
+                                    value:
+                                        widget
+                                            .categorieDePrixModel
+                                            .afficherNomCourtEnFabrication!,
+                                    onChanged: null,
                                   ),
+                                  title: null,
+                                  leading: 'Afficher nom court en fabrication',
+                                  trailing: null,
                                 ),
                               ],
                             ),
@@ -236,6 +224,7 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                             child: Column(
                               children: [
                                 CustomListTile(
+                                  onTap: null,
                                   trailingwidget: Switch(
                                     activeColor: AppColors.primary,
                                     value:
@@ -249,7 +238,7 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                   trailing: null,
                                 ),
                                 const Divider(),
-                                InkWell(
+                                CustomListTile(
                                   onTap: () {
                                     context
                                         .read<DrawerProvider>()
@@ -264,23 +253,19 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
-                                  child: CustomListTile(
-                                    title: null,
-                                    trailing: null,
-                                    leading:
-                                        'Jours d\'activite de la categorie de prix',
-                                    trailingwidget: Text(
-                                      widget
-                                          .categorieDePrixModel
-                                          .joursDactivite!
-                                          .join(", "),
-                                      style: AppTextStyle.indingosubHeading,
-                                    ),
+                                  title: null,
+                                  trailing: null,
+                                  leading:
+                                      'Jours d\'activite de la categorie de prix',
+                                  trailingwidget: Text(
+                                    widget.categorieDePrixModel.joursDactivite!
+                                        .join(", "),
+                                    style: AppTextStyle.indingosubHeading,
                                   ),
                                 ),
 
                                 const Divider(),
-                                InkWell(
+                                CustomListTile(
                                   onTap: () {
                                     context
                                         .read<DrawerProvider>()
@@ -293,30 +278,28 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                     widget.scaffoldKey.currentState
                                         ?.openEndDrawer();
                                   },
-                                  child: CustomListTile(
-                                    trailingwidget: null,
-                                    title: null,
-                                    leading:
-                                        'Salles Consernees par la cetegorie de prix',
-                                    trailing:
-                                        widget.categorieDePrixModel.salleIDS !=
-                                                null
-                                            ? widget
-                                                .categorieDePrixModel
-                                                .salleIDS!
-                                                .map(
-                                                  (id) =>
-                                                      Provider.of<
-                                                            SalleProvider
-                                                          >(context).salles
-                                                          .firstWhere(
-                                                            (s) => s.id == id,
-                                                          )
-                                                          .name,
-                                                )
-                                                .join(', ')
-                                            : 'Aucune salle sélectionnée',
-                                  ),
+                                  trailingwidget: null,
+                                  title: null,
+                                  leading:
+                                      'Salles Consernees par la cetegorie de prix',
+                                  trailing:
+                                      widget.categorieDePrixModel.salleIDS !=
+                                              null
+                                          ? widget
+                                              .categorieDePrixModel
+                                              .salleIDS!
+                                              .map(
+                                                (id) =>
+                                                    Provider.of<SalleProvider>(
+                                                          context,
+                                                        ).salles
+                                                        .firstWhere(
+                                                          (s) => s.id == id,
+                                                        )
+                                                        .name,
+                                              )
+                                              .join(', ')
+                                          : 'Aucune salle sélectionnée',
                                 ),
 
                                 if (!widget
@@ -330,6 +313,7 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                   Column(
                                     children: [
                                       CustomListTile(
+                                        onTap: null,
                                         trailingwidget: null,
                                         title: null,
                                         leading: "Horaire de debut",
@@ -344,6 +328,7 @@ class _CategorieDePrixDetailsState extends State<CategorieDePrixDetails> {
                                     .categorieDePrixModel
                                     .actifDansTouteLaJournee!)
                                   CustomListTile(
+                                    onTap: null,
                                     trailingwidget: null,
                                     title: null,
                                     leading: "Horaire de fin",
