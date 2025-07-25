@@ -41,6 +41,19 @@ class ProduitsModel extends Equatable {
   List<Object?> get props => [id, name, pricebuy, color];
 }
 
-List<ProduitsModel> prod = [
-  ProduitsModel(color: Colors.red, id: '1', name: 'Tarte de ', pricebuy: 1),
+List<ProduitsModel> prods = [
+  ProduitsModel(
+    color: Colors.red,
+    id: '1',
+    name: 'Tarte de citron',
+    pricebuy: 1,
+  ),
+  ProduitsModel(
+    color: Colors.red,
+    id: '2',
+    name: 'Soupe de poisson',
+    pricebuy: 1,
+  ),
+  ProduitsModel(color: Colors.red, id: '3', name: 'Soupe', pricebuy: 1),
+  ProduitsModel(color: Colors.red, id: '4', name: 'Citron', pricebuy: 1),
 ];

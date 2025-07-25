@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:restaurent/consts.dart';
-import 'package:restaurent/providers/product_provider.dart';
 import 'package:restaurent/providers/providers.dart';
 
 class ReglageScreen extends StatelessWidget {

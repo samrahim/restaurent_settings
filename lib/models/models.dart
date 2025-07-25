@@ -6,3 +6,4 @@ export 'produits_model.dart';
 export 'categorie_de_modificateur.dart';
 export 'salle_model.dart';
 export 'sub_categorie_de_modificateur.dart';
+export '';

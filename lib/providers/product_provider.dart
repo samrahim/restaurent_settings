@@ -22,7 +22,8 @@ class ProductProvider extends ChangeNotifier {
       final response = await client.get(Uri.parse('${baseUrl}product/allp'));
       List data = json.decode(response.body);
 
-      _prod = data.map((e) => ProduitsModel.fromJson(e)).toList();
+      // _prod = data.map((e) => ProduitsModel.fromJson(e)).toList();
+      _prod = prods;
       notifyListeners();
     } catch (e) {
       throw 'Error fetching products: $e';
