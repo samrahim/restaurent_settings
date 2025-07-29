@@ -40,6 +40,10 @@ class _ModificateursSupplementsScreenState
   Widget build(BuildContext context) {
     return Consumer<CategorieModificateurProvider>(
       builder: (context, provider, _) {
+        print(
+          'provider.attachemntProductScreen  ${provider.attachemntProductScreen}',
+        );
+        print('provider.selectedCategorie ${provider.selectedCategorie}');
         return Scaffold(
           key: _scaffoldKey,
           endDrawer: _endDrawer(provider, _scaffoldKey),
@@ -178,7 +182,7 @@ class _ModificateursSupplementsScreenState
                     ? ProduitAttachement(scaffoldKey: _scaffoldKey)
                     : (provider.selectedCategorie == null &&
                         !provider.loadingall)
-                    ? _buildCategoriesList(provider, _scaffoldKey.currentState!)
+                    ? _buildCategoriesList(provider)
                     : (provider.selectedCategorie != null &&
                         !provider.loadingselected)
                     ? ModificateurDetails(scaffoldKey: _scaffoldKey)
@@ -189,10 +193,7 @@ class _ModificateursSupplementsScreenState
     );
   }
 
-  Widget _buildCategoriesList(
-    CategorieModificateurProvider provider,
-    ScaffoldState scaffoldState,
-  ) {
+  Widget _buildCategoriesList(CategorieModificateurProvider provider) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -209,7 +210,7 @@ class _ModificateursSupplementsScreenState
                 createmodificateur,
               );
 
-              scaffoldState.openEndDrawer();
+              _scaffoldKey.currentState?.openEndDrawer();
             },
             text: 'Nouveau',
           ),
@@ -406,7 +407,16 @@ class _ModificateursSupplementsScreenState
         final boolVal = value is bool ? value : value.toString() == 'true';
         return model.copyWith(obligatoire: boolVal);
       case 'salle':
-        return model.copyWith(sallesIDS: value as List<int>);
+        // Handle the new format that includes both choices and affectation mode
+        if (value is Map<String, dynamic>) {
+          final List<int> choices = value['choices'] as List<int>;
+          final AffectationMode affectationMode =
+              value['affectationMode'] as AffectationMode;
+          return model.copyWith(sallesIDS: choices, salleMode: affectationMode);
+        } else {
+          // Fallback for old format
+          return model.copyWith(sallesIDS: value as List<int>);
+        }
       case 'couleur':
         return model.copyWith(couleur: value as String);
       default:

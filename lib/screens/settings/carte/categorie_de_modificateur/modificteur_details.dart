@@ -427,4 +427,19 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
       trailing: const Icon(Icons.drag_handle),
     );
   }
+
+  String _getAffectationModeText(AffectationMode? mode) {
+    if (mode == null) return 'Pour seulement';
+
+    switch (mode) {
+      case AffectationMode.POUR_TOUT:
+        return 'Pour tout';
+      case AffectationMode.POUR_SEULEMENT:
+        return 'Pour seulement';
+      case AffectationMode.POUR_TOUT_SAUF:
+        return 'Pour tout sauf';
+      case AffectationMode.AJOUTER_A_LIST_EXSISTANTE:
+        return 'Ajouter à une liste existante';
+    }
+  }
 }

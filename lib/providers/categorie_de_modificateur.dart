@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
 
@@ -91,30 +90,31 @@ class CategorieModificateurProvider extends ChangeNotifier {
 
   void update(CategorieDeModificateur updated) async {
     String mo = json.encode(updated.toJson());
-    Response response = await http.post(
-      Uri.parse('${baseUrl}modificateurs/categories/createOrUpdate'),
-      headers: {'Content-Type': 'application/json'},
-      body: mo,
-    );
-    print("response.body ${response.body}");
-    final Map<String, dynamic> responseJson = json.decode(response.body);
-    if (response.statusCode != 200) {
-      final CategorieDeModificateur res = CategorieDeModificateur.fromJson(
-        responseJson,
-      );
-      print(res.nom);
-    }
-    _allcategories =
-        _allcategories.map((e) {
-          if (e.id == updated.id) {
-            e = updated;
-            return e;
-          }
-          return e;
-        }).toList();
+    // Response response = await http.post(
+    //   Uri.parse('${baseUrl}modificateurs/categories/createOrUpdate'),
+    //   headers: {'Content-Type': 'application/json'},
+    //   body: mo,
+    // );
+    // print("response.body ${response.body}");
+    // final Map<String, dynamic> responseJson = json.decode(response.body);
+    // if (response.statusCode != 200) {
+    //   final CategorieDeModificateur res = CategorieDeModificateur.fromJson(
+    //     responseJson,
+    //   );
+    //   print(res.nom);
+    // }
+    // _allcategories =
+    //     _allcategories.map((e) {
+    //       if (e.id == updated.id) {
+    //         e = updated;
+    //         return e;
+    //       }
+    //       return e;
+    //     }).toList();
 
-    _selected = updated;
-    notifyListeners();
+    // _selected = updated;
+    // notifyListeners();
+    print("update call");
     print(mo);
   }
 }

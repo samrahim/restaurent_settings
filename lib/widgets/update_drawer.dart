@@ -29,6 +29,7 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
   late bool _boolValue;
   late Color _selectedColor;
   late List<dynamic> _selectedChoices;
+  AffectationMode? _selectedAffectationMode;
 
   @override
   void initState() {
@@ -49,6 +50,12 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
             widget.initialValue != null
                 ? List<int>.from(widget.initialValue)
                 : <int>[];
+        // Initialize affectation mode for salle field
+        if (widget.label == 'salle') {
+          // Try to get the current affectation mode from the modificateur
+          // This will be handled by the provider when the drawer is opened
+          _selectedAffectationMode = AffectationMode.POUR_SEULEMENT;
+        }
       } else {
         _selectedChoices =
             widget.initialValue != null
@@ -165,73 +172,104 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                 ),
               )
             else if (widget.fieldType == FieldType.choice)
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Wrap(
-                  spacing: 8,
-                  children:
-                      widget.options!.map((option) {
-                        if (option is SalleModel) {
-                          final int id = option.id;
-                          final String label = option.name;
-                          final bool isSelected = _selectedChoices.contains(id);
-                          return ChoiceChip(
-                            label: Text(label),
-                            selected: isSelected,
-                            selectedColor: AppColors.indingo200,
-                            onSelected: (selected) {
-                              setState(() {
-                                if (option.name == 'Toutes') {
-                                  if (selected) {
-                                    _selectedChoices = [option.id];
-                                  } else {
-                                    _selectedChoices.remove(option.id);
-                                  }
-                                } else                                if (selected) {
-                                  _selectedChoices =
-                                      _selectedChoices
-                                          .where(
-                                            (id) =>
-                                                id !=
-                                                widget.options!
-                                                    .firstWhere(
-                                                      (s) =>
-                                                          s is SalleModel &&
-                                                          s.name == 'Toutes',
-                                                    )
-                                                    .id,
-                                          )
-                                          .toList();
-                                  _selectedChoices.add(option.id);
-                                } else {
-                                  _selectedChoices.remove(option.id);
-                                }
-                              
-                              });
-                            },
-                          );
-                        } else {
-                          final String value = option.toString();
-                          final bool isSelected = _selectedChoices.contains(
-                            value,
-                          );
-                          return ChoiceChip(
-                            label: Text(value),
-                            selected: isSelected,
-                            selectedColor: AppColors.indingo200,
-                            onSelected: (selected) {
-                              setState(() {
-                                if (selected) {
-                                  _selectedChoices.add(value);
-                                } else {
-                                  _selectedChoices.remove(value);
-                                }
-                              });
-                            },
-                          );
-                        }
-                      }).toList(),
-                ),
+              Column(
+                children: [
+                  // Special case for 'salle' field - add AffectationMode dropdown
+                  if (widget.label == 'salle')
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: DropdownButtonFormField<AffectationMode>(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: AppColors.greyaccent!,
+                            ),
+                          ),
+                          labelText: 'Mode d\'affectation',
+                        ),
+                        value:
+                            _selectedAffectationMode ??
+                            AffectationMode.POUR_SEULEMENT,
+                        items:
+                            AffectationMode.values.map((mode) {
+                              String displayText = '';
+                              switch (mode) {
+                                case AffectationMode.POUR_TOUT:
+                                  displayText = 'Pour tout';
+                                  break;
+                                case AffectationMode.POUR_SEULEMENT:
+                                  displayText = 'Pour seulement';
+                                  break;
+                                case AffectationMode.POUR_TOUT_SAUF:
+                                  displayText = 'Pour tout sauf';
+                                  break;
+                                case AffectationMode.AJOUTER_A_LIST_EXSISTANTE:
+                                  displayText = 'Ajouter à une liste existante';
+                                  break;
+                              }
+                              return DropdownMenuItem<AffectationMode>(
+                                value: mode,
+                                child: Text(displayText),
+                              );
+                            }).toList(),
+                        onChanged: (AffectationMode? value) {
+                          setState(() {
+                            _selectedAffectationMode = value;
+                          });
+                        },
+                      ),
+                    ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Wrap(
+                      spacing: 8,
+                      children:
+                          widget.options!.map((option) {
+                            if (option is SalleModel) {
+                              final int id = option.id;
+                              final String label = option.name;
+                              final bool isSelected = _selectedChoices.contains(
+                                id,
+                              );
+                              return ChoiceChip(
+                                label: Text(label),
+                                selected: isSelected,
+                                selectedColor: AppColors.indingo200,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    if (selected) {
+                                      _selectedChoices.add(option.id);
+                                    } else {
+                                      _selectedChoices.remove(option.id);
+                                    }
+                                  });
+                                },
+                              );
+                            } else {
+                              final String value = option.toString();
+                              final bool isSelected = _selectedChoices.contains(
+                                value,
+                              );
+                              return ChoiceChip(
+                                label: Text(value),
+                                selected: isSelected,
+                                selectedColor: AppColors.indingo200,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    if (selected) {
+                                      _selectedChoices.add(value);
+                                    } else {
+                                      _selectedChoices.remove(value);
+                                    }
+                                  });
+                                },
+                              );
+                            }
+                          }).toList(),
+                    ),
+                  ),
+                ],
               )
             else
               Container(
@@ -272,7 +310,17 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                     widget.onSaved(_pattern.join(''));
                     break;
                   case FieldType.choice:
-                    widget.onSaved(_selectedChoices);
+                    // For 'salle' field, return both the selected choices and the affectation mode
+                    if (widget.label == 'salle') {
+                      widget.onSaved({
+                        'choices': _selectedChoices,
+                        'affectationMode':
+                            _selectedAffectationMode ??
+                            AffectationMode.POUR_SEULEMENT,
+                      });
+                    } else {
+                      widget.onSaved(_selectedChoices);
+                    }
                     break;
                 }
                 Navigator.of(context).pop();
