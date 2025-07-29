@@ -1,27 +1,19 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
-
-enum SalleMode {
-  POUR_TOUT,
-  POUR_SEULEMENT,
-  POUR_TOUT_SAUF,
-  AJOUTER_A_LIST_EXSISTANTE,
-}
 
 class CategorieDeModificateur extends Equatable {
   final String? id;
   final String? nom;
   final String? icone;
   final List<int>? sallesIDS;
-  final String? typeSelection;
+  final TypeDeSelection? typeSelection;
   final bool? obligatoire;
   final String? couleur;
   final List<String>? produitsIds;
   final List<SubCategorieDeModificateur> modificateurs;
-  final SalleMode? salleMode;
-  final SalleMode? produitMode;
+  final AffectationMode? salleMode;
+  final AffectationMode? produitMode;
 
   const CategorieDeModificateur({
     this.id,
@@ -43,12 +35,12 @@ class CategorieDeModificateur extends Equatable {
     String? couleur,
     String? icone,
     bool? obligatoire,
-    String? typeSelection,
+    TypeDeSelection? typeSelection,
     List<int>? sallesIDS,
     List<SubCategorieDeModificateur>? modificateurs,
     List<String>? produitsIds,
-    SalleMode? salleMode,
-    SalleMode? produitMode,
+    AffectationMode? salleMode,
+    AffectationMode? produitMode,
   }) {
     return CategorieDeModificateur(
       id: id ?? this.id,
@@ -71,7 +63,10 @@ class CategorieDeModificateur extends Equatable {
       nom: json['nom'],
       icone: json['icone'],
       sallesIDS: List<int>.from(json['salleIds'] ?? []),
-      typeSelection: json['typeSelection'],
+      typeSelection: TypeDeSelection.values.firstWhere(
+        (e) => e.name == json['typeSelection'],
+        orElse: () => TypeDeSelection.SINGLE,
+      ),
       obligatoire: json['obligatoire'],
       couleur: json['couleur'],
       modificateurs:
@@ -79,38 +74,30 @@ class CategorieDeModificateur extends Equatable {
               .map((e) => SubCategorieDeModificateur.fromJson(e))
               .toList(),
       produitsIds: List<String>.from(json['produitIds'] ?? []),
-      produitMode:
-          json['produitMode'] != null
-              ? SalleMode.values.firstWhere(
-                (e) => e.toString() == 'produitMode.${json['produitMode']}',
-                orElse: () => SalleMode.POUR_TOUT,
-              )
-              : null,
-      salleMode: SalleMode.values.firstWhere(
-        (e) => e.toString() == 'salleMode.${json['salleMode']}',
-        orElse: () => SalleMode.POUR_TOUT,
+      produitMode: AffectationMode.values.firstWhere(
+        (e) => e.name == json['produitMode'],
+        orElse: () => AffectationMode.POUR_SEULEMENT,
+      ),
+      salleMode: AffectationMode.values.firstWhere(
+        (e) => e.name == json['salleMode'],
+        orElse: () => AffectationMode.POUR_SEULEMENT,
       ),
     );
   }
 
   Map<String, dynamic> toJson() {
     final map = {
-      'id': id,
-      'nom': nom,
-      'icone': icone,
-      'salleIds': sallesIDS,
-      'typeSelection':
-          typeSelection == 'SINGLE'
-              ? 'SINGLE'
-              : typeSelection == 'MULTIPLE QUANTITE'
-              ? 'MULTIPLE_QUANTITE'
-              : null,
-      'obligatoire': obligatoire,
-      'couleur': couleur,
-      'modificateurs': modificateurs.map((e) => e.toJson()).toList(),
-      'produitIds': produitsIds,
-      'salleMode': salleMode ?? null,
-      'produitMode': produitMode ?? null,
+      "id": id,
+      "nom": nom,
+      "icone": icone,
+      "salleIds": sallesIDS,
+      "typeSelection": typeSelection?.name,
+      "obligatoire": obligatoire,
+      "couleur": couleur,
+      "modificateurs": modificateurs.map((e) => e.toJson()).toList(),
+      "produitIds": produitsIds,
+      "salleMode": salleMode?.name,
+      "produitMode": produitMode?.name,
     };
 
     map.removeWhere(

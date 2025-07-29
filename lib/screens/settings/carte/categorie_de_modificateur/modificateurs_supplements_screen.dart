@@ -23,6 +23,18 @@ class _ModificateursSupplementsScreenState
   TextEditingController supplement = TextEditingController();
   TauxTvaModel tvaModel = tauxTvaList[0];
   bool isSelectingProduits = false;
+  CategorieDeModificateur createmodificateur = CategorieDeModificateur(
+    couleur: '',
+    icone: '',
+    nom: '',
+    obligatoire: true,
+    sallesIDS: [],
+    typeSelection: TypeDeSelection.SINGLE,
+    modificateurs: [],
+    produitsIds: [],
+    salleMode: AffectationMode.POUR_TOUT,
+    produitMode: AffectationMode.POUR_TOUT,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -169,9 +181,7 @@ class _ModificateursSupplementsScreenState
                     ? _buildCategoriesList(provider, _scaffoldKey.currentState!)
                     : (provider.selectedCategorie != null &&
                         !provider.loadingselected)
-                    ? Expanded(
-                      child: ModificateurDetails(scaffoldKey: _scaffoldKey),
-                    )
+                    ? ModificateurDetails(scaffoldKey: _scaffoldKey)
                     : Center(child: CircularProgressIndicator()),
           ),
         );
@@ -196,7 +206,7 @@ class _ModificateursSupplementsScreenState
           ActionButton(
             onPressed: () {
               context.read<DrawerProvider>().openCreateCategorieDeModificateur(
-                provider.createmodificateur,
+                createmodificateur,
               );
 
               scaffoldState.openEndDrawer();
@@ -285,7 +295,7 @@ class _ModificateursSupplementsScreenState
                   const SizedBox(height: 16),
                   _buildSalleModeDropdown(createModel),
                   const SizedBox(height: 16),
-                  if (createModel.salleMode != SalleMode.POUR_TOUT)
+                  if (createModel.salleMode != AffectationMode.POUR_TOUT)
                     _buildSallePicker(createModel),
                   const SizedBox(height: 16),
                   _buildProduitsButton(provider, scaffoldKey),
@@ -326,11 +336,13 @@ class _ModificateursSupplementsScreenState
     switch (attributeName) {
       case 'affectaionMode':
       case 'produitMode':
-        return SalleMode.values
+        return AffectationMode.values
             .map((e) => e.name.replaceAll('_', ' '))
             .toList();
       case 'typeDeSelection':
-        return optiontypeDeSelection;
+        return TypeDeSelection.values
+            .map((e) => e.name.replaceAll('_', ' '))
+            .toList();
       case 'obligatoire':
         return ['true', 'false'];
       case 'salle':
@@ -345,7 +357,9 @@ class _ModificateursSupplementsScreenState
       case 'nom':
         return FieldType.string;
       case 'affectaionMode':
+        return FieldType.dropdown;
       case 'produitMode':
+        return FieldType.dropdown;
       case 'typeDeSelection':
         return FieldType.dropdown;
       case 'obligatoire':
@@ -369,20 +383,25 @@ class _ModificateursSupplementsScreenState
         return model.copyWith(nom: value as String);
       case 'affectaionMode':
         return model.copyWith(
-          salleMode: SalleMode.values.firstWhere(
+          salleMode: AffectationMode.values.firstWhere(
             (mode) => mode.name.replaceAll('_', ' ') == value,
-            orElse: () => SalleMode.POUR_TOUT,
+            orElse: () => AffectationMode.POUR_TOUT,
           ),
         );
       case 'produitMode':
         return model.copyWith(
-          produitMode: SalleMode.values.firstWhere(
+          produitMode: AffectationMode.values.firstWhere(
             (mode) => mode.name.replaceAll('_', ' ') == value,
-            orElse: () => SalleMode.POUR_TOUT,
+            orElse: () => AffectationMode.POUR_TOUT,
           ),
         );
       case 'typeDeSelection':
-        return model.copyWith(typeSelection: value as String);
+        return model.copyWith(
+          typeSelection: TypeDeSelection.values.firstWhere(
+            (mode) => mode.name.replaceAll('_', ' ') == value,
+            orElse: () => TypeDeSelection.SINGLE,
+          ),
+        );
       case 'obligatoire':
         final boolVal = value is bool ? value : value.toString() == 'true';
         return model.copyWith(obligatoire: boolVal);
@@ -452,20 +471,23 @@ class _ModificateursSupplementsScreenState
 
   Widget _buildTypeSelectionDropdown(CategorieDeModificateur createModel) {
     return CustomContainer(
-      child: DropdownButtonFormField<String>(
+      child: DropdownButtonFormField<TypeDeSelection>(
         value: createModel.typeSelection,
         decoration: const InputDecoration(
           labelText: 'Type de selection',
           border: InputBorder.none,
         ),
         items:
-            optiontypeDeSelection
+            TypeDeSelection.values
                 .map(
                   (v) => DropdownMenuItem(
                     value: v,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 16),
-                      child: Text(v, style: AppTextStyle.indingosubHeading),
+                      child: Text(
+                        v.name.replaceAll("_", " "),
+                        style: AppTextStyle.indingosubHeading,
+                      ),
                     ),
                   ),
                 )
@@ -502,14 +524,15 @@ class _ModificateursSupplementsScreenState
 
   Widget _buildSalleModeDropdown(CategorieDeModificateur createModel) {
     return CustomContainer(
-      child: DropdownButtonFormField<SalleMode>(
+      child: DropdownButtonFormField<AffectationMode>(
         value: createModel.salleMode,
         decoration: const InputDecoration(
           labelText: 'Affectation mode',
           border: InputBorder.none,
         ),
         items:
-            SalleMode.values
+            AffectationMode.values
+                .where((v) => v != AffectationMode.AJOUTER_A_LIST_EXSISTANTE)
                 .map(
                   (v) => DropdownMenuItem(
                     value: v,
@@ -581,7 +604,7 @@ class _ModificateursSupplementsScreenState
 class CustomContainer extends StatelessWidget {
   final Widget child;
 
-  const CustomContainer({required this.child, Key? key}) : super(key: key);
+  const CustomContainer({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {

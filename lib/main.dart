@@ -5,7 +5,6 @@ import 'screens/reglage_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   final appDocDir = await getApplicationDocumentsDirectory();
   await configureNetworkTools(appDocDir.path, enableDebugging: true);
   runApp(const MyApp());

@@ -28,7 +28,7 @@ class SalleProvider extends ChangeNotifier {
   }
 
   List<SalleModel>? getSalleById(List<int> ids) {
-    print('i called ${ids}');
+    print('i called $ids');
     List<SalleModel> salles = [];
     for (int salleId in ids) {
       for (SalleModel salle in _salles) {

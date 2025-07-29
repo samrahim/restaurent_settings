@@ -187,33 +187,26 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                                   } else {
                                     _selectedChoices.remove(option.id);
                                   }
-                                } else if (option is SalleModel) {
-                                  if (selected) {
-                                    _selectedChoices =
-                                        _selectedChoices
-                                            .where(
-                                              (id) =>
-                                                  id !=
-                                                  widget.options!
-                                                      .firstWhere(
-                                                        (s) =>
-                                                            s is SalleModel &&
-                                                            s.name == 'Toutes',
-                                                      )
-                                                      .id,
-                                            )
-                                            .toList();
-                                    _selectedChoices.add(option.id);
-                                  } else {
-                                    _selectedChoices.remove(option.id);
-                                  }
+                                } else                                if (selected) {
+                                  _selectedChoices =
+                                      _selectedChoices
+                                          .where(
+                                            (id) =>
+                                                id !=
+                                                widget.options!
+                                                    .firstWhere(
+                                                      (s) =>
+                                                          s is SalleModel &&
+                                                          s.name == 'Toutes',
+                                                    )
+                                                    .id,
+                                          )
+                                          .toList();
+                                  _selectedChoices.add(option.id);
                                 } else {
-                                  if (selected) {
-                                    _selectedChoices.add(option.toString());
-                                  } else {
-                                    _selectedChoices.remove(option.toString());
-                                  }
+                                  _selectedChoices.remove(option.id);
                                 }
+                              
                               });
                             },
                           );

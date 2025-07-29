@@ -222,7 +222,14 @@ const List<String> modeEncaissementList = [
   'Scanner de Ticket Restaurant',
 ];
 
-final List<String> optiontypeDeSelection = ['SINGLE', 'MULTIPLE QUANTITE'];
+enum AffectationMode {
+  POUR_TOUT,
+  POUR_SEULEMENT,
+  POUR_TOUT_SAUF,
+  AJOUTER_A_LIST_EXSISTANTE,
+}
+
+enum TypeDeSelection { SINGLE, MULTIPLE_QUANTITE }
 
 const List<String> joursSemaine = [
   'Lundi',

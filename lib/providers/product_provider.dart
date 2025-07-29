@@ -22,8 +22,8 @@ class ProductProvider extends ChangeNotifier {
       final response = await client.get(Uri.parse('${baseUrl}product/allp'));
       List data = json.decode(response.body);
 
-      // _prod = data.map((e) => ProduitsModel.fromJson(e)).toList();
-      _prod = prods;
+      _prod = data.map((e) => ProduitsModel.fromJson(e)).toList();
+      // _prod = prods;
       notifyListeners();
     } catch (e) {
       throw 'Error fetching products: $e';
@@ -47,13 +47,12 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
-  List<ProduitsModel>? getProductById(String id) {
-    List<ProduitsModel> prods = [];
+  ProduitsModel? getProductById(String id) {
     for (ProduitsModel pr in _prod) {
       if (pr.id == id) {
-        prods.add(pr);
+        return pr;
       }
     }
-    return prods.isNotEmpty ? prods : null;
+    return null;
   }
 }
