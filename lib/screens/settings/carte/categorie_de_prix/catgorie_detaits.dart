@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
-import 'package:restaurent/providers/providers.dart';
+import 'package:restaurent/providers/salle_provider.dart';
 import 'package:restaurent/widgets/button_supprimer.dart';
 import 'package:restaurent/widgets/custom_list_tile.dart';
 

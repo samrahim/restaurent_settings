@@ -59,8 +59,12 @@ class ProductNotifier extends StateNotifier<ProductState> {
     }
   }
 
-  List<ProduitsModel>? getProductById(String id) {
-    final found = state.prod.where((pr) => pr.id == id).toList();
-    return found.isNotEmpty ? found : null;
+  ProduitsModel? getProductById(String id) {
+    for (ProduitsModel pr in state.prod) {
+      if (pr.id == id) {
+        return pr;
+      }
+    }
+    return null;
   }
 }

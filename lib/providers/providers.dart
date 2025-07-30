@@ -1,10 +1,2 @@
-export 'categorie_de_modificateur.dart';
-export 'moyen_de_paiement_provider.dart';
-export 'categorie_de_prix_provider.dart';
-export 'taux_tva_provider.dart';
-export 'utilisateur_provider.dart';
-export 'settings_provider.dart';
-export 'drawer_provider.dart';
-export 'imprimante_provider.dart';
-export 'salle_provider.dart';
-export 'product_provider.dart';
+// All providers have been migrated to Riverpod
+// This file is kept for backward compatibility during migration

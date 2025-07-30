@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:pattern_lock/pattern_lock.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/models.dart';
@@ -300,7 +301,10 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                     widget.onSaved(_boolValue);
                     break;
                   case FieldType.color:
-                    widget.onSaved(_selectedColor);
+                    widget.onSaved(
+                      '#${colorToHex(_selectedColor).toString().toLowerCase()}',
+                    );
+
                     break;
                   case FieldType.dropdown:
                   case FieldType.string:
@@ -310,7 +314,6 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                     widget.onSaved(_pattern.join(''));
                     break;
                   case FieldType.choice:
-                    // For 'salle' field, return both the selected choices and the affectation mode
                     if (widget.label == 'salle') {
                       widget.onSaved({
                         'choices': _selectedChoices,
@@ -323,6 +326,7 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                     }
                     break;
                 }
+
                 Navigator.of(context).pop();
               },
               buttonText: "Sauvgarder",

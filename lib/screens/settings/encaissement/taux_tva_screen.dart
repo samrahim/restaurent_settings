@@ -1,21 +1,22 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart' as provider_package;
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/taux_tva_model.dart';
 import 'package:restaurent/providers/drawer_provider.dart';
-import 'package:restaurent/providers/taux_tva_provider.dart';
+import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
-class TauxTVAScreen extends StatefulWidget {
+class TauxTVAScreen extends ConsumerStatefulWidget {
   const TauxTVAScreen({super.key});
 
   @override
-  State<TauxTVAScreen> createState() => _TauxTVAScreenState();
+  ConsumerState<TauxTVAScreen> createState() => _TauxTVAScreenState();
 }
 
-class _TauxTVAScreenState extends State<TauxTVAScreen> {
+class _TauxTVAScreenState extends ConsumerState<TauxTVAScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final tauxTvaController = TextEditingController();
@@ -24,6 +25,9 @@ class _TauxTVAScreenState extends State<TauxTVAScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tauxEtTvaState = ref.watch(tauxEtTvaRiverpod);
+    final tauxEtTvaNotifier = ref.read(tauxEtTvaRiverpod.notifier);
+
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: _buildDrawerWithBloc(context),
@@ -40,10 +44,10 @@ class _TauxTVAScreenState extends State<TauxTVAScreen> {
           ),
         ],
       ),
-      body: Consumer<TauxEtTvaProvider>(
-        builder: (context, provider, _) {
-          final tauxList = provider.tauxTvas;
-          final selected = provider.selectedTauxTva;
+      body: Consumer(
+        builder: (context, ref, _) {
+          final tauxList = tauxEtTvaState.tauxTvas;
+          final selected = tauxEtTvaState.selected;
 
           if (tauxList.isEmpty) {
             return const Center(child: Text("Aucun Taux de TVA trouvé"));
@@ -96,7 +100,7 @@ class _TauxTVAScreenState extends State<TauxTVAScreen> {
                             onChanged: (value) {
                               try {
                                 final number = double.parse(value);
-                                provider.updateTauxTva(
+                                tauxEtTvaNotifier.updateTauxTva(
                                   TauxTvaModel(
                                     id: tva.id,
                                     tauxTva: number,
@@ -133,7 +137,7 @@ class _TauxTVAScreenState extends State<TauxTVAScreen> {
   }
 
   Widget _buildDrawerWithBloc(BuildContext context) {
-    return Consumer<DrawerProvider>(
+    return provider_package.Consumer<DrawerProvider>(
       builder: (context, drawerProvider, _) {
         final state = drawerProvider.state;
         return _buildDrawerContent(context, state);
@@ -150,68 +154,70 @@ class _TauxTVAScreenState extends State<TauxTVAScreen> {
   }
 
   Widget _buildCreateTVADrawer(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                child: Text(
-                  'Créer un nouvel Taux de TVA',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ),
+    final tauxEtTvaNotifier = ref.read(tauxEtTvaRiverpod.notifier);
 
-              TextField(
-                controller: tauxTvaController,
-                decoration: InputDecoration(
-                  labelText: 'Taux de TVA',
-                  border: OutlineInputBorder(
+    return Drawer(
+      width: MediaQuery.of(context).size.width * 0.3,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Text(
+                    'Créer un nouvel Taux de TVA',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+
+                TextField(
+                  controller: tauxTvaController,
+                  decoration: InputDecoration(
+                    labelText: 'Taux de TVA',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[50],
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  tauxEtTvaNotifier.createTauxTva(
+                    double.parse(tauxTvaController.text),
+                    Random().nextInt(100),
+                  );
+                  tauxTvaController.clear();
+                  _scaffoldKey.currentState?.closeEndDrawer();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[50],
                 ),
-              ),
-            ],
-          ),
-
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                Provider.of<TauxEtTvaProvider>(
-                  context,
-                  listen: false,
-                ).createTauxTva(
-                  double.parse(tauxTvaController.text),
-                  Random().nextInt(100),
-                );
-                tauxTvaController.clear();
-                _scaffoldKey.currentState?.closeEndDrawer();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                "Ajouter",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                child: const Text(
+                  "Ajouter",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

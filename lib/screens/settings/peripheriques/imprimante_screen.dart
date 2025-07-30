@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/peripherique_model.dart.dart';
-import 'package:restaurent/providers/providers.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
 class ImprimanteScreen extends StatefulWidget {

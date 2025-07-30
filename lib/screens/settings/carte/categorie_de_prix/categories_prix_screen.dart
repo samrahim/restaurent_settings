@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
 import 'package:restaurent/providers/providers.dart';
+import 'package:restaurent/providers/salle_provider.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_prix/catgorie_detaits.dart';
 import 'package:restaurent/widgets/widgets.dart';
 import 'package:restaurent/consts.dart';
@@ -40,7 +40,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: Consumer<DrawerProvider>(
+      endDrawer: Consumer(
         builder: (context, drawerProvider, _) {
           final state = drawerProvider.state;
 

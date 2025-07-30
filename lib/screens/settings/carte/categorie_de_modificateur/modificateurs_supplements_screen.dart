@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/models.dart';
-import 'package:restaurent/providers/providers.dart';
+import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
+import 'package:restaurent/screens/reglage_screen.dart';
+import 'package:restaurent/riverpods/categorie_modificateur_riverpod.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificteur_details.dart';
-import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/produit_attachement.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
-class ModificateursSupplementsScreen extends StatefulWidget {
+class ModificateursSupplementsScreen extends ConsumerStatefulWidget {
   const ModificateursSupplementsScreen({super.key});
 
   @override
-  State<ModificateursSupplementsScreen> createState() =>
+  ConsumerState<ModificateursSupplementsScreen> createState() =>
       _ModificateursSupplementsScreenState();
 }
 
 class _ModificateursSupplementsScreenState
-    extends State<ModificateursSupplementsScreen> {
+    extends ConsumerState<ModificateursSupplementsScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController prix = TextEditingController();
@@ -38,162 +40,135 @@ class _ModificateursSupplementsScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CategorieModificateurProvider>(
-      builder: (context, provider, _) {
-        print(
-          'provider.attachemntProductScreen  ${provider.attachemntProductScreen}',
-        );
-        print('provider.selectedCategorie ${provider.selectedCategorie}');
-        return Scaffold(
-          key: _scaffoldKey,
-          endDrawer: _endDrawer(provider, _scaffoldKey),
+    final tauxEtTvaState = ref.watch(tauxEtTvaRiverpod);
+    final categorieModificateurState = ref.watch(categorieModificateurRiverpod);
+    final categorieModificateurNotifier = ref.read(
+      categorieModificateurRiverpod.notifier,
+    );
 
-          drawer: Consumer<DrawerProvider>(
-            builder: (context, drawerProvider, _) {
-              final state = drawerProvider.state;
-              if (state is DrawerCreateSubCategorieDeModificateur) {
-                return Drawer(
-                  width: MediaQuery.of(context).size.width * .33,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: _endDrawer(categorieModificateurNotifier, _scaffoldKey),
+
+      drawer: Consumer(
+        builder: (context, drawerProvider, _) {
+          final state = ref.watch(drawerRiverpod);
+          if (state is DrawerCreateCategorieDeModificateur) {
+            return Drawer(
+              width: MediaQuery.of(context).size.width * .33,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
                       children: [
-                        Column(
-                          children: [
-                            const SizedBox(height: 10),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16.0),
-                              child: Text(
-                                'Créer une nouvelle sous-catégorie',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                        const SizedBox(height: 10),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          child: Text(
+                            'Créer une nouvelle sous-catégorie',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(height: 16),
-                            TextField(
-                              controller: supplement,
-
-                              decoration: InputDecoration(
-                                labelText: 'Nom',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey[50],
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            TextField(
-                              controller: prix,
-
-                              decoration: InputDecoration(
-                                labelText: 'Prix',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey[50],
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            DropdownButtonFormField<TauxTvaModel>(
-                              isExpanded: true,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide(
-                                    color: AppColors.greyaccent!,
-                                  ),
-                                ),
-                                labelText: 'Selectionner TVA',
-                              ),
-                              value: tvaModel,
-                              items:
-                                  context
-                                      .read<TauxEtTvaProvider>()
-                                      .tauxTvas
-                                      .map((item) {
-                                        return DropdownMenuItem(
-                                          value: item,
-                                          child: Text(item.tauxTva.toString()),
-                                        );
-                                      })
-                                      .toList(),
-                              onChanged: (value) {
-                                if (value != null) {
-                                  setState(() {
-                                    tvaModel = value;
-                                  });
-                                }
-                              },
-                            ),
-                          ],
+                          ),
                         ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: supplement,
+
+                          decoration: InputDecoration(
+                            labelText: 'Nom',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[50],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: prix,
+
+                          decoration: InputDecoration(
+                            labelText: 'Prix',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[50],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical: 4.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey.shade400),
+                            color: Colors.grey[50],
+                          ),
+                          child: DropdownButtonFormField<TauxTvaModel>(
+                            value: tvaModel,
+                            decoration: const InputDecoration(
+                              labelText: 'TVA',
+                              border: InputBorder.none,
+                            ),
+                            items:
+                                tauxEtTvaState.tauxTvas
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        value: e,
+                                        child: Text(e.tauxTva.toString()),
+                                      ),
+                                    )
+                                    .toList(),
+                            onChanged: (value) {
+                              if (value != null) {
+                                setState(() {
+                                  tvaModel = value;
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 16),
                         CreateButton(
                           onPressed: () {
-                            context
-                                .read<CategorieModificateurProvider>()
-                                .update(
-                                  state.modificateur.copyWith(
-                                    modificateurs: [
-                                      ...state.modificateur.modificateurs,
-                                      SubCategorieDeModificateur(
-                                        id:
-                                            (state
-                                                        .modificateur
-                                                        .modificateurs
-                                                        .length +
-                                                    1)
-                                                .toString(),
-                                        nom: supplement.text,
-                                        prix: double.tryParse(prix.text) ?? 0.0,
-                                        tvaValue: tauxTvaList[1].tauxTva ?? 0.0,
-                                        actif: true,
-                                      ),
-                                    ],
-                                  ),
-                                );
-
-                            supplement.clear();
-                            prix.clear();
-
-                            _scaffoldKey.currentState?.closeDrawer();
+                            // Handle create sub-category
                           },
-                          buttonText:
-                              'Créer une nouvelle sous-catégorie de modificateurs',
+                          buttonText: 'Créer',
                         ),
                       ],
                     ),
-                  ),
-                );
-              }
-              return const SizedBox.shrink();
-            },
-          ),
-
-          body: Container(
-            color: Colors.grey.shade200,
-            child:
-                (provider.attachemntProductScreen &&
-                        provider.selectedCategorie == null)
-                    ? ProduitAttachement(scaffoldKey: _scaffoldKey)
-                    : (provider.selectedCategorie == null &&
-                        !provider.loadingall)
-                    ? _buildCategoriesList(provider)
-                    : (provider.selectedCategorie != null &&
-                        !provider.loadingselected)
-                    ? ModificateurDetails(scaffoldKey: _scaffoldKey)
-                    : Center(child: CircularProgressIndicator()),
-          ),
-        );
-      },
+                  ],
+                ),
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      ),
+      body:
+          categorieModificateurState.loadingAll
+              ? const Center(child: CircularProgressIndicator())
+              : (categorieModificateurState.selected == null &&
+                  !categorieModificateurState.loadingAll)
+              ? _buildCategoriesList(
+                categorieModificateurState,
+                categorieModificateurNotifier,
+              )
+              : (categorieModificateurState.selected != null &&
+                  !categorieModificateurState.loadingSelected)
+              ? ModificateurDetails(scaffoldKey: _scaffoldKey)
+              : const Center(child: CircularProgressIndicator()),
     );
   }
 
-  Widget _buildCategoriesList(CategorieModificateurProvider provider) {
+  Widget _buildCategoriesList(
+    CategorieModificateurState state,
+    CategorieModificateurNotifier notifier,
+  ) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -206,16 +181,17 @@ class _ModificateursSupplementsScreenState
           ActionButton(onPressed: () {}, text: 'Reorganiser'),
           ActionButton(
             onPressed: () {
-              context.read<DrawerProvider>().openCreateCategorieDeModificateur(
-                createmodificateur,
-              );
+              final container = ProviderScope.containerOf(context);
+              container
+                  .read(drawerRiverpod.notifier)
+                  .openCreateCategorieDeModificateur(createmodificateur);
 
               _scaffoldKey.currentState?.openEndDrawer();
             },
             text: 'Nouveau',
           ),
         ],
-        leading: SizedBox.shrink(),
+        leading: const SizedBox.shrink(),
       ),
       body: Container(
         color: Colors.grey.shade200,
@@ -231,7 +207,7 @@ class _ModificateursSupplementsScreenState
                 margin: const EdgeInsets.all(18),
                 child: Column(
                   children: [
-                    ...provider.allcategories.map(
+                    ...state.allCategories.map(
                       (e) => Column(
                         children: [
                           GestureDetector(
@@ -246,10 +222,10 @@ class _ModificateursSupplementsScreenState
                               ),
                             ),
                             onTap: () {
-                              provider.select(e);
+                              notifier.select(e);
                             },
                           ),
-                          e != provider.allcategories.last
+                          e != state.allCategories.last
                               ? const Divider()
                               : const SizedBox(),
                         ],
@@ -266,12 +242,12 @@ class _ModificateursSupplementsScreenState
   }
 
   Widget _endDrawer(
-    CategorieModificateurProvider provider,
+    CategorieModificateurNotifier notifier,
     final GlobalKey<ScaffoldState> scaffoldKey,
   ) {
-    return Consumer<DrawerProvider>(
+    return Consumer(
       builder: (context, drawerProvider, _) {
-        final state = drawerProvider.state;
+        final state = ref.watch(drawerRiverpod);
 
         if (state is DrawerCreateCategorieDeModificateur) {
           final createModel = state.modificateur;
@@ -283,25 +259,34 @@ class _ModificateursSupplementsScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 10),
-                  _buildHeader('Créer une nouvelle categorie'),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 32.0),
+                    child: Text(
+                      'Créer une nouvelle catégorie de modificateur',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 16),
-                  _buildNomInput(createModel),
+                  _buildNomField(createModel),
                   const SizedBox(height: 16),
-                  _buildCouleurPicker(createModel),
+                  _buildCouleurField(createModel),
                   const SizedBox(height: 16),
-                  _buildTypeSelectionDropdown(createModel),
+                  _buildIconeField(createModel),
                   const SizedBox(height: 16),
-                  _buildObligatoireSwitch(createModel),
+                  _buildObligatoireField(createModel),
+                  const SizedBox(height: 16),
+                  _buildTypeSelectionField(createModel),
                   const SizedBox(height: 16),
                   _buildSalleModeDropdown(createModel),
                   const SizedBox(height: 16),
-                  if (createModel.salleMode != AffectationMode.POUR_TOUT)
-                    _buildSallePicker(createModel),
+                  _buildSallePicker(createModel),
                   const SizedBox(height: 16),
-                  _buildProduitsButton(provider, scaffoldKey),
+                  _buildProduitsButton(notifier, scaffoldKey),
                   const SizedBox(height: 32),
-                  _buildCreateButton(createModel),
+                  _buildCreateButton(createModel, notifier),
                 ],
               ),
             ),
@@ -309,6 +294,7 @@ class _ModificateursSupplementsScreenState
         }
 
         if (state is DrawerUpdateCategorieDeModificateur) {
+          print(state.modificateur.couleur);
           final modificateur = state.modificateur;
           final attribute = state.attributeName;
 
@@ -323,7 +309,7 @@ class _ModificateursSupplementsScreenState
                 modificateur,
                 value,
               );
-              context.read<CategorieModificateurProvider>().update(updated);
+              notifier.update(updated);
             },
           );
         }
@@ -347,7 +333,7 @@ class _ModificateursSupplementsScreenState
       case 'obligatoire':
         return ['true', 'false'];
       case 'salle':
-        return Provider.of<SalleProvider>(context).salles;
+        return ref.watch(salleRiverpod);
       default:
         return [];
     }
@@ -404,87 +390,141 @@ class _ModificateursSupplementsScreenState
           ),
         );
       case 'obligatoire':
-        final boolVal = value is bool ? value : value.toString() == 'true';
-        return model.copyWith(obligatoire: boolVal);
-      case 'salle':
-        // Handle the new format that includes both choices and affectation mode
-        if (value is Map<String, dynamic>) {
-          final List<int> choices = value['choices'] as List<int>;
-          final AffectationMode affectationMode =
-              value['affectationMode'] as AffectationMode;
-          return model.copyWith(sallesIDS: choices, salleMode: affectationMode);
-        } else {
-          // Fallback for old format
-          return model.copyWith(sallesIDS: value as List<int>);
-        }
+        return model.copyWith(obligatoire: value == 'true');
       case 'couleur':
         return model.copyWith(couleur: value as String);
+      case 'icone':
+        return model.copyWith(icone: value as String);
+      case 'salle':
+        return model.copyWith(sallesIDS: [...model.sallesIDS!, value.id]);
       default:
         return model;
     }
   }
 
-  Widget _buildHeader(String title) {
-    return Text(title, style: AppTextStyle.indingoHeading);
-  }
+  Widget _buildNomField(CategorieDeModificateur createModel) {
+    return CustomContainer(
+      child: TextFormField(
+        initialValue: createModel.nom,
+        decoration: const InputDecoration(
+          labelText: 'Nom',
+          border: InputBorder.none,
+        ),
+        onChanged: (value) {
+          final updated = createModel.copyWith(nom: value);
 
-  Widget _buildNomInput(CategorieDeModificateur createModel) {
-    return TextFormField(
-      onChanged: (value) {
-        context.read<DrawerProvider>().openCreateCategorieDeModificateur(
-          createModel.copyWith(nom: value),
-        );
-      },
-      initialValue: createModel.nom,
-      decoration: InputDecoration(
-        labelText: 'Nom',
-        labelStyle: AppTextStyle.indingosubHeading,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        filled: true,
-        fillColor: Colors.grey[50],
+          final container = ProviderScope.containerOf(context);
+          container
+              .read(drawerRiverpod.notifier)
+              .openCreateCategorieDeModificateur(updated);
+        },
       ),
     );
   }
 
-  Widget _buildCouleurPicker(CategorieDeModificateur createModel) {
+  Widget _buildCouleurField(CategorieDeModificateur createModel) {
     return CustomContainer(
-      child: ListTile(
-        title: Text('Couleur', style: AppTextStyle.indingosubHeading),
-        trailing: InkWell(
-          onTap: () {
-            openColorPicker(
-              context: context,
-              currentColor: hexToColor(createModel.couleur ?? '#FFFFFFFF'),
-              onColorSelected: (Color selectedColor) {
-                final updated = createModel.copyWith(
-                  couleur: selectedColor.toHex(),
-                );
-                context
-                    .read<DrawerProvider>()
-                    .openCreateCategorieDeModificateur(updated);
-              },
-            );
-          },
-          child: Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: hexToColor(createModel.couleur ?? '#FFFFFFFF'),
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.black26),
-            ),
+      child: CustomListTile(
+        leading: 'Couleur',
+        title: null,
+        trailing: null,
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Choisir une couleur'),
+                content: SingleChildScrollView(
+                  child: ColorPicker(
+                    pickerColor: hexToColor(createModel.couleur),
+                    onColorChanged: (Color color) {
+                      final updated = createModel.copyWith(
+                        couleur: '#${color.value.toRadixString(16)}',
+                      );
+
+                      final container = ProviderScope.containerOf(context);
+                      container
+                          .read(drawerRiverpod.notifier)
+                          .openCreateCategorieDeModificateur(updated);
+                    },
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        trailingwidget: Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            color: hexToColor(createModel.couleur),
+            borderRadius: BorderRadius.circular(4),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTypeSelectionDropdown(CategorieDeModificateur createModel) {
+  Widget _buildIconeField(CategorieDeModificateur createModel) {
+    return CustomContainer(
+      child: TextFormField(
+        initialValue: createModel.icone,
+        decoration: const InputDecoration(
+          labelText: 'Icône',
+          border: InputBorder.none,
+        ),
+        onChanged: (value) {
+          final updated = createModel.copyWith(icone: value);
+
+          final container = ProviderScope.containerOf(context);
+          container
+              .read(drawerRiverpod.notifier)
+              .openCreateCategorieDeModificateur(updated);
+        },
+      ),
+    );
+  }
+
+  Widget _buildObligatoireField(CategorieDeModificateur createModel) {
+    return CustomContainer(
+      child: DropdownButtonFormField<bool>(
+        value: createModel.obligatoire,
+        decoration: const InputDecoration(
+          labelText: 'Obligatoire',
+          border: InputBorder.none,
+        ),
+        items: const [
+          DropdownMenuItem(value: true, child: Text('Oui')),
+          DropdownMenuItem(value: false, child: Text('Non')),
+        ],
+        onChanged: (value) {
+          if (value != null) {
+            final updated = createModel.copyWith(obligatoire: value);
+
+            final container = ProviderScope.containerOf(context);
+            container
+                .read(drawerRiverpod.notifier)
+                .openCreateCategorieDeModificateur(updated);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildTypeSelectionField(CategorieDeModificateur createModel) {
     return CustomContainer(
       child: DropdownButtonFormField<TypeDeSelection>(
         value: createModel.typeSelection,
         decoration: const InputDecoration(
-          labelText: 'Type de selection',
+          labelText: 'Type de sélection',
           border: InputBorder.none,
         ),
         items:
@@ -505,29 +545,12 @@ class _ModificateursSupplementsScreenState
         onChanged: (v) {
           if (v != null) {
             final updated = createModel.copyWith(typeSelection: v);
-            context.read<DrawerProvider>().openCreateCategorieDeModificateur(
-              updated,
-            );
+            final container = ProviderScope.containerOf(context);
+            container
+                .read(drawerRiverpod.notifier)
+                .openCreateCategorieDeModificateur(updated);
           }
         },
-      ),
-    );
-  }
-
-  Widget _buildObligatoireSwitch(CategorieDeModificateur createModel) {
-    return CustomContainer(
-      child: ListTile(
-        title: Text('Obligatoire', style: AppTextStyle.indingosubHeading),
-        trailing: Switch(
-          value: createModel.obligatoire!,
-          activeColor: AppColors.indingo400,
-          onChanged: (value) {
-            final updated = createModel.copyWith(obligatoire: value);
-            context.read<DrawerProvider>().openCreateCategorieDeModificateur(
-              updated,
-            );
-          },
-        ),
       ),
     );
   }
@@ -559,9 +582,11 @@ class _ModificateursSupplementsScreenState
         onChanged: (v) {
           if (v != null) {
             final updated = createModel.copyWith(salleMode: v);
-            context.read<DrawerProvider>().openCreateCategorieDeModificateur(
-              updated,
-            );
+
+            final container = ProviderScope.containerOf(context);
+            container
+                .read(drawerRiverpod.notifier)
+                .openCreateCategorieDeModificateur(updated);
           }
         },
       ),
@@ -569,20 +594,23 @@ class _ModificateursSupplementsScreenState
   }
 
   Widget _buildSallePicker(CategorieDeModificateur createModel) {
+    final salles = ref.watch(salleRiverpod);
     return SalleIdsPicker(
-      salles: Provider.of<SalleProvider>(context).salles,
+      salles: salles,
       selectedSalleIds: createModel.sallesIDS!,
       onSelectionChanged: (updatedSalleIds) {
         final updated = createModel.copyWith(sallesIDS: updatedSalleIds);
-        context.read<DrawerProvider>().openCreateCategorieDeModificateur(
-          updated,
-        );
+
+        final container = ProviderScope.containerOf(context);
+        container
+            .read(drawerRiverpod.notifier)
+            .openCreateCategorieDeModificateur(updated);
       },
     );
   }
 
   Widget _buildProduitsButton(
-    CategorieModificateurProvider provider,
+    CategorieModificateurNotifier notifier,
     GlobalKey<ScaffoldState> scaffoldKey,
   ) {
     return CustomContainer(
@@ -591,7 +619,7 @@ class _ModificateursSupplementsScreenState
         title: null,
         trailing: null,
         onTap: () {
-          provider.openattachemtScreen();
+          notifier.openAttachmentScreen();
           scaffoldKey.currentState?.closeEndDrawer();
         },
         trailingwidget: null,
@@ -599,12 +627,16 @@ class _ModificateursSupplementsScreenState
     );
   }
 
-  Widget _buildCreateButton(CategorieDeModificateur createModel) {
+  Widget _buildCreateButton(
+    CategorieDeModificateur createModel,
+    CategorieModificateurNotifier notifier,
+  ) {
     return CreateButton(
       onPressed: () {
-        context.read<CategorieModificateurProvider>().create(createModel);
+        notifier.create(createModel);
+        final container = ProviderScope.containerOf(context);
+        container.read(drawerRiverpod.notifier).resetDrawer();
         _scaffoldKey.currentState?.closeEndDrawer();
-        context.read<DrawerProvider>().resetDrawer();
       },
       buttonText: 'Créer une nouvelle catégorie de modificateur',
     );

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/categorie_de_modificateur.dart';
@@ -85,36 +86,36 @@ class CategorieModificateurProvider extends ChangeNotifier {
     } else {
       throw '${response.body}';
     }
-    print(createmodificateur.toJson());
   }
 
   void update(CategorieDeModificateur updated) async {
     String mo = json.encode(updated.toJson());
-    // Response response = await http.post(
-    //   Uri.parse('${baseUrl}modificateurs/categories/createOrUpdate'),
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: mo,
-    // );
-    // print("response.body ${response.body}");
-    // final Map<String, dynamic> responseJson = json.decode(response.body);
-    // if (response.statusCode != 200) {
-    //   final CategorieDeModificateur res = CategorieDeModificateur.fromJson(
-    //     responseJson,
-    //   );
-    //   print(res.nom);
-    // }
-    // _allcategories =
-    //     _allcategories.map((e) {
-    //       if (e.id == updated.id) {
-    //         e = updated;
-    //         return e;
-    //       }
-    //       return e;
-    //     }).toList();
+    http.Response response = await http.post(
+      Uri.parse('${baseUrl}modificateurs/categories/createOrUpdate'),
+      headers: {'Content-Type': 'application/json'},
+      body: mo,
+    );
 
-    // _selected = updated;
-    // notifyListeners();
-    print("update call");
-    print(mo);
+    final Map<String, dynamic> responseJson = json.decode(response.body);
+    if (response.statusCode != 200) {
+      final CategorieDeModificateur res = CategorieDeModificateur.fromJson(
+        responseJson,
+      );
+      return;
+    } else {
+      _allcategories =
+          _allcategories.map((e) {
+            if (e.id == updated.id) {
+              e = updated;
+              return e;
+            }
+            return e;
+          }).toList();
+
+      _selected = updated;
+      notifyListeners();
+    }
+
+    print(hexToColor(updated.couleur));
   }
 }

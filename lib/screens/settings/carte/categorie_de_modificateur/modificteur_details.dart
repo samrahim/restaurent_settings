@@ -1,35 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/salle_model.dart';
-import 'package:restaurent/providers/providers.dart';
-
+import 'package:restaurent/providers/salle_provider.dart';
+import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
-class ModificateurDetails extends StatefulWidget {
+class ModificateurDetails extends ConsumerStatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const ModificateurDetails({required this.scaffoldKey, super.key});
 
   @override
-  State<ModificateurDetails> createState() => _ModificateurDetailsState();
+  ConsumerState<ModificateurDetails> createState() =>
+      _ModificateurDetailsState();
 }
 
-class _ModificateurDetailsState extends State<ModificateurDetails> {
+class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
   @override
   Widget build(BuildContext context) {
-    final modificateur =
-        Provider.of<CategorieModificateurProvider>(context).selectedCategorie;
-
+    final categorieModificateurState = ref.watch(categorieModificateurRiverpod);
+    final categorieModificateurNotifier = ref.read(
+      categorieModificateurRiverpod.notifier,
+    );
+    final modificateur = categorieModificateurState.selected;
+    final salles = ref.watch(salleRiverpod);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Provider.of<CategorieModificateurProvider>(
-              context,
-              listen: false,
-            ).deselect();
+            categorieModificateurNotifier.deselect();
           },
         ),
 
@@ -88,12 +89,13 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                   ),
                                   IconButton(
                                     onPressed: () {
-                                      context
-                                          .read<DrawerProvider>()
+                                      final container =
+                                          ProviderScope.containerOf(context);
+                                      container
+                                          .read(drawerRiverpod.notifier)
                                           .openCreateSubCategorieDeModificateur(
                                             modificateur,
                                           );
-
                                       widget.scaffoldKey.currentState!
                                           .openDrawer();
                                     },
@@ -148,8 +150,8 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                 itemCount:
                                     modificateur.produitsIds?.length ?? 0,
                                 itemBuilder: (context, index) {
-                                  final product = context
-                                      .read<ProductProvider>()
+                                  final product = ref
+                                      .read(productRiverpod.notifier)
                                       .getProductById(
                                         modificateur.produitsIds![index],
                                       );
@@ -199,13 +201,18 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                       children: [
                                         CustomListTile(
                                           onTap: () {
-                                            context
-                                                .read<DrawerProvider>()
+                                            final container =
+                                                ProviderScope.containerOf(
+                                                  context,
+                                                );
+                                            container
+                                                .read(drawerRiverpod.notifier)
                                                 .openUpdateCategorieDeModificateur(
                                                   modificateur,
                                                   'nom',
                                                   modificateur.nom,
                                                 );
+
                                             widget.scaffoldKey.currentState!
                                                 .openEndDrawer();
                                           },
@@ -235,13 +242,18 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
 
                                         CustomListTile(
                                           onTap: () {
-                                            context
-                                                .read<DrawerProvider>()
+                                            final container =
+                                                ProviderScope.containerOf(
+                                                  context,
+                                                );
+                                            container
+                                                .read(drawerRiverpod.notifier)
                                                 .openUpdateCategorieDeModificateur(
                                                   modificateur,
                                                   'salle',
                                                   modificateur.sallesIDS,
                                                 );
+
                                             widget.scaffoldKey.currentState!
                                                 .openEndDrawer();
                                           },
@@ -255,10 +267,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                                   ? modificateur.sallesIDS!
                                                       .map(
                                                         (id) =>
-                                                            Provider.of<
-                                                                  SalleProvider
-                                                                >(context)
-                                                                .salles
+                                                            salles
                                                                 .firstWhere(
                                                                   (s) =>
                                                                       s.id ==
@@ -280,8 +289,12 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
 
                                         CustomListTile(
                                           onTap: () {
-                                            context
-                                                .read<DrawerProvider>()
+                                            final container =
+                                                ProviderScope.containerOf(
+                                                  context,
+                                                );
+                                            container
+                                                .read(drawerRiverpod.notifier)
                                                 .openUpdateCategorieDeModificateur(
                                                   modificateur,
                                                   'couleur',
@@ -291,6 +304,7 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                                     ),
                                                   ),
                                                 );
+
                                             widget.scaffoldKey.currentState!
                                                 .openEndDrawer();
                                           },
@@ -328,8 +342,12 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                       children: [
                                         CustomListTile(
                                           onTap: () {
-                                            context
-                                                .read<DrawerProvider>()
+                                            final container =
+                                                ProviderScope.containerOf(
+                                                  context,
+                                                );
+                                            container
+                                                .read(drawerRiverpod.notifier)
                                                 .openUpdateCategorieDeModificateur(
                                                   modificateur,
                                                   'typeDeSelection',
@@ -342,6 +360,9 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                                           ) ??
                                                       '',
                                                 );
+
+                                            widget.scaffoldKey.currentState!
+                                                .openEndDrawer();
                                           },
                                           leading: null,
                                           trailing:
@@ -359,43 +380,30 @@ class _ModificateurDetailsState extends State<ModificateurDetails> {
                                         ),
 
                                         Divider(),
-                                        InkWell(
+                                        CustomListTile(
                                           onTap: () {
-                                            context
-                                                .read<DrawerProvider>()
+                                            final container =
+                                                ProviderScope.containerOf(
+                                                  context,
+                                                );
+                                            container
+                                                .read(drawerRiverpod.notifier)
                                                 .openUpdateCategorieDeModificateur(
                                                   modificateur,
                                                   'obligatoire',
-
                                                   modificateur.obligatoire,
                                                 );
+
                                             widget.scaffoldKey.currentState!
                                                 .openEndDrawer();
                                           },
-                                          child: CustomListTile(
-                                            onTap: () {
-                                              context
-                                                  .read<DrawerProvider>()
-                                                  .openUpdateCategorieDeModificateur(
-                                                    modificateur,
-                                                    'typeDeSelection',
-                                                    modificateur
-                                                        .typeSelection
-                                                        ?.name
-                                                        .replaceAll('_', ' '),
-                                                  );
-                                              widget.scaffoldKey.currentState!
-                                                  .openEndDrawer();
-                                            },
-                                            leading: 'Obligatoire',
-                                            trailing: null,
-                                            title: null,
-                                            trailingwidget: Switch(
-                                              activeTrackColor:
-                                                  AppColors.primary,
-                                              value: modificateur.obligatoire!,
-                                              onChanged: null,
-                                            ),
+                                          leading: 'Obligatoire',
+                                          trailing: null,
+                                          title: null,
+                                          trailingwidget: Switch(
+                                            activeTrackColor: AppColors.primary,
+                                            value: modificateur.obligatoire!,
+                                            onChanged: null,
                                           ),
                                         ),
                                       ],

@@ -1,89 +1,90 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'package:restaurent/consts.dart';
-import 'package:restaurent/providers/providers.dart';
+import 'package:restaurent/models/models.dart';
+import 'package:restaurent/models/salle_model.dart';
+import 'package:restaurent/riverpods/drawer_riverpod/drawer_riverpod.dart';
+import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
+import 'package:restaurent/riverpods/riverpods.dart';
+
+final settingsRiverpod = StateNotifierProvider<SettingsNotifier, SettingsState>(
+  (ref) => SettingsNotifier(initialSettings: routes)..loadSettings(),
+);
+final httpClientProvider = Provider<http.Client>((ref) => http.Client());
+
+final salleRiverpod = StateNotifierProvider<SalleNotifier, List<SalleModel>>((
+  ref,
+) {
+  final client = ref.watch(httpClientProvider);
+  return SalleNotifier(client: client);
+});
+
+final tauxEtTvaRiverpod =
+    StateNotifierProvider<TauxEtTvaNotifier, TauxEtTvaState>((ref) {
+      return TauxEtTvaNotifier();
+    });
+
+final utilisateurRiverpod =
+    StateNotifierProvider<UtilisateurNotifier, UtilisateurState>((ref) {
+      final client = ref.watch(httpClientProvider);
+      return UtilisateurNotifier(client: client);
+    });
+
+final categorieModificateurRiverpod = StateNotifierProvider<
+  CategorieModificateurNotifier,
+  CategorieModificateurState
+>((ref) {
+  final client = ref.watch(httpClientProvider);
+  return CategorieModificateurNotifier(client: client);
+});
+
+final drawerRiverpod = StateNotifierProvider<DrawerNotifier, DrawerState>(
+  (ref) => DrawerNotifier(),
+);
+
+final imprimanteRiverpod =
+    StateNotifierProvider<ImprimanteNotifier, ImprimanteState>((ref) {
+      final client = ref.watch(httpClientProvider);
+      return ImprimanteNotifier(client: client);
+    });
+
+final productRiverpod = StateNotifierProvider<ProductNotifier, ProductState>((
+  ref,
+) {
+  final client = ref.watch(httpClientProvider);
+  return ProductNotifier(client: client);
+});
+
+final categorieDePrixRiverpod =
+    StateNotifierProvider<CategorieDePrixNotifier, CategorieDePrixState>((ref) {
+      final client = ref.watch(httpClientProvider);
+      return CategorieDePrixNotifier(client: client);
+    });
+
+final moyenDePaiementRiverpod =
+    StateNotifierProvider<MoyenDePaiementNotifier, MoyenDePaiementState>((ref) {
+      final client = ref.watch(httpClientProvider);
+      return MoyenDePaiementNotifier(client: client);
+    });
 
 class ReglageScreen extends StatelessWidget {
   const ReglageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<http.Client>(create: (_) => http.Client()),
-        ChangeNotifierProvider(
-          create:
-              (_) => SettingsProvider(initialSettings: routes)..loadSettings(),
-        ),
-        ChangeNotifierProvider(create: (_) => DrawerProvider()),
-
-        ChangeNotifierProxyProvider<http.Client, ImprimanteProvider>(
-          create:
-              (context) =>
-                  ImprimanteProvider(client: context.read<http.Client>()),
-          update: (_, client, previous) => ImprimanteProvider(client: client),
-        ),
-        ChangeNotifierProxyProvider<http.Client, SalleProvider>(
-          create:
-              (context) => SalleProvider(client: context.read<http.Client>()),
-          update: (_, client, previous) => SalleProvider(client: client),
-        ),
-        ChangeNotifierProxyProvider<http.Client, CategorieDePrixProvider>(
-          create:
-              (context) =>
-                  CategorieDePrixProvider(client: context.read<http.Client>()),
-          update:
-              (_, client, previous) => CategorieDePrixProvider(client: client),
-        ),
-        ChangeNotifierProxyProvider<http.Client, CategorieModificateurProvider>(
-          create:
-              (context) => CategorieModificateurProvider(
-                client: context.read<http.Client>(),
-              ),
-          update:
-              (_, client, previous) =>
-                  CategorieModificateurProvider(client: client),
-        ),
-        ChangeNotifierProxyProvider<http.Client, ProductProvider>(
-          create:
-              (context) => ProductProvider(client: context.read<http.Client>()),
-          update: (_, client, previous) => ProductProvider(client: client),
-        ),
-        ChangeNotifierProxyProvider<http.Client, MoyenDePaiementProvider>(
-          create:
-              (context) =>
-                  MoyenDePaiementProvider(client: context.read<http.Client>()),
-          update:
-              (_, client, previous) => MoyenDePaiementProvider(client: client),
-        ),
-        ChangeNotifierProxyProvider<http.Client, TauxEtTvaProvider>(
-          create:
-              (context) =>
-                  TauxEtTvaProvider(client: context.read<http.Client>()),
-          update: (_, client, previous) => TauxEtTvaProvider(client: client),
-        ),
-        ChangeNotifierProxyProvider<http.Client, UtilisateurProvider>(
-          create:
-              (context) =>
-                  UtilisateurProvider(client: context.read<http.Client>()),
-          update: (_, client, previous) => UtilisateurProvider(client: client),
-        ),
-      ],
-
-      child: const ReglageView(),
-    );
+    return ReglageView();
   }
 }
 
-class ReglageView extends StatefulWidget {
+class ReglageView extends ConsumerStatefulWidget {
   const ReglageView({super.key});
 
   @override
-  State<ReglageView> createState() => _ReglageViewState();
+  ConsumerState<ReglageView> createState() => _ReglageViewState();
 }
 
-class _ReglageViewState extends State<ReglageView>
+class _ReglageViewState extends ConsumerState<ReglageView>
     with TickerProviderStateMixin {
   TabController? _mainTabController;
   List<TabController>? _subTabControllers;
@@ -112,80 +113,74 @@ class _ReglageViewState extends State<ReglageView>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SettingsProvider>(
-      builder: (context, provider, child) {
-        final settings = provider.settings;
+    final settingsState = ref.watch(settingsRiverpod);
+    final notifier = ref.read(settingsRiverpod.notifier);
 
-        if (settings.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    final settings = settingsState.settings;
 
-        // Important : initialiser les contrôleurs si nécessaire
-        if (_mainTabController == null || _subTabControllers == null) {
-          _initializeControllers(settings);
-          _mainTabController?.animateTo(provider.selectedMainTab);
-          _subTabControllers?[provider.selectedMainTab].animateTo(
-            provider.selectedSubTab,
+    if (settings.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    // Initialisation des contrôleurs
+    if (_mainTabController == null || _subTabControllers == null) {
+      _initializeControllers(settings);
+      _mainTabController?.animateTo(settingsState.selectedMainTab);
+      _subTabControllers?[settingsState.selectedMainTab].animateTo(
+        settingsState.selectedSubTab,
+      );
+    }
+
+    final mainCategories = settings.keys.toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Réglages'),
+        bottom: TabBar(
+          controller: _mainTabController,
+          isScrollable: false,
+          tabs: mainCategories.map((category) => Tab(text: category)).toList(),
+          onTap: notifier.changeMainTab,
+        ),
+      ),
+      body: TabBarView(
+        controller: _mainTabController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: List.generate(mainCategories.length, (mainIndex) {
+          final category = mainCategories[mainIndex];
+          final categoryOptions = settings[category]!;
+          final subTabs = categoryOptions.entries.toList();
+
+          return Column(
+            children: [
+              Material(
+                child: TabBar(
+                  controller: _subTabControllers![mainIndex],
+                  isScrollable: false,
+                  tabs:
+                      subTabs.map((entry) {
+                        final label = entry.value['label'] ?? entry.key;
+                        return Tab(text: label.toString());
+                      }).toList(),
+                  onTap: (index) {
+                    notifier.changeSubTab(mainIndex, index);
+                  },
+                ),
+              ),
+              Expanded(
+                child: TabBarView(
+                  controller: _subTabControllers![mainIndex],
+                  physics: const NeverScrollableScrollPhysics(),
+                  children:
+                      subTabs
+                          .map((entry) => entry.value['content'] as Widget)
+                          .toList(),
+                ),
+              ),
+            ],
           );
-        }
-
-        final mainCategories = settings.keys.toList();
-
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Réglages'),
-            bottom: TabBar(
-              controller: _mainTabController,
-              isScrollable: false,
-              tabs:
-                  mainCategories
-                      .map((category) => Tab(text: category))
-                      .toList(),
-              onTap: (index) {
-                provider.changeMainTab(index);
-              },
-            ),
-          ),
-          body: TabBarView(
-            controller: _mainTabController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: List.generate(mainCategories.length, (mainIndex) {
-              final category = mainCategories[mainIndex];
-              final categoryOptions = settings[category]!;
-              final subTabs = categoryOptions.entries.toList();
-
-              return Column(
-                children: [
-                  Material(
-                    child: TabBar(
-                      controller: _subTabControllers![mainIndex],
-                      isScrollable: false,
-                      tabs:
-                          subTabs.map((entry) {
-                            final label = entry.value['label'] ?? entry.key;
-                            return Tab(text: label.toString());
-                          }).toList(),
-                      onTap: (index) {
-                        provider.changeSubTab(mainIndex, index);
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _subTabControllers![mainIndex],
-                      physics: const NeverScrollableScrollPhysics(),
-                      children:
-                          subTabs.map((entry) {
-                            return entry.value['content'] as Widget;
-                          }).toList(),
-                    ),
-                  ),
-                ],
-              );
-            }),
-          ),
-        );
-      },
+        }),
+      ),
     );
   }
 }

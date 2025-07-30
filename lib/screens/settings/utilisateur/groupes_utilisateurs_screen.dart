@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/utilisateur_model.dart';
-import 'package:restaurent/providers/providers.dart';
+import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
-class GroupesUtilisateursScreen extends StatefulWidget {
+class GroupesUtilisateursScreen extends ConsumerStatefulWidget {
   const GroupesUtilisateursScreen({super.key});
 
   @override
-  State<GroupesUtilisateursScreen> createState() =>
+  ConsumerState<GroupesUtilisateursScreen> createState() =>
       _GroupesUtilisateursScreenState();
 }
 
-class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
+class _GroupesUtilisateursScreenState
+    extends ConsumerState<GroupesUtilisateursScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController nom = TextEditingController();
   TextEditingController prenom = TextEditingController();
@@ -24,6 +25,7 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
   String role = roleList[0];
   String group = groupeList[0];
   final _formKey = GlobalKey<FormState>();
+
   @override
   void dispose() {
     nom.dispose();
@@ -36,6 +38,8 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
   }
 
   Widget _buildCreateUtilisateurDrawer(BuildContext context) {
+    final utilisateurNotifier = ref.read(utilisateurRiverpod.notifier);
+
     return Drawer(
       width: MediaQuery.of(context).size.width * .33,
       child: SingleChildScrollView(
@@ -99,36 +103,24 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
                     items:
                         groupeList
                             .map(
-                              (grp) => DropdownMenuItem(
-                                value: grp,
-                                child: Text(grp),
-                              ),
+                              (e) => DropdownMenuItem(value: e, child: Text(e)),
                             )
                             .toList(),
-                    onChanged: (value) => setState(() => group = value!),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          group = value;
+                        });
+                      }
+                    },
                   ),
                 ),
-                const SizedBox(height: 16),
-                CustomTextField(
-                  controller: motPasseChiffre,
-                  label: "Mot de passe chiffre",
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Le mot de passe est requis';
-                    }
-                    if (!RegExp(r'^-?\d+$').hasMatch(value)) {
-                      return 'Minimum entier de 8 chaine';
-                    }
-
-                    return null;
-                  },
-                ),
 
                 const SizedBox(height: 16),
 
+                // Dropdown Role
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  margin: EdgeInsets.symmetric(vertical: 4.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.grey.shade400),
@@ -137,25 +129,72 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
                   child: DropdownButtonFormField<String>(
                     value: role,
                     decoration: const InputDecoration(
-                      labelText: 'Rôle',
+                      labelText: 'Role',
                       border: InputBorder.none,
                     ),
                     items:
                         roleList
                             .map(
-                              (r) => DropdownMenuItem(value: r, child: Text(r)),
+                              (e) => DropdownMenuItem(value: e, child: Text(e)),
                             )
                             .toList(),
-                    onChanged: (value) => setState(() => role = value!),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          role = value;
+                        });
+                      }
+                    },
                   ),
+                ),
+
+                const SizedBox(height: 16),
+
+                CustomTextField(
+                  controller: motPasseSchema,
+                  label: "Mot de passe schema",
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Le mot de passe schema est requis';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 16),
+
+                CustomTextField(
+                  controller: motPasseChiffre,
+                  label: "Mot de passe chiffre",
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Le mot de passe chiffre est requis';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 16),
+
+                CustomTextField(
+                  controller: qrCode,
+                  label: "QR Code",
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Le QR Code est requis';
+                    }
+                    return null;
+                  },
                 ),
 
                 const SizedBox(height: 24),
                 CreateButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      final provider = context.read<UtilisateurProvider>();
-                      provider.createUtilisateur(
+                      utilisateurNotifier.createUtilisateur(
                         groupe: group,
                         motPasseChiffre: motPasseChiffre.text,
                         nom: nom.text,
@@ -179,10 +218,13 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final utilisateurState = ref.watch(utilisateurRiverpod);
+    final utilisateurNotifier = ref.read(utilisateurRiverpod.notifier);
+
     return Scaffold(
       key: _scaffoldKey,
-      body: Consumer<UtilisateurProvider>(
-        builder: (context, provider, _) {
+      body: Consumer(
+        builder: (context, ref, _) {
           return Row(
             children: [
               Expanded(
@@ -190,10 +232,10 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
                 child: Card(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   child:
-                      provider.utilisateurs != null
+                      utilisateurState.utilisateurs.isNotEmpty
                           ? ListView(
                             children: [
-                              provider.utilisateurs!
+                              utilisateurState.utilisateurs
                                       .where((e) => e.role == "Administrateur")
                                       .isNotEmpty
                                   ? Padding(
@@ -206,7 +248,7 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
                                     ),
                                   )
                                   : SizedBox.shrink(),
-                              ...provider.utilisateurs!
+                              ...utilisateurState.utilisateurs
                                   .where((u) => u.role == roleList[0])
                                   .map(
                                     (utilisateur) => ListTile(
@@ -217,20 +259,22 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
                                       ),
                                       trailing: Icon(Icons.arrow_forward_ios),
                                       selected:
-                                          provider.selectedUtilisateur !=
+                                          utilisateurState
+                                                  .selectedUtilisateur !=
                                               null &&
                                           utilisateur.id ==
-                                              provider.selectedUtilisateur!.id,
+                                              utilisateurState
+                                                  .selectedUtilisateur!
+                                                  .id,
                                       onTap: () {
-                                        Provider.of<UtilisateurProvider>(
-                                          context,
-                                          listen: false,
-                                        ).selectUtilisateur(utilisateur);
+                                        utilisateurNotifier.selectUtilisateur(
+                                          utilisateur,
+                                        );
                                       },
                                     ),
                                   ),
 
-                              provider.utilisateurs!
+                              utilisateurState.utilisateurs
                                       .where((e) => e.role == "Serveur")
                                       .isNotEmpty
                                   ? Padding(
@@ -243,7 +287,7 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
                                     ),
                                   )
                                   : SizedBox.shrink(),
-                              ...provider.utilisateurs!
+                              ...utilisateurState.utilisateurs
                                   .where((u) => u.role == roleList[1])
                                   .map(
                                     (utilisateur) => ListTile(
@@ -254,339 +298,352 @@ class _GroupesUtilisateursScreenState extends State<GroupesUtilisateursScreen> {
                                       ),
                                       trailing: Icon(Icons.arrow_forward_ios),
                                       selected:
-                                          provider.selectedUtilisateur !=
+                                          utilisateurState
+                                                  .selectedUtilisateur !=
                                               null &&
                                           utilisateur.id ==
-                                              provider.selectedUtilisateur!.id,
+                                              utilisateurState
+                                                  .selectedUtilisateur!
+                                                  .id,
                                       onTap: () {
-                                        Provider.of<UtilisateurProvider>(
-                                          context,
-                                          listen: false,
-                                        ).selectUtilisateur(utilisateur);
-                                      },
-                                    ),
-                                  ),
-
-                              provider.utilisateurs!
-                                      .where(
-                                        (e) => e.role == "Responsable de salle",
-                                      )
-                                      .isNotEmpty
-                                  ? Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Responsable de salle',
-                                      style: AppTextStyle.greyHeading.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  )
-                                  : SizedBox.shrink(),
-                              ...provider.utilisateurs!
-                                  .where((u) => u.role == roleList[2])
-                                  .map(
-                                    (utilisateur) => ListTile(
-                                      selectedTileColor: Colors.grey.shade300,
-                                      title: Text(
-                                        utilisateur.nom,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                      trailing: Icon(Icons.arrow_forward_ios),
-                                      selected:
-                                          provider.selectedUtilisateur !=
-                                              null &&
-                                          utilisateur.id ==
-                                              provider.selectedUtilisateur!.id,
-                                      onTap: () {
-                                        Provider.of<UtilisateurProvider>(
-                                          context,
-                                          listen: false,
-                                        ).selectUtilisateur(utilisateur);
+                                        utilisateurNotifier.selectUtilisateur(
+                                          utilisateur,
+                                        );
                                       },
                                     ),
                                   ),
                             ],
                           )
-                          : Center(child: Text("Aucun utilisateur trouvé")),
+                          : Center(
+                            child: Text(
+                              "Aucun utilisateur trouvé",
+                              style: AppTextStyle.greyHeading,
+                            ),
+                          ),
                 ),
               ),
 
               Expanded(
-                flex: 4,
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  child: Card(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    child:
-                        provider.selectedUtilisateur == null
-                            ? const Center(
-                              child: Text('Sélectionnez un utilisateur'),
-                            )
-                            : Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Card(
-                                      child: Column(
-                                        children: [
-                                          _buildUserDetailTile(
-                                            title: 'Nom',
-                                            value:
-                                                provider
-                                                    .selectedUtilisateur!
-                                                    .nom,
-                                            user: provider.selectedUtilisateur!,
-                                            attributeName: 'nom',
-                                          ),
-                                          const Divider(),
-                                          _buildUserDetailTile(
-                                            title: 'Prénom',
-                                            value:
-                                                provider
-                                                    .selectedUtilisateur!
-                                                    .prenom,
-                                            user: provider.selectedUtilisateur!,
-                                            attributeName: 'prenom',
-                                          ),
-                                        ],
-                                      ),
+                flex: 3,
+                child:
+                    utilisateurState.selectedUtilisateur != null
+                        ? Card(
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Colors.white,
                                     ),
-                                    const SizedBox(height: 16),
-                                    Card(
-                                      child: _buildUserDetailTile(
-                                        title: 'Groupe',
-                                        value:
-                                            provider
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        CustomListTile(
+                                          onTap: () {
+                                            context
+                                                .read<DrawerProvider>()
+                                                .openUpdateUtilisateurAttributeDrawer(
+                                                  utilisateurState
+                                                      .selectedUtilisateur!,
+                                                  'nom',
+                                                  utilisateurState
+                                                      .selectedUtilisateur!
+                                                      .nom,
+                                                );
+                                            _scaffoldKey.currentState
+                                                ?.openEndDrawer();
+                                          },
+                                          trailing: null,
+                                          title: Text(
+                                            'Nom',
+                                            style: AppTextStyle.greyHeading,
+                                          ),
+                                          trailingwidget: Text(
+                                            utilisateurState
                                                 .selectedUtilisateur!
-                                                .groupe,
-                                        user: provider.selectedUtilisateur!,
-                                        attributeName: 'groupe',
-                                      ),
+                                                .nom!,
+                                            style:
+                                                AppTextStyle.indingosubHeading,
+                                          ),
+                                          leading: null,
+                                        ),
+                                        Divider(),
+                                        CustomListTile(
+                                          onTap: () {
+                                            context
+                                                .read<DrawerProvider>()
+                                                .openUpdateUtilisateurAttributeDrawer(
+                                                  utilisateurState
+                                                      .selectedUtilisateur!,
+                                                  'prenom',
+                                                  utilisateurState
+                                                      .selectedUtilisateur!
+                                                      .prenom,
+                                                );
+                                            _scaffoldKey.currentState
+                                                ?.openEndDrawer();
+                                          },
+                                          leading: null,
+                                          trailing: null,
+                                          title: Text(
+                                            'Prénom',
+                                            style: AppTextStyle.greyHeading,
+                                          ),
+                                          trailingwidget: Text(
+                                            utilisateurState
+                                                .selectedUtilisateur!
+                                                .prenom!,
+                                            style:
+                                                AppTextStyle.indingosubHeading,
+                                          ),
+                                        ),
+                                        Divider(),
+                                        CustomListTile(
+                                          onTap: () {
+                                            context
+                                                .read<DrawerProvider>()
+                                                .openUpdateUtilisateurAttributeDrawer(
+                                                  utilisateurState
+                                                      .selectedUtilisateur!,
+                                                  'groupe',
+                                                  utilisateurState
+                                                      .selectedUtilisateur!
+                                                      .groupe,
+                                                );
+                                            _scaffoldKey.currentState
+                                                ?.openEndDrawer();
+                                          },
+                                          leading: null,
+                                          trailing: null,
+                                          title: Text(
+                                            'Groupe',
+                                            style: AppTextStyle.greyHeading,
+                                          ),
+                                          trailingwidget: Text(
+                                            utilisateurState
+                                                .selectedUtilisateur!
+                                                .groupe!,
+                                            style:
+                                                AppTextStyle.indingosubHeading,
+                                          ),
+                                        ),
+                                        Divider(),
+                                        CustomListTile(
+                                          onTap: () {
+                                            context
+                                                .read<DrawerProvider>()
+                                                .openUpdateUtilisateurAttributeDrawer(
+                                                  utilisateurState
+                                                      .selectedUtilisateur!,
+                                                  'role',
+                                                  utilisateurState
+                                                      .selectedUtilisateur!
+                                                      .role,
+                                                );
+                                            _scaffoldKey.currentState
+                                                ?.openEndDrawer();
+                                          },
+                                          leading: null,
+                                          trailing: null,
+                                          title: Text(
+                                            'Role',
+                                            style: AppTextStyle.greyHeading,
+                                          ),
+                                          trailingwidget: Text(
+                                            utilisateurState
+                                                .selectedUtilisateur!
+                                                .role!,
+                                            style:
+                                                AppTextStyle.indingosubHeading,
+                                          ),
+                                        ),
+                                        Divider(),
+                                        CustomListTile(
+                                          onTap: () {
+                                            context
+                                                .read<DrawerProvider>()
+                                                .openUpdateUtilisateurAttributeDrawer(
+                                                  utilisateurState
+                                                      .selectedUtilisateur!,
+                                                  'motPasseSchema',
+                                                  utilisateurState
+                                                      .selectedUtilisateur!
+                                                      .motPasseSchema,
+                                                );
+                                            _scaffoldKey.currentState
+                                                ?.openEndDrawer();
+                                          },
+                                          leading: null,
+                                          trailing: null,
+                                          title: Text(
+                                            'Mot de passe schema',
+                                            style: AppTextStyle.greyHeading,
+                                          ),
+                                          trailingwidget: Text(
+                                            utilisateurState
+                                                .selectedUtilisateur!
+                                                .motPasseSchema!,
+                                            style:
+                                                AppTextStyle.indingosubHeading,
+                                          ),
+                                        ),
+                                        Divider(),
+                                        CustomListTile(
+                                          onTap: () {
+                                            context
+                                                .read<DrawerProvider>()
+                                                .openUpdateUtilisateurAttributeDrawer(
+                                                  utilisateurState
+                                                      .selectedUtilisateur!,
+                                                  'motPasseChiffre',
+                                                  utilisateurState
+                                                      .selectedUtilisateur!
+                                                      .motPasseChiffre,
+                                                );
+                                            _scaffoldKey.currentState
+                                                ?.openEndDrawer();
+                                          },
+                                          leading: null,
+                                          trailing: null,
+                                          title: Text(
+                                            'Mot de passe chiffre',
+                                            style: AppTextStyle.greyHeading,
+                                          ),
+                                          trailingwidget: Text(
+                                            utilisateurState
+                                                .selectedUtilisateur!
+                                                .motPasseChiffre!,
+                                            style:
+                                                AppTextStyle.indingosubHeading,
+                                          ),
+                                        ),
+                                        Divider(),
+                                        CustomListTile(
+                                          onTap: () {
+                                            context
+                                                .read<DrawerProvider>()
+                                                .openUpdateUtilisateurAttributeDrawer(
+                                                  utilisateurState
+                                                      .selectedUtilisateur!,
+                                                  'qrCode',
+                                                  utilisateurState
+                                                      .selectedUtilisateur!
+                                                      .qrCode,
+                                                );
+                                            _scaffoldKey.currentState
+                                                ?.openEndDrawer();
+                                          },
+                                          leading: null,
+                                          trailing: null,
+                                          title: Text(
+                                            'QR Code',
+                                            style: AppTextStyle.greyHeading,
+                                          ),
+                                          trailingwidget: Text(
+                                            utilisateurState
+                                                .selectedUtilisateur!
+                                                .qrCode!,
+                                            style:
+                                                AppTextStyle.indingosubHeading,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(height: 16),
-                                    Card(
-                                      child: Column(
-                                        children: [
-                                          _buildUserDetailTile(
-                                            title: 'Mot de passe Schema',
-                                            value:
-                                                provider
-                                                    .selectedUtilisateur!
-                                                    .motPasseSchema,
-                                            user: provider.selectedUtilisateur!,
-                                            attributeName: 'motPasseSchema',
-                                          ),
-                                          const Divider(),
-                                          _buildUserDetailTile(
-                                            title: 'Mot de passe chiffre',
-                                            value:
-                                                provider
-                                                    .selectedUtilisateur!
-                                                    .motPasseChiffre,
-                                            user: provider.selectedUtilisateur!,
-                                            attributeName: 'motPasseChiffre',
-                                          ),
-                                          const Divider(),
-                                          _buildUserDetailTile(
-                                            title: 'QR Code',
-                                            value:
-                                                provider
-                                                    .selectedUtilisateur!
-                                                    .qrCode,
-                                            user: provider.selectedUtilisateur!,
-                                            attributeName: 'qrCode',
-                                          ),
-                                          const Divider(),
-                                          _buildUserDetailTile(
-                                            title: 'Rôle',
-                                            value:
-                                                provider
-                                                    .selectedUtilisateur!
-                                                    .role,
-                                            user: provider.selectedUtilisateur!,
-                                            attributeName: 'role',
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(height: 16),
-
-                                    ButtonSupprimer(
-                                      style: null,
-                                      onTap: () {},
-                                      text: 'Supprimer',
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  ButtonSupprimer(
+                                    onTap: () {},
+                                    text: 'Supprimer',
+                                    style: null,
+                                  ),
+                                ],
                               ),
                             ),
-                  ),
-                ),
+                          ),
+                        )
+                        : Center(
+                          child: Text(
+                            "Sélectionnez un utilisateur",
+                            style: AppTextStyle.greyHeading,
+                          ),
+                        ),
               ),
             ],
           );
         },
       ),
-
+      endDrawer: provider_package.Consumer<DrawerProvider>(
+        builder: (context, drawerProvider, _) {
+          final state = drawerProvider.state;
+          if (state is DrawerCreateUtilisateur) {
+            return _buildCreateUtilisateurDrawer(context);
+          }
+          if (state is DrawerUpdateUtilisateurAttributeState) {
+            return UpdateAttributeDrawer(
+              fieldType: FieldType.string,
+              label: state.attributeName,
+              initialValue: state.currentValue as String,
+              onSaved: (value) {
+                final updated = state.utilisateur.copyWith(
+                  nom:
+                      state.attributeName == 'nom'
+                          ? value
+                          : state.utilisateur.nom,
+                  prenom:
+                      state.attributeName == 'prenom'
+                          ? value
+                          : state.utilisateur.prenom,
+                  groupe:
+                      state.attributeName == 'groupe'
+                          ? value
+                          : state.utilisateur.groupe,
+                  role:
+                      state.attributeName == 'role'
+                          ? value
+                          : state.utilisateur.role,
+                  motPasseSchema:
+                      state.attributeName == 'motPasseSchema'
+                          ? value
+                          : state.utilisateur.motPasseSchema,
+                  motPasseChiffre:
+                      state.attributeName == 'motPasseChiffre'
+                          ? value
+                          : state.utilisateur.motPasseChiffre,
+                  qrCode:
+                      state.attributeName == 'qrCode'
+                          ? value
+                          : state.utilisateur.qrCode,
+                );
+                utilisateurNotifier.updateUtilisateur(updated);
+              },
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      ),
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
-          "Groupe d'utilisateurs",
+          'Groupes utilisateurs',
           style: AppTextStyle.largeindingotext,
         ),
         centerTitle: true,
         actions: [
+          ActionButton(onPressed: () {}, text: 'Reorganiser'),
           ActionButton(
             onPressed: () {
               context.read<DrawerProvider>().openCreateUtilisateurDrawer();
               _scaffoldKey.currentState?.openEndDrawer();
             },
-            text: "Nouveau",
+            text: 'Nouveau',
           ),
         ],
       ),
-      endDrawer: Consumer<DrawerProvider>(
-        builder: (context, drawerProvider, _) {
-          final state = drawerProvider.state;
-          if (state is DrawerCreateUtilisateur) {
-            return _buildCreateUtilisateurDrawer(context);
-          } else if (state is DrawerUpdateUtilisateurAttributeState) {
-            return _buildUpdateAttributeDrawer(context, state);
-          } else {
-            return SizedBox.shrink();
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildUpdateAttributeDrawer(
-    BuildContext context,
-    DrawerUpdateUtilisateurAttributeState state,
-  ) {
-    switch (state.attributeName) {
-      case 'role':
-        return UpdateAttributeDrawer(
-          label: state.attributeName,
-          initialValue: state.utilisateur.role,
-          options: roleList,
-          fieldType: FieldType.dropdown,
-          onSaved: (v) {
-            Provider.of<UtilisateurProvider>(
-              context,
-              listen: false,
-            ).updateUtilisateur(state.utilisateur.copyWith(role: v));
-          },
-        );
-
-      case 'motPasseChiffre':
-        return UpdateAttributeDrawer(
-          label: state.attributeName,
-          initialValue: state.utilisateur.motPasseChiffre,
-
-          fieldType: FieldType.string,
-          onSaved: (v) {
-            Provider.of<UtilisateurProvider>(
-              context,
-              listen: false,
-            ).updateUtilisateur(state.utilisateur.copyWith(motPasseChiffre: v));
-          },
-        );
-
-      case 'groupe':
-        return UpdateAttributeDrawer(
-          label: state.attributeName,
-          initialValue: state.utilisateur.groupe,
-          options: groupeList,
-          fieldType: FieldType.dropdown,
-          onSaved: (v) {
-            Provider.of<UtilisateurProvider>(
-              context,
-              listen: false,
-            ).updateUtilisateur(state.utilisateur.copyWith(groupe: v));
-          },
-        );
-
-      case 'qrCode':
-        return UpdateAttributeDrawer(
-          label: state.attributeName,
-          initialValue: state.utilisateur.qrCode,
-
-          fieldType: FieldType.string,
-          onSaved: (v) {
-            Provider.of<UtilisateurProvider>(
-              context,
-              listen: false,
-            ).updateUtilisateur(state.utilisateur.copyWith(qrCode: v));
-          },
-        );
-      case 'motPasseSchema':
-        return UpdateAttributeDrawer(
-          label: state.attributeName,
-          initialValue: state.utilisateur.motPasseSchema,
-
-          fieldType: FieldType.pattern,
-          onSaved: (v) {
-            Provider.of<UtilisateurProvider>(
-              context,
-              listen: false,
-            ).updateUtilisateur(state.utilisateur.copyWith(motPasseSchema: v));
-          },
-        );
-      case 'nom':
-        return UpdateAttributeDrawer(
-          label: 'nom',
-          initialValue: state.utilisateur.nom,
-          fieldType: FieldType.string,
-          onSaved: (v) {
-            Provider.of<UtilisateurProvider>(
-              context,
-              listen: false,
-            ).updateUtilisateur(state.utilisateur.copyWith(nom: v));
-          },
-        );
-      case 'prenom':
-        return UpdateAttributeDrawer(
-          label: 'Prenom',
-          initialValue: state.utilisateur.prenom,
-          fieldType: FieldType.string,
-          onSaved: (v) {
-            Provider.of<UtilisateurProvider>(
-              context,
-              listen: false,
-            ).updateUtilisateur(state.utilisateur.copyWith(prenom: v));
-          },
-        );
-      default:
-        return SizedBox.shrink();
-    }
-  }
-
-  Widget _buildUserDetailTile({
-    required String title,
-    required String value,
-    required UtilisateurModel user,
-    required String attributeName,
-  }) {
-    return CustomListTile(
-      onTap: () {
-        context.read<DrawerProvider>().openUpdateUtilisateurAttributeDrawer(
-          user,
-          attributeName,
-          value,
-        );
-        _scaffoldKey.currentState?.openEndDrawer();
-      },
-      title: Text(title, style: AppTextStyle.greyHeading),
-      trailingwidget: Text(
-        attributeName != 'motPasseSchema' && attributeName != 'motPasseChiffre'
-            ? value
-            : "****",
-        style: AppTextStyle.indingosubHeading,
-      ),
-      leading: null,
-      trailing: null,
     );
   }
 }

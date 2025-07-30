@@ -10,7 +10,6 @@ class CategorieModificateurState {
   final List<CategorieDeModificateur> allCategories;
   final CategorieDeModificateur? selected;
   final bool attachmentProductScreen;
-
   final CategorieDeModificateur createmodificateur;
 
   const CategorieModificateurState({
@@ -109,13 +108,26 @@ class CategorieModificateurNotifier
   }
 
   void openAttachmentScreen() {
-    print('we get called');
     setAttachmentProductScreen(true);
   }
 
-  void create(CategorieDeModificateur newCategorie) {
-    print(newCategorie.toJson());
-    // You can do the real creation logic later if needed
+  Future<void> create(CategorieDeModificateur newCategorie) async {
+    final response = await client.post(
+      Uri.parse("${baseUrl}modificateurs/categories/createOrUpdate"),
+      body: json.encode(newCategorie.toJson()),
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = json.decode(response.body);
+      CategorieDeModificateur mod = CategorieDeModificateur.fromJson(data);
+      state = state.copyWith(allCategories: [...state.allCategories, mod]);
+    } else {
+      throw '${response.body}';
+    }
   }
 
   Future<void> update(CategorieDeModificateur updated) async {
@@ -125,21 +137,26 @@ class CategorieModificateurNotifier
       body: json.encode(updated.toJson()),
     );
 
-    print("response.body ${response.body}");
-
+    final Map<String, dynamic> responseJson = json.decode(response.body);
     if (response.statusCode != 200) {
-      final Map<String, dynamic> responseJson = json.decode(response.body);
       final CategorieDeModificateur res = CategorieDeModificateur.fromJson(
         responseJson,
       );
-      print(res.nom);
+      return;
+    } else {
+      final updatedList =
+          state.allCategories.map((e) {
+            return e.id == updated.id ? updated : e;
+          }).toList();
+
+      state = state.copyWith(allCategories: updatedList, selected: updated);
     }
 
-    final updatedList =
-        state.allCategories.map((e) {
-          return e.id == updated.id ? updated : e;
-        }).toList();
-
-    state = state.copyWith(allCategories: updatedList, selected: updated);
+    print(hexToColor(updated.couleur));
   }
 }
+
+final categorieModificateurProvider = StateNotifierProvider<
+  CategorieModificateurNotifier,
+  CategorieModificateurState
+>((ref) => CategorieModificateurNotifier(client: http.Client()));
