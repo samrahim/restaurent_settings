@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/utilisateur_model.dart';
+import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
 import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
@@ -345,8 +346,12 @@ class _GroupesUtilisateursScreenState
                                       children: [
                                         CustomListTile(
                                           onTap: () {
-                                            context
-                                                .read<DrawerProvider>()
+                                            final container =
+                                                ProviderScope.containerOf(
+                                                  context,
+                                                );
+                                            container
+                                                .read(drawerRiverpod.notifier)
                                                 .openUpdateUtilisateurAttributeDrawer(
                                                   utilisateurState
                                                       .selectedUtilisateur!,
@@ -355,6 +360,7 @@ class _GroupesUtilisateursScreenState
                                                       .selectedUtilisateur!
                                                       .nom,
                                                 );
+
                                             _scaffoldKey.currentState
                                                 ?.openEndDrawer();
                                           },
@@ -366,7 +372,7 @@ class _GroupesUtilisateursScreenState
                                           trailingwidget: Text(
                                             utilisateurState
                                                 .selectedUtilisateur!
-                                                .nom!,
+                                                .nom,
                                             style:
                                                 AppTextStyle.indingosubHeading,
                                           ),
@@ -375,8 +381,12 @@ class _GroupesUtilisateursScreenState
                                         Divider(),
                                         CustomListTile(
                                           onTap: () {
-                                            context
-                                                .read<DrawerProvider>()
+                                            final container =
+                                                ProviderScope.containerOf(
+                                                  context,
+                                                );
+                                            container
+                                                .read(drawerRiverpod.notifier)
                                                 .openUpdateUtilisateurAttributeDrawer(
                                                   utilisateurState
                                                       .selectedUtilisateur!,
@@ -385,6 +395,7 @@ class _GroupesUtilisateursScreenState
                                                       .selectedUtilisateur!
                                                       .prenom,
                                                 );
+
                                             _scaffoldKey.currentState
                                                 ?.openEndDrawer();
                                           },
@@ -397,7 +408,7 @@ class _GroupesUtilisateursScreenState
                                           trailingwidget: Text(
                                             utilisateurState
                                                 .selectedUtilisateur!
-                                                .prenom!,
+                                                .prenom,
                                             style:
                                                 AppTextStyle.indingosubHeading,
                                           ),
@@ -405,8 +416,12 @@ class _GroupesUtilisateursScreenState
                                         Divider(),
                                         CustomListTile(
                                           onTap: () {
-                                            context
-                                                .read<DrawerProvider>()
+                                            final container =
+                                                ProviderScope.containerOf(
+                                                  context,
+                                                );
+                                            container
+                                                .read(drawerRiverpod.notifier)
                                                 .openUpdateUtilisateurAttributeDrawer(
                                                   utilisateurState
                                                       .selectedUtilisateur!,
@@ -415,6 +430,7 @@ class _GroupesUtilisateursScreenState
                                                       .selectedUtilisateur!
                                                       .groupe,
                                                 );
+
                                             _scaffoldKey.currentState
                                                 ?.openEndDrawer();
                                           },
@@ -427,7 +443,7 @@ class _GroupesUtilisateursScreenState
                                           trailingwidget: Text(
                                             utilisateurState
                                                 .selectedUtilisateur!
-                                                .groupe!,
+                                                .groupe,
                                             style:
                                                 AppTextStyle.indingosubHeading,
                                           ),
@@ -435,8 +451,12 @@ class _GroupesUtilisateursScreenState
                                         Divider(),
                                         CustomListTile(
                                           onTap: () {
-                                            context
-                                                .read<DrawerProvider>()
+                                            final container =
+                                                ProviderScope.containerOf(
+                                                  context,
+                                                );
+                                            container
+                                                .read(drawerRiverpod.notifier)
                                                 .openUpdateUtilisateurAttributeDrawer(
                                                   utilisateurState
                                                       .selectedUtilisateur!,
@@ -445,6 +465,7 @@ class _GroupesUtilisateursScreenState
                                                       .selectedUtilisateur!
                                                       .role,
                                                 );
+
                                             _scaffoldKey.currentState
                                                 ?.openEndDrawer();
                                           },
@@ -457,7 +478,7 @@ class _GroupesUtilisateursScreenState
                                           trailingwidget: Text(
                                             utilisateurState
                                                 .selectedUtilisateur!
-                                                .role!,
+                                                .role,
                                             style:
                                                 AppTextStyle.indingosubHeading,
                                           ),
@@ -465,8 +486,12 @@ class _GroupesUtilisateursScreenState
                                         Divider(),
                                         CustomListTile(
                                           onTap: () {
-                                            context
-                                                .read<DrawerProvider>()
+                                            final container =
+                                                ProviderScope.containerOf(
+                                                  context,
+                                                );
+                                            container
+                                                .read(drawerRiverpod.notifier)
                                                 .openUpdateUtilisateurAttributeDrawer(
                                                   utilisateurState
                                                       .selectedUtilisateur!,
@@ -475,6 +500,7 @@ class _GroupesUtilisateursScreenState
                                                       .selectedUtilisateur!
                                                       .motPasseSchema,
                                                 );
+
                                             _scaffoldKey.currentState
                                                 ?.openEndDrawer();
                                           },
@@ -487,7 +513,7 @@ class _GroupesUtilisateursScreenState
                                           trailingwidget: Text(
                                             utilisateurState
                                                 .selectedUtilisateur!
-                                                .motPasseSchema!,
+                                                .motPasseSchema,
                                             style:
                                                 AppTextStyle.indingosubHeading,
                                           ),
@@ -495,8 +521,12 @@ class _GroupesUtilisateursScreenState
                                         Divider(),
                                         CustomListTile(
                                           onTap: () {
-                                            context
-                                                .read<DrawerProvider>()
+                                            final container =
+                                                ProviderScope.containerOf(
+                                                  context,
+                                                );
+                                            container
+                                                .read(drawerRiverpod.notifier)
                                                 .openUpdateUtilisateurAttributeDrawer(
                                                   utilisateurState
                                                       .selectedUtilisateur!,
@@ -505,6 +535,7 @@ class _GroupesUtilisateursScreenState
                                                       .selectedUtilisateur!
                                                       .motPasseChiffre,
                                                 );
+
                                             _scaffoldKey.currentState
                                                 ?.openEndDrawer();
                                           },
@@ -517,7 +548,7 @@ class _GroupesUtilisateursScreenState
                                           trailingwidget: Text(
                                             utilisateurState
                                                 .selectedUtilisateur!
-                                                .motPasseChiffre!,
+                                                .motPasseChiffre,
                                             style:
                                                 AppTextStyle.indingosubHeading,
                                           ),
@@ -525,8 +556,12 @@ class _GroupesUtilisateursScreenState
                                         Divider(),
                                         CustomListTile(
                                           onTap: () {
-                                            context
-                                                .read<DrawerProvider>()
+                                            final container =
+                                                ProviderScope.containerOf(
+                                                  context,
+                                                );
+                                            container
+                                                .read(drawerRiverpod.notifier)
                                                 .openUpdateUtilisateurAttributeDrawer(
                                                   utilisateurState
                                                       .selectedUtilisateur!,
@@ -535,6 +570,7 @@ class _GroupesUtilisateursScreenState
                                                       .selectedUtilisateur!
                                                       .qrCode,
                                                 );
+
                                             _scaffoldKey.currentState
                                                 ?.openEndDrawer();
                                           },
@@ -547,7 +583,7 @@ class _GroupesUtilisateursScreenState
                                           trailingwidget: Text(
                                             utilisateurState
                                                 .selectedUtilisateur!
-                                                .qrCode!,
+                                                .qrCode,
                                             style:
                                                 AppTextStyle.indingosubHeading,
                                           ),
@@ -577,9 +613,10 @@ class _GroupesUtilisateursScreenState
           );
         },
       ),
-      endDrawer: provider_package.Consumer<DrawerProvider>(
+      endDrawer: Consumer(
         builder: (context, drawerProvider, _) {
-          final state = drawerProvider.state;
+          final state = ref.watch(drawerRiverpod);
+
           if (state is DrawerCreateUtilisateur) {
             return _buildCreateUtilisateurDrawer(context);
           }
@@ -637,7 +674,11 @@ class _GroupesUtilisateursScreenState
           ActionButton(onPressed: () {}, text: 'Reorganiser'),
           ActionButton(
             onPressed: () {
-              context.read<DrawerProvider>().openCreateUtilisateurDrawer();
+              final container = ProviderScope.containerOf(context);
+              container
+                  .read(drawerRiverpod.notifier)
+                  .openCreateUtilisateurDrawer();
+
               _scaffoldKey.currentState?.openEndDrawer();
             },
             text: 'Nouveau',

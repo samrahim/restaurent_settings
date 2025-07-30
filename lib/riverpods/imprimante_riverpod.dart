@@ -138,9 +138,3 @@ class ImprimanteNotifier extends StateNotifier<ImprimanteState> {
     );
   }
 }
-
-final imprimanteRiverpod =
-    StateNotifierProvider<ImprimanteNotifier, ImprimanteState>((ref) {
-      final client = ref.watch(httpClientProvider);
-      return ImprimanteNotifier(client: client);
-    });

@@ -7,6 +7,7 @@ import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
 import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/riverpods/categorie_modificateur_riverpod.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificteur_details.dart';
+import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/produit_attachement.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
 class ModificateursSupplementsScreen extends ConsumerStatefulWidget {
@@ -149,9 +150,39 @@ class _ModificateursSupplementsScreenState
           return const SizedBox.shrink();
         },
       ),
-      body:
-          categorieModificateurState.loadingAll
+
+      /*
+        (provider.attachemntProductScreen &&
+                        provider.selectedCategorie == null)
+                    ? ProduitAttachement(scaffoldKey: _scaffoldKey)
+                    : (provider.selectedCategorie == null &&
+                        !provider.loadingall)
+                    ? _buildCategoriesList(provider)
+                    : (provider.selectedCategorie != null &&
+                        !provider.loadingselected)
+                    ? ModificateurDetails(scaffoldKey: _scaffoldKey)
+                    : Center(child: CircularProgressIndicator()),
+
+
+                     categorieModificateurState.loadingAll
               ? const Center(child: CircularProgressIndicator())
+              : (categorieModificateurState.selected == null &&
+                  !categorieModificateurState.loadingAll)
+              ? _buildCategoriesList(
+                categorieModificateurState,
+                categorieModificateurNotifier,
+              )
+              : (categorieModificateurState.selected != null &&
+                  !categorieModificateurState.loadingSelected)
+              ? ModificateurDetails(scaffoldKey: _scaffoldKey)
+              : (categorieModificateurState.attachmentProductScreen)
+              ? ProduitAttachement(scaffoldKey: _scaffoldKey)
+              : const Center(child: CircularProgressIndicator()),
+      */
+      body:
+          (categorieModificateurState.attachmentProductScreen &&
+                  categorieModificateurState.selected == null)
+              ? ProduitAttachement(scaffoldKey: _scaffoldKey)
               : (categorieModificateurState.selected == null &&
                   !categorieModificateurState.loadingAll)
               ? _buildCategoriesList(
@@ -259,23 +290,20 @@ class _ModificateursSupplementsScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 32.0),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
                     child: Text(
                       'Créer une nouvelle catégorie de modificateur',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppTextStyle.indingoHeading,
                     ),
                   ),
+
                   const SizedBox(height: 16),
                   _buildNomField(createModel),
                   const SizedBox(height: 16),
                   _buildCouleurField(createModel),
                   const SizedBox(height: 16),
-                  _buildIconeField(createModel),
-                  const SizedBox(height: 16),
+
                   _buildObligatoireField(createModel),
                   const SizedBox(height: 16),
                   _buildTypeSelectionField(createModel),
@@ -403,22 +431,23 @@ class _ModificateursSupplementsScreenState
   }
 
   Widget _buildNomField(CategorieDeModificateur createModel) {
-    return CustomContainer(
-      child: TextFormField(
-        initialValue: createModel.nom,
-        decoration: const InputDecoration(
-          labelText: 'Nom',
-          border: InputBorder.none,
-        ),
-        onChanged: (value) {
-          final updated = createModel.copyWith(nom: value);
+    return TextFormField(
+      initialValue: createModel.nom,
+      decoration: InputDecoration(
+        labelText: 'Nom',
+        labelStyle: AppTextStyle.indingosubHeading,
 
-          final container = ProviderScope.containerOf(context);
-          container
-              .read(drawerRiverpod.notifier)
-              .openCreateCategorieDeModificateur(updated);
-        },
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        filled: true,
+        fillColor: Colors.grey[50],
       ),
+      onChanged: (v) {
+        final updated = createModel.copyWith(nom: v);
+        final container = ProviderScope.containerOf(context);
+        container
+            .read(drawerRiverpod.notifier)
+            .openCreateCategorieDeModificateur(updated);
+      },
     );
   }
 
@@ -429,35 +458,17 @@ class _ModificateursSupplementsScreenState
         title: null,
         trailing: null,
         onTap: () {
-          showDialog(
+          openColorPicker(
             context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Choisir une couleur'),
-                content: SingleChildScrollView(
-                  child: ColorPicker(
-                    pickerColor: hexToColor(createModel.couleur),
-                    onColorChanged: (Color color) {
-                      final updated = createModel.copyWith(
-                        couleur: '#${color.value.toRadixString(16)}',
-                      );
 
-                      final container = ProviderScope.containerOf(context);
-                      container
-                          .read(drawerRiverpod.notifier)
-                          .openCreateCategorieDeModificateur(updated);
-                    },
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('OK'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
+            currentColor: hexToColor(createModel.couleur ?? '#FFFFFFFF'),
+            onColorSelected: (Color selectedColor) {
+              final updated = createModel.copyWith(
+                couleur: selectedColor.toHex(),
               );
+              ref
+                  .read(drawerRiverpod.notifier)
+                  .openCreateCategorieDeModificateur(updated);
             },
           );
         },
@@ -465,7 +476,7 @@ class _ModificateursSupplementsScreenState
           width: 20,
           height: 20,
           decoration: BoxDecoration(
-            color: hexToColor(createModel.couleur),
+            color: hexToColor(createModel.couleur ?? '#FFFFFFFF'),
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -495,26 +506,20 @@ class _ModificateursSupplementsScreenState
 
   Widget _buildObligatoireField(CategorieDeModificateur createModel) {
     return CustomContainer(
-      child: DropdownButtonFormField<bool>(
-        value: createModel.obligatoire,
-        decoration: const InputDecoration(
-          labelText: 'Obligatoire',
-          border: InputBorder.none,
-        ),
-        items: const [
-          DropdownMenuItem(value: true, child: Text('Oui')),
-          DropdownMenuItem(value: false, child: Text('Non')),
-        ],
-        onChanged: (value) {
-          if (value != null) {
+      child: ListTile(
+        title: Text('Obligatoire', style: AppTextStyle.indingosubHeading),
+        trailing: Switch(
+          value: createModel.obligatoire!,
+          activeColor: AppColors.indingo400,
+          onChanged: (value) {
             final updated = createModel.copyWith(obligatoire: value);
 
             final container = ProviderScope.containerOf(context);
             container
                 .read(drawerRiverpod.notifier)
                 .openCreateCategorieDeModificateur(updated);
-          }
-        },
+          },
+        ),
       ),
     );
   }

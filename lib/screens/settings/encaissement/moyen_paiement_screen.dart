@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/models.dart';
 import 'package:restaurent/providers/providers.dart';
+import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
+import 'package:restaurent/riverpods/moyen_de_paiement_riverpod.dart';
 import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
@@ -16,15 +18,514 @@ class MoyenPaiementScreen extends ConsumerStatefulWidget {
 
 class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  final MoyenDePaiementModel _emptyModel = MoyenDePaiementModel(
+    id: null,
+    nom: '',
+    icon: null,
+    modeEncaissement: modeEncaissementList.first,
+    getsionDuTropPercu: gestionDuTropPercuList.first,
+    ouvertureDeTiroirCaisse: true,
+    disponibleEnModeExpress: true,
+    variationDuMoyenDePaiement: moyenDePaiementList.first,
+    compterAlaFinDuService: true,
+    rensignerleFondDeCaisee: true,
+    sallesIDS: [],
+    actif: true,
+  );
+  TextEditingController nameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final moyenDePaiementState = ref.watch(moyenDePaiementRiverpod);
     final moyenDePaiementNotifier = ref.read(moyenDePaiementRiverpod.notifier);
-
+    final salleList = ref.watch(salleRiverpod);
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: _endDrawer(moyenDePaiementNotifier, _scaffoldKey),
+      endDrawer: Consumer(
+        builder: (context, ref, _) {
+          final state = ref.watch(drawerRiverpod);
+          if (state is DrawerCreatePaiementMethode) {
+            final m = state.model;
+
+            return Drawer(
+              width: MediaQuery.of(context).size.width * .3,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        child: Text(
+                          'Créer une nouvelle moyen de paiement',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+
+                      CustomTextField(
+                        controller: nameController,
+                        label: 'Nom de la catégorie',
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Nom de la catégorie est requis';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          final updated = m.copyWith(nom: value);
+                          ref
+                              .read(drawerRiverpod.notifier)
+                              .openCreatePaiementMethodeDrawer(updated);
+                        },
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.greyaccent!,
+                            width: .9,
+                          ),
+                        ),
+                        child: DropdownButtonFormField<String>(
+                          value: m.modeEncaissement,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                color: AppColors.greyaccent!,
+                              ),
+                            ),
+                            labelText: 'Mode d’encaissement',
+                          ),
+                          items:
+                              modeEncaissementList
+                                  .map(
+                                    (v) => DropdownMenuItem(
+                                      value: v,
+                                      child: Text(v),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (v) {
+                            if (v != null) {
+                              final updated = m.copyWith(modeEncaissement: v);
+                              ref
+                                  .read(drawerRiverpod.notifier)
+                                  .openCreatePaiementMethodeDrawer(updated);
+                            }
+                          },
+                        ),
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.greyaccent!,
+                            width: .9,
+                          ),
+                        ),
+                        child: DropdownButtonFormField<String>(
+                          value: m.getsionDuTropPercu,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                color: AppColors.greyaccent!,
+                              ),
+                            ),
+                            labelText: 'Gestion du trop-perçu',
+                          ),
+
+                          items:
+                              gestionDuTropPercuList
+                                  .map(
+                                    (v) => DropdownMenuItem(
+                                      value: v,
+                                      child: Text(v),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (v) {
+                            if (v != null) {
+                              final updated = m.copyWith(getsionDuTropPercu: v);
+                              ref
+                                  .read(drawerRiverpod.notifier)
+                                  .openCreatePaiementMethodeDrawer(updated);
+                            }
+                          },
+                        ),
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.greyaccent!,
+                            width: .9,
+                          ),
+                        ),
+                        child: SwitchListTile(
+                          activeColor: AppColors.primary,
+                          title: Text('Ouverture du tiroir caisse'),
+                          value: m.ouvertureDeTiroirCaisse ?? false,
+                          onChanged: (v) {
+                            final updated = m.copyWith(
+                              ouvertureDeTiroirCaisse: v,
+                            );
+                            ref
+                                .read(drawerRiverpod.notifier)
+                                .openCreatePaiementMethodeDrawer(updated);
+                          },
+                        ),
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.greyaccent!,
+                            width: .9,
+                          ),
+                        ),
+                        child: SwitchListTile(
+                          title: Text('Disponible en mode express'),
+                          value: m.disponibleEnModeExpress ?? false,
+                          activeColor: AppColors.primary,
+                          onChanged: (v) {
+                            final updated = m.copyWith(
+                              disponibleEnModeExpress: v,
+                            );
+                            ref
+                                .read(drawerRiverpod.notifier)
+                                .openCreatePaiementMethodeDrawer(updated);
+                          },
+                        ),
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.greyaccent!,
+                            width: .9,
+                          ),
+                        ),
+                        child: DropdownButtonFormField<String>(
+                          value: m.variationDuMoyenDePaiement,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                color: AppColors.greyaccent!,
+                              ),
+                            ),
+                            labelText: 'Variation',
+                          ),
+
+                          items:
+                              moyenDePaiementList
+                                  .map(
+                                    (v) => DropdownMenuItem(
+                                      value: v,
+                                      child: Text(v),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (v) {
+                            if (v != null) {
+                              final updated = m.copyWith(
+                                variationDuMoyenDePaiement: v,
+                              );
+                              ref
+                                  .read(drawerRiverpod.notifier)
+                                  .openCreatePaiementMethodeDrawer(updated);
+                            }
+                          },
+                        ),
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.greyaccent!,
+                            width: .9,
+                          ),
+                        ),
+                        child: SwitchListTile(
+                          activeColor: AppColors.primary,
+                          title: Text('Compter à la fin du service'),
+                          value: m.compterAlaFinDuService ?? false,
+                          onChanged: (v) {
+                            final updated = m.copyWith(
+                              compterAlaFinDuService: v,
+                            );
+                            ref
+                                .read(drawerRiverpod.notifier)
+                                .openCreatePaiementMethodeDrawer(updated);
+                          },
+                        ),
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.greyaccent!,
+                            width: .9,
+                          ),
+                        ),
+                        child: SwitchListTile(
+                          activeColor: AppColors.primary,
+                          title: Text('Renseigner le fond de caisse'),
+                          value: m.rensignerleFondDeCaisee ?? false,
+                          onChanged: (v) {
+                            final updated = m.copyWith(
+                              rensignerleFondDeCaisee: v,
+                            );
+                            ref
+                                .read(drawerRiverpod.notifier)
+                                .openCreatePaiementMethodeDrawer(updated);
+                          },
+                        ),
+                      ),
+
+                      SalleIdsPicker(
+                        salles: salleList,
+                        selectedSalleIds: m.sallesIDS ?? [],
+                        onSelectionChanged: (newSalles) {
+                          final updated = m.copyWith(sallesIDS: newSalles);
+                          ref
+                              .read(drawerRiverpod.notifier)
+                              .openCreatePaiementMethodeDrawer(updated);
+                        },
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.greyaccent!,
+                            width: .9,
+                          ),
+                        ),
+                        child: SwitchListTile(
+                          activeColor: AppColors.primary,
+                          title: Text('Actif'),
+                          value: m.actif ?? false,
+                          onChanged: (v) {
+                            final updated = m.copyWith(actif: v);
+                            ref
+                                .read(drawerRiverpod.notifier)
+                                .openCreatePaiementMethodeDrawer(updated);
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      CreateButton(
+                        onPressed: () {
+                          ref
+                              .read(moyenDePaiementRiverpod.notifier)
+                              .create(model: state.model);
+
+                          nameController.clear();
+                          Navigator.pop(context);
+                        },
+                        buttonText: 'Cree une nouvelle moyen de paiement',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+          if (state is DrawerUpdateMoyenDePaiement) {
+            switch (state.attributeName) {
+              case 'nom':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.string,
+                  label: 'Nom',
+                  initialValue: state.currentValue as String,
+                  onSaved: (v) {
+                    ref
+                        .read(moyenDePaiementRiverpod.notifier)
+                        .update(updated: state.model.copyWith(nom: v));
+                  },
+                );
+              case 'modeEncaissement':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.dropdown,
+                  label: 'Mode d’encaissement',
+                  initialValue: state.currentValue as String,
+                  options: modeEncaissementList,
+                  onSaved: (v) {
+                    ref
+                        .read(moyenDePaiementRiverpod.notifier)
+                        .update(
+                          updated: state.model.copyWith(modeEncaissement: v),
+                        );
+                  },
+                );
+              case 'actif':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.boolean,
+                  label: 'Actif',
+                  initialValue: (state.currentValue as bool).toString(),
+
+                  onSaved: (v) {
+                    ref
+                        .read(moyenDePaiementRiverpod.notifier)
+                        .update(updated: state.model.copyWith(actif: v));
+                  },
+                );
+              case 'GestionDuTropPerçu':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.dropdown,
+                  options: gestionDuTropPercuList,
+                  label: 'Gestion du trop-perçu',
+                  initialValue: (state.currentValue) as String,
+                  onSaved: (v) {
+                    ref
+                        .read(moyenDePaiementRiverpod.notifier)
+                        .update(
+                          updated: state.model.copyWith(getsionDuTropPercu: v),
+                        );
+                  },
+                );
+              case 'VariationsDuMoyenDePaiement':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.dropdown,
+                  options: moyenDePaiementList,
+                  label: 'Variations du moyen de paiement',
+                  initialValue: (state.currentValue) as String,
+
+                  onSaved: (v) {
+                    ref
+                        .read(moyenDePaiementRiverpod.notifier)
+                        .update(
+                          updated: state.model.copyWith(
+                            variationDuMoyenDePaiement: v,
+                          ),
+                        );
+                  },
+                );
+              case 'OuvertureDuTiroir':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.boolean,
+                  label: 'Ouverture du tiroir caisse',
+                  initialValue: (state.currentValue as bool).toString(),
+                  options: ['true', 'false'],
+                  onSaved: (v) {
+                    ref
+                        .read(moyenDePaiementRiverpod.notifier)
+                        .update(
+                          updated: state.model.copyWith(
+                            ouvertureDeTiroirCaisse: v,
+                          ),
+                        );
+                  },
+                );
+              case 'DisponibleEnModeExpress':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.boolean,
+                  label: 'Disponible en mode express',
+                  initialValue: (state.currentValue as bool).toString(),
+                  options: ['true', 'false'],
+                  onSaved: (v) {
+                    ref
+                        .read(moyenDePaiementRiverpod.notifier)
+                        .update(
+                          updated: state.model.copyWith(
+                            disponibleEnModeExpress: v,
+                          ),
+                        );
+                  },
+                );
+
+              case 'CompterALaFinDuService':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.boolean,
+                  label: 'Compter à la fin du service',
+                  initialValue: (state.currentValue as bool).toString(),
+                  options: ['true', 'false'],
+                  onSaved: (v) {
+                    ref
+                        .read(moyenDePaiementRiverpod.notifier)
+                        .update(
+                          updated: state.model.copyWith(
+                            compterAlaFinDuService: v,
+                          ),
+                        );
+                  },
+                );
+              case 'RenseignerLeFondDeCaisse':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.boolean,
+                  label: 'Renseigner le fond de caisse',
+                  initialValue: (state.currentValue as bool).toString(),
+                  options: ['true', 'false'],
+                  onSaved: (v) {
+                    ref
+                        .read(moyenDePaiementRiverpod.notifier)
+                        .update(
+                          updated: state.model.copyWith(
+                            rensignerleFondDeCaisee: v,
+                          ),
+                        );
+                  },
+                );
+
+              case 'DisponibleDansLesSalles':
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.choice,
+                  options: salleList,
+                  label: 'Disponible dans les salles',
+                  initialValue: (state.currentValue) as List<int>,
+                  onSaved: (v) {
+                    ref
+                        .read(moyenDePaiementRiverpod.notifier)
+                        .update(
+                          updated: state.model.copyWith(
+                            sallesIDS:
+                                (v as List<dynamic>)
+                                    .map((e) => e as int)
+                                    .toList(),
+                          ),
+                        );
+                  },
+                );
+
+              default:
+                return const SizedBox.shrink();
+            }
+          } else {
+            return SizedBox.shrink();
+          }
+        },
+      ),
 
       body: Row(
         children: [
@@ -85,8 +586,10 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
                                   children: [
                                     CustomListTile(
                                       onTap: () {
-                                        context
-                                            .read<DrawerProvider>()
+                                        final container =
+                                            ProviderScope.containerOf(context);
+                                        container
+                                            .read(drawerRiverpod.notifier)
                                             .openUpdatePaiementMethodeDrawer(
                                               moyenDePaiementState.selected!,
                                               'nom',
@@ -94,6 +597,7 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
                                                   .selected!
                                                   .nom,
                                             );
+
                                         _scaffoldKey.currentState
                                             ?.openEndDrawer();
                                       },
@@ -109,48 +613,10 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
                                       leading: null,
                                     ),
                                     const Divider(),
-                                    CustomListTile(
-                                      onTap: () {
-                                        context
-                                            .read<DrawerProvider>()
-                                            .openUpdatePaiementMethodeDrawer(
-                                              moyenDePaiementState.selected!,
-                                              'description',
-                                              moyenDePaiementState
-                                                  .selected!
-                                                  .description,
-                                            );
-                                        _scaffoldKey.currentState
-                                            ?.openEndDrawer();
-                                      },
-                                      leading: null,
-                                      trailing: null,
-                                      title: Text(
-                                        'Description',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      trailingwidget: Text(
-                                        moyenDePaiementState
-                                            .selected!
-                                            .description!,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                    ),
+
                                     const Divider(),
                                     CustomListTile(
-                                      onTap: () {
-                                        context
-                                            .read<DrawerProvider>()
-                                            .openUpdatePaiementMethodeDrawer(
-                                              moyenDePaiementState.selected!,
-                                              'icone',
-                                              moyenDePaiementState
-                                                  .selected!
-                                                  .icone,
-                                            );
-                                        _scaffoldKey.currentState
-                                            ?.openEndDrawer();
-                                      },
+                                      onTap: null,
                                       leading: null,
                                       trailing: null,
                                       title: Text(
@@ -158,52 +624,310 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
                                         style: AppTextStyle.greyHeading,
                                       ),
                                       trailingwidget: Text(
-                                        moyenDePaiementState.selected!.icone!,
+                                        moyenDePaiementState.selected?.icon ??
+                                            "",
                                         style: AppTextStyle.indingosubHeading,
                                       ),
                                     ),
                                     const Divider(),
                                     CustomListTile(
                                       onTap: () {
-                                        context
-                                            .read<DrawerProvider>()
+                                        final container =
+                                            ProviderScope.containerOf(context);
+                                        container
+                                            .read(drawerRiverpod.notifier)
                                             .openUpdatePaiementMethodeDrawer(
                                               moyenDePaiementState.selected!,
-                                              'couleur',
+                                              'modeEncaissement',
                                               moyenDePaiementState
                                                   .selected!
-                                                  .couleur,
+                                                  .modeEncaissement,
                                             );
+
                                         _scaffoldKey.currentState
                                             ?.openEndDrawer();
                                       },
                                       leading: null,
                                       trailing: null,
                                       title: Text(
-                                        'Couleur',
+                                        'Mode d’encaissement',
                                         style: AppTextStyle.greyHeading,
                                       ),
-                                      trailingwidget: Container(
-                                        width: 30,
-                                        height: 30,
-                                        decoration: BoxDecoration(
-                                          color: hexToColor(
-                                            moyenDePaiementState
-                                                .selected!
-                                                .couleur!,
-                                          ),
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Colors.black26,
-                                          ),
-                                        ),
+                                      trailingwidget: Text(
+                                        moyenDePaiementState
+                                            .selected!
+                                            .modeEncaissement!,
+                                        style: AppTextStyle.indingosubHeading,
                                       ),
                                     ),
                                     const Divider(),
                                     CustomListTile(
                                       onTap: () {
-                                        context
-                                            .read<DrawerProvider>()
+                                        final container =
+                                            ProviderScope.containerOf(context);
+                                        container
+                                            .read(drawerRiverpod.notifier)
+                                            .openUpdatePaiementMethodeDrawer(
+                                              moyenDePaiementState.selected!,
+                                              'GestionDuTropPerçu',
+                                              moyenDePaiementState
+                                                  .selected!
+                                                  .getsionDuTropPercu,
+                                            );
+
+                                        _scaffoldKey.currentState
+                                            ?.openEndDrawer();
+                                      },
+                                      leading: null,
+                                      trailing: null,
+                                      title: Text(
+                                        'Gestion du trop-perçu',
+                                        style: AppTextStyle.greyHeading,
+                                      ),
+                                      trailingwidget: Text(
+                                        moyenDePaiementState
+                                            .selected!
+                                            .modeEncaissement!,
+                                        style: AppTextStyle.indingosubHeading,
+                                      ),
+                                    ),
+                                    const Divider(),
+
+                                    InkWell(
+                                      onTap: () {
+                                        final container =
+                                            ProviderScope.containerOf(context);
+                                        container
+                                            .read(drawerRiverpod.notifier)
+                                            .openUpdatePaiementMethodeDrawer(
+                                              moyenDePaiementState.selected!,
+                                              'OuvertureDuTiroir',
+                                              moyenDePaiementState
+                                                  .selected!
+                                                  .ouvertureDeTiroirCaisse,
+                                            );
+
+                                        _scaffoldKey.currentState
+                                            ?.openEndDrawer();
+                                      },
+                                      child: SwitchListTile(
+                                        activeTrackColor: AppColors.primary,
+                                        title: Text(
+                                          'Ouverture du tiroir caisse',
+                                          style: AppTextStyle.greyHeading,
+                                        ),
+                                        value:
+                                            moyenDePaiementState
+                                                .selected!
+                                                .ouvertureDeTiroirCaisse ??
+                                            false,
+                                        onChanged: null,
+                                      ),
+                                    ),
+                                    Divider(),
+                                    InkWell(
+                                      onTap: () {
+                                        final container =
+                                            ProviderScope.containerOf(context);
+                                        container
+                                            .read(drawerRiverpod.notifier)
+                                            .openUpdatePaiementMethodeDrawer(
+                                              moyenDePaiementState.selected!,
+                                              'DisponibleEnModeExpress',
+                                              moyenDePaiementState
+                                                  .selected!
+                                                  .disponibleEnModeExpress,
+                                            );
+                                        _scaffoldKey.currentState
+                                            ?.openEndDrawer();
+                                      },
+                                      child: SwitchListTile(
+                                        activeTrackColor: AppColors.primary,
+                                        title: Text(
+                                          'Disponible en mode express',
+                                          style: AppTextStyle.greyHeading,
+                                        ),
+                                        value:
+                                            moyenDePaiementState
+                                                .selected!
+                                                .disponibleEnModeExpress ??
+                                            false,
+                                        onChanged: null,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.white,
+                                ),
+                                child: CustomListTile(
+                                  onTap: () {
+                                    final container = ProviderScope.containerOf(
+                                      context,
+                                    );
+                                    container
+                                        .read(drawerRiverpod.notifier)
+                                        .openUpdatePaiementMethodeDrawer(
+                                          moyenDePaiementState.selected!,
+                                          'VariationsDuMoyenDePaiement',
+                                          moyenDePaiementState
+                                              .selected!
+                                              .variationDuMoyenDePaiement,
+                                        );
+
+                                    _scaffoldKey.currentState?.openEndDrawer();
+                                  },
+                                  leading: null,
+                                  trailing: null,
+                                  title: Text(
+                                    'Variations du moyen de paiement',
+                                    style: AppTextStyle.greyHeading,
+                                  ),
+                                  trailingwidget: Text(
+                                    moyenDePaiementState
+                                            .selected
+                                            ?.variationDuMoyenDePaiement ??
+                                        "",
+                                    style: AppTextStyle.indingosubHeading,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Column(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        final container =
+                                            ProviderScope.containerOf(context);
+                                        container
+                                            .read(drawerRiverpod.notifier)
+                                            .openUpdatePaiementMethodeDrawer(
+                                              moyenDePaiementState.selected!,
+                                              'CompterALaFinDuService',
+                                              moyenDePaiementState
+                                                  .selected!
+                                                  .compterAlaFinDuService,
+                                            );
+
+                                        _scaffoldKey.currentState
+                                            ?.openEndDrawer();
+                                      },
+                                      child: SwitchListTile(
+                                        activeTrackColor: AppColors.primary,
+                                        title: Text(
+                                          'Compter à la fin du service',
+                                          style: AppTextStyle.greyHeading,
+                                        ),
+                                        value:
+                                            moyenDePaiementState
+                                                .selected
+                                                ?.compterAlaFinDuService ??
+                                            false,
+                                        onChanged: null,
+                                      ),
+                                    ),
+                                    Divider(),
+                                    InkWell(
+                                      onTap: () {
+                                        final container =
+                                            ProviderScope.containerOf(context);
+                                        container
+                                            .read(drawerRiverpod.notifier)
+                                            .openUpdatePaiementMethodeDrawer(
+                                              moyenDePaiementState.selected!,
+                                              'RenseignerLeFondDeCaisse',
+                                              moyenDePaiementState
+                                                  .selected!
+                                                  .rensignerleFondDeCaisee,
+                                            );
+
+                                        _scaffoldKey.currentState
+                                            ?.openEndDrawer();
+                                      },
+                                      child: SwitchListTile(
+                                        activeTrackColor: AppColors.primary,
+                                        title: Text(
+                                          'Renseigner le fond de caisse',
+                                          style: AppTextStyle.greyHeading,
+                                        ),
+                                        value:
+                                            moyenDePaiementState
+                                                .selected!
+                                                .rensignerleFondDeCaisee ??
+                                            false,
+                                        onChanged: null,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.white,
+                                ),
+                                child: Column(
+                                  children: [
+                                    CustomListTile(
+                                      onTap: () {
+                                        final container =
+                                            ProviderScope.containerOf(context);
+                                        container
+                                            .read(drawerRiverpod.notifier)
+                                            .openUpdatePaiementMethodeDrawer(
+                                              moyenDePaiementState.selected!,
+                                              'RenseignerLeFondDeCaisse',
+                                              moyenDePaiementState
+                                                  .selected!
+                                                  .sallesIDS,
+                                            );
+
+                                        _scaffoldKey.currentState
+                                            ?.openEndDrawer();
+                                      },
+                                      leading: null,
+                                      trailing:
+                                          moyenDePaiementState
+                                                      .selected
+                                                      ?.sallesIDS !=
+                                                  null
+                                              ? moyenDePaiementState
+                                                  .selected
+                                                  ?.sallesIDS!
+                                                  .map(
+                                                    (id) =>
+                                                        salleList
+                                                            .firstWhere(
+                                                              (s) => s.id == id,
+                                                            )
+                                                            .name,
+                                                  )
+                                                  .join(', ')
+                                              : 'Aucune salle sélectionnée',
+                                      title: Text(
+                                        'Disponible dans les salles',
+                                        style: AppTextStyle.greyHeading,
+                                      ),
+                                      trailingwidget: null,
+                                    ),
+
+                                    Divider(),
+                                    InkWell(
+                                      onTap: () {
+                                        final container =
+                                            ProviderScope.containerOf(context);
+                                        container
+                                            .read(drawerRiverpod.notifier)
                                             .openUpdatePaiementMethodeDrawer(
                                               moyenDePaiementState.selected!,
                                               'actif',
@@ -211,181 +935,22 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
                                                   .selected!
                                                   .actif,
                                             );
+
                                         _scaffoldKey.currentState
                                             ?.openEndDrawer();
                                       },
-                                      leading: null,
-                                      trailing: null,
-                                      title: Text(
-                                        'Actif',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      trailingwidget: Switch(
+                                      child: SwitchListTile(
                                         activeTrackColor: AppColors.primary,
+                                        title: Text(
+                                          'Actif',
+                                          style: AppTextStyle.greyHeading,
+                                        ),
                                         value:
                                             moyenDePaiementState
-                                                .selected!
-                                                .actif!,
+                                                .selected
+                                                ?.actif ??
+                                            false,
                                         onChanged: null,
-                                      ),
-                                    ),
-                                    const Divider(),
-                                    CustomListTile(
-                                      onTap: () {
-                                        context
-                                            .read<DrawerProvider>()
-                                            .openUpdatePaiementMethodeDrawer(
-                                              moyenDePaiementState.selected!,
-                                              'type',
-                                              moyenDePaiementState
-                                                  .selected!
-                                                  .type,
-                                            );
-                                        _scaffoldKey.currentState
-                                            ?.openEndDrawer();
-                                      },
-                                      leading: null,
-                                      trailing: null,
-                                      title: Text(
-                                        'Type',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      trailingwidget: Text(
-                                        moyenDePaiementState.selected!.type!,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                    ),
-                                    const Divider(),
-                                    CustomListTile(
-                                      onTap: () {
-                                        context
-                                            .read<DrawerProvider>()
-                                            .openUpdatePaiementMethodeDrawer(
-                                              moyenDePaiementState.selected!,
-                                              'compte',
-                                              moyenDePaiementState
-                                                  .selected!
-                                                  .compte,
-                                            );
-                                        _scaffoldKey.currentState
-                                            ?.openEndDrawer();
-                                      },
-                                      leading: null,
-                                      trailing: null,
-                                      title: Text(
-                                        'Compte',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      trailingwidget: Text(
-                                        moyenDePaiementState.selected!.compte!,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                    ),
-                                    const Divider(),
-                                    CustomListTile(
-                                      onTap: () {
-                                        context
-                                            .read<DrawerProvider>()
-                                            .openUpdatePaiementMethodeDrawer(
-                                              moyenDePaiementState.selected!,
-                                              'taux',
-                                              moyenDePaiementState
-                                                  .selected!
-                                                  .taux,
-                                            );
-                                        _scaffoldKey.currentState
-                                            ?.openEndDrawer();
-                                      },
-                                      leading: null,
-                                      trailing: null,
-                                      title: Text(
-                                        'Taux',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      trailingwidget: Text(
-                                        moyenDePaiementState.selected!.taux!
-                                            .toString(),
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                    ),
-                                    const Divider(),
-                                    CustomListTile(
-                                      onTap: () {
-                                        context
-                                            .read<DrawerProvider>()
-                                            .openUpdatePaiementMethodeDrawer(
-                                              moyenDePaiementState.selected!,
-                                              'ordre',
-                                              moyenDePaiementState
-                                                  .selected!
-                                                  .ordre,
-                                            );
-                                        _scaffoldKey.currentState
-                                            ?.openEndDrawer();
-                                      },
-                                      leading: null,
-                                      trailing: null,
-                                      title: Text(
-                                        'Ordre',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      trailingwidget: Text(
-                                        moyenDePaiementState.selected!.ordre!
-                                            .toString(),
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                    ),
-                                    const Divider(),
-                                    CustomListTile(
-                                      onTap: () {
-                                        context
-                                            .read<DrawerProvider>()
-                                            .openUpdatePaiementMethodeDrawer(
-                                              moyenDePaiementState.selected!,
-                                              'tva',
-                                              moyenDePaiementState
-                                                  .selected!
-                                                  .tva,
-                                            );
-                                        _scaffoldKey.currentState
-                                            ?.openEndDrawer();
-                                      },
-                                      leading: null,
-                                      trailing: null,
-                                      title: Text(
-                                        'TVA',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      trailingwidget: Text(
-                                        moyenDePaiementState.selected!.tva!
-                                            .toString(),
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                    ),
-                                    const Divider(),
-                                    CustomListTile(
-                                      onTap: () {
-                                        context
-                                            .read<DrawerProvider>()
-                                            .openUpdatePaiementMethodeDrawer(
-                                              moyenDePaiementState.selected!,
-                                              'salle',
-                                              moyenDePaiementState
-                                                  .selected!
-                                                  .salle,
-                                            );
-                                        _scaffoldKey.currentState
-                                            ?.openEndDrawer();
-                                      },
-                                      leading: null,
-                                      trailing: null,
-                                      title: Text(
-                                        'Salle',
-                                        style: AppTextStyle.greyHeading,
-                                      ),
-                                      trailingwidget: Text(
-                                        moyenDePaiementState.selected!.salle!,
-                                        style: AppTextStyle.indingosubHeading,
                                       ),
                                     ),
                                   ],
@@ -411,30 +976,31 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
           ),
         ],
       ),
-      endDrawer: provider_package.Consumer<DrawerProvider>(
-        builder: (context, drawerProvider, _) {
-          final state = drawerProvider.state;
-          if (state is DrawerCreatePaiementMethode) {
-            return _buildCreatePaiementMethodeDrawer(state.model);
-          }
-          if (state is DrawerUpdateMoyenDePaiement) {
-            return UpdateAttributeDrawer(
-              fieldType: _getFieldType(state.attributeName),
-              label: state.attributeName,
-              initialValue: state.currentValue,
-              onSaved: (value) {
-                final updated = _applyUpdatedValue(
-                  state.attributeName,
-                  state.model,
-                  value,
-                );
-                moyenDePaiementNotifier.update(updated);
-              },
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
+
+      // endDrawer: Consumer(
+      //   builder: (context, drawerProvider, _) {
+      //     final state = drawerProvider.state;
+      //     if (state is DrawerCreatePaiementMethode) {
+      //       return _buildCreatePaiementMethodeDrawer(state.model);
+      //     }
+      //     if (state is DrawerUpdateMoyenDePaiement) {
+      //       return UpdateAttributeDrawer(
+      //         fieldType: _getFieldType(state.attributeName),
+      //         label: state.attributeName,
+      //         initialValue: state.currentValue,
+      //         onSaved: (value) {
+      //           final updated = _applyUpdatedValue(
+      //             state.attributeName,
+      //             state.model,
+      //             value,
+      //           );
+      //           moyenDePaiementNotifier.update(updated);
+      //         },
+      //       );
+      //     }
+      //     return const SizedBox.shrink();
+      //   },
+      // ),
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('Moyens de paiement', style: AppTextStyle.largeindingotext),
@@ -443,433 +1009,17 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
           ActionButton(onPressed: () {}, text: 'Reorganiser'),
           ActionButton(
             onPressed: () {
-              context.read<DrawerProvider>().openCreatePaiementMethodeDrawer(
-                MoyenDePaiementModel(
-                  id: '',
-                  nom: '',
-                  description: '',
-                  icone: '',
-                  couleur: '#000000',
-                  actif: true,
-                  type: '',
-                  compte: '',
-                  taux: 0.0,
-                  ordre: 0,
-                  tva: 0.0,
-                  salle: '',
-                ),
-              );
+              final container = ProviderScope.containerOf(context);
+              container
+                  .read(drawerRiverpod.notifier)
+                  .openCreatePaiementMethodeDrawer(_emptyModel);
+
               _scaffoldKey.currentState?.openEndDrawer();
             },
             text: 'Nouveau',
           ),
         ],
       ),
-    );
-  }
-
-  Widget _endDrawer(
-    MoyenDePaiementNotifier notifier,
-    GlobalKey<ScaffoldState> scaffoldKey,
-  ) {
-    return provider_package.Consumer<DrawerProvider>(
-      builder: (context, drawerProvider, _) {
-        final state = drawerProvider.state;
-        if (state is DrawerCreatePaiementMethode) {
-          return _buildCreatePaiementMethodeDrawer(state.model);
-        }
-        if (state is DrawerUpdateMoyenDePaiement) {
-          return UpdateAttributeDrawer(
-            fieldType: _getFieldType(state.attributeName),
-            label: state.attributeName,
-            initialValue: state.currentValue,
-            onSaved: (value) {
-              final updated = _applyUpdatedValue(
-                state.attributeName,
-                state.model,
-                value,
-              );
-              notifier.update(updated);
-            },
-          );
-        }
-        return const SizedBox.shrink();
-      },
-    );
-  }
-
-  Widget _buildCreatePaiementMethodeDrawer(MoyenDePaiementModel model) {
-    return Drawer(
-      width: MediaQuery.of(context).size.width * 0.3,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 32.0),
-              child: Text(
-                'Créer un nouveau moyen de paiement',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 16),
-            _buildNomField(model),
-            const SizedBox(height: 16),
-            _buildDescriptionField(model),
-            const SizedBox(height: 16),
-            _buildIconeField(model),
-            const SizedBox(height: 16),
-            _buildCouleurField(model),
-            const SizedBox(height: 16),
-            _buildActifField(model),
-            const SizedBox(height: 16),
-            _buildTypeField(model),
-            const SizedBox(height: 16),
-            _buildCompteField(model),
-            const SizedBox(height: 16),
-            _buildTauxField(model),
-            const SizedBox(height: 16),
-            _buildOrdreField(model),
-            const SizedBox(height: 16),
-            _buildTvaField(model),
-            const SizedBox(height: 16),
-            _buildSalleField(model),
-            const SizedBox(height: 32),
-            _buildCreateButton(model),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNomField(MoyenDePaiementModel model) {
-    return CustomContainer(
-      child: TextFormField(
-        initialValue: model.nom,
-        decoration: const InputDecoration(
-          labelText: 'Nom',
-          border: InputBorder.none,
-        ),
-        onChanged: (value) {
-          final updated = model.copyWith(nom: value);
-          context.read<DrawerProvider>().openCreatePaiementMethodeDrawer(
-            updated,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildDescriptionField(MoyenDePaiementModel model) {
-    return CustomContainer(
-      child: TextFormField(
-        initialValue: model.description,
-        decoration: const InputDecoration(
-          labelText: 'Description',
-          border: InputBorder.none,
-        ),
-        onChanged: (value) {
-          final updated = model.copyWith(description: value);
-          context.read<DrawerProvider>().openCreatePaiementMethodeDrawer(
-            updated,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildIconeField(MoyenDePaiementModel model) {
-    return CustomContainer(
-      child: TextFormField(
-        initialValue: model.icone,
-        decoration: const InputDecoration(
-          labelText: 'Icône',
-          border: InputBorder.none,
-        ),
-        onChanged: (value) {
-          final updated = model.copyWith(icone: value);
-          context.read<DrawerProvider>().openCreatePaiementMethodeDrawer(
-            updated,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildCouleurField(MoyenDePaiementModel model) {
-    return CustomContainer(
-      child: CustomListTile(
-        leading: 'Couleur',
-        title: null,
-        trailing: null,
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Choisir une couleur'),
-                content: SingleChildScrollView(
-                  child: ColorPicker(
-                    pickerColor: hexToColor(model.couleur ?? '#000000'),
-                    onColorChanged: (Color color) {
-                      final updated = model.copyWith(
-                        couleur: '#${color.value.toRadixString(16)}',
-                      );
-                      context
-                          .read<DrawerProvider>()
-                          .openCreatePaiementMethodeDrawer(updated);
-                    },
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('OK'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        },
-        trailingwidget: Container(
-          width: 20,
-          height: 20,
-          decoration: BoxDecoration(
-            color: hexToColor(model.couleur ?? '#000000'),
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActifField(MoyenDePaiementModel model) {
-    return CustomContainer(
-      child: DropdownButtonFormField<bool>(
-        value: model.actif,
-        decoration: const InputDecoration(
-          labelText: 'Actif',
-          border: InputBorder.none,
-        ),
-        items: const [
-          DropdownMenuItem(value: true, child: Text('Oui')),
-          DropdownMenuItem(value: false, child: Text('Non')),
-        ],
-        onChanged: (value) {
-          if (value != null) {
-            final updated = model.copyWith(actif: value);
-            context.read<DrawerProvider>().openCreatePaiementMethodeDrawer(
-              updated,
-            );
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildTypeField(MoyenDePaiementModel model) {
-    return CustomContainer(
-      child: TextFormField(
-        initialValue: model.type,
-        decoration: const InputDecoration(
-          labelText: 'Type',
-          border: InputBorder.none,
-        ),
-        onChanged: (value) {
-          final updated = model.copyWith(type: value);
-          context.read<DrawerProvider>().openCreatePaiementMethodeDrawer(
-            updated,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildCompteField(MoyenDePaiementModel model) {
-    return CustomContainer(
-      child: TextFormField(
-        initialValue: model.compte,
-        decoration: const InputDecoration(
-          labelText: 'Compte',
-          border: InputBorder.none,
-        ),
-        onChanged: (value) {
-          final updated = model.copyWith(compte: value);
-          context.read<DrawerProvider>().openCreatePaiementMethodeDrawer(
-            updated,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildTauxField(MoyenDePaiementModel model) {
-    return CustomContainer(
-      child: TextFormField(
-        initialValue: model.taux?.toString(),
-        decoration: const InputDecoration(
-          labelText: 'Taux',
-          border: InputBorder.none,
-        ),
-        keyboardType: TextInputType.number,
-        onChanged: (value) {
-          final taux = double.tryParse(value) ?? 0.0;
-          final updated = model.copyWith(taux: taux);
-          context.read<DrawerProvider>().openCreatePaiementMethodeDrawer(
-            updated,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildOrdreField(MoyenDePaiementModel model) {
-    return CustomContainer(
-      child: TextFormField(
-        initialValue: model.ordre?.toString(),
-        decoration: const InputDecoration(
-          labelText: 'Ordre',
-          border: InputBorder.none,
-        ),
-        keyboardType: TextInputType.number,
-        onChanged: (value) {
-          final ordre = int.tryParse(value) ?? 0;
-          final updated = model.copyWith(ordre: ordre);
-          context.read<DrawerProvider>().openCreatePaiementMethodeDrawer(
-            updated,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildTvaField(MoyenDePaiementModel model) {
-    return CustomContainer(
-      child: TextFormField(
-        initialValue: model.tva?.toString(),
-        decoration: const InputDecoration(
-          labelText: 'TVA',
-          border: InputBorder.none,
-        ),
-        keyboardType: TextInputType.number,
-        onChanged: (value) {
-          final tva = double.tryParse(value) ?? 0.0;
-          final updated = model.copyWith(tva: tva);
-          context.read<DrawerProvider>().openCreatePaiementMethodeDrawer(
-            updated,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildSalleField(MoyenDePaiementModel model) {
-    return CustomContainer(
-      child: TextFormField(
-        initialValue: model.salle,
-        decoration: const InputDecoration(
-          labelText: 'Salle',
-          border: InputBorder.none,
-        ),
-        onChanged: (value) {
-          final updated = model.copyWith(salle: value);
-          context.read<DrawerProvider>().openCreatePaiementMethodeDrawer(
-            updated,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildCreateButton(MoyenDePaiementModel model) {
-    return CreateButton(
-      onPressed: () {
-        final moyenDePaiementNotifier = ref.read(
-          moyenDePaiementRiverpod.notifier,
-        );
-        moyenDePaiementNotifier.create(model);
-        _scaffoldKey.currentState?.closeEndDrawer();
-        context.read<DrawerProvider>().resetDrawer();
-      },
-      buttonText: 'Créer un nouveau moyen de paiement',
-    );
-  }
-
-  FieldType _getFieldType(String attributeName) {
-    switch (attributeName) {
-      case 'nom':
-      case 'description':
-      case 'icone':
-      case 'type':
-      case 'compte':
-      case 'salle':
-        return FieldType.string;
-      case 'couleur':
-        return FieldType.color;
-      case 'actif':
-        return FieldType.boolean;
-      case 'taux':
-      case 'tva':
-        return FieldType.number;
-      case 'ordre':
-        return FieldType.number;
-      default:
-        return FieldType.string;
-    }
-  }
-
-  MoyenDePaiementModel _applyUpdatedValue(
-    String attribute,
-    MoyenDePaiementModel model,
-    dynamic value,
-  ) {
-    switch (attribute) {
-      case 'nom':
-        return model.copyWith(nom: value as String);
-      case 'description':
-        return model.copyWith(description: value as String);
-      case 'icone':
-        return model.copyWith(icone: value as String);
-      case 'couleur':
-        return model.copyWith(couleur: value as String);
-      case 'actif':
-        return model.copyWith(actif: value as bool);
-      case 'type':
-        return model.copyWith(type: value as String);
-      case 'compte':
-        return model.copyWith(compte: value as String);
-      case 'taux':
-        return model.copyWith(taux: value as double);
-      case 'ordre':
-        return model.copyWith(ordre: value as int);
-      case 'tva':
-        return model.copyWith(tva: value as double);
-      case 'salle':
-        return model.copyWith(salle: value as String);
-      default:
-        return model;
-    }
-  }
-}
-
-class CustomContainer extends StatelessWidget {
-  final Widget child;
-
-  const CustomContainer({required this.child, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade400),
-        color: Colors.grey[50],
-      ),
-      child: child,
     );
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/salle_model.dart';
-import 'package:restaurent/providers/salle_provider.dart';
 import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/widgets/widgets.dart';
 

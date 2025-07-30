@@ -33,7 +33,7 @@ class CategorieModificateurState {
       loadingAll: loadingAll ?? this.loadingAll,
       loadingSelected: loadingSelected ?? this.loadingSelected,
       allCategories: allCategories ?? this.allCategories,
-      selected: selected ?? this.selected,
+      selected: selected,
       attachmentProductScreen:
           attachmentProductScreen ?? this.attachmentProductScreen,
       createmodificateur: createmodificateur ?? this.createmodificateur,
@@ -93,10 +93,9 @@ class CategorieModificateurNotifier
     );
   }
 
-  void select(CategorieDeModificateur modificateur) async {
-    state = state.copyWith(loadingSelected: true, selected: modificateur);
-    await Future.delayed(const Duration(milliseconds: 300));
-    state = state.copyWith(loadingSelected: false);
+  void select(CategorieDeModificateur modificateur) {
+    state = state.copyWith(loadingSelected: true);
+    state = state.copyWith(selected: modificateur, loadingSelected: false);
   }
 
   void deselect() {
@@ -105,6 +104,8 @@ class CategorieModificateurNotifier
 
   void setAttachmentProductScreen(bool value) {
     state = state.copyWith(attachmentProductScreen: value);
+    print(state.selected);
+    print(' i called and the state is ${state.attachmentProductScreen}');
   }
 
   void openAttachmentScreen() {
@@ -151,12 +152,5 @@ class CategorieModificateurNotifier
 
       state = state.copyWith(allCategories: updatedList, selected: updated);
     }
-
-    print(hexToColor(updated.couleur));
   }
 }
-
-final categorieModificateurProvider = StateNotifierProvider<
-  CategorieModificateurNotifier,
-  CategorieModificateurState
->((ref) => CategorieModificateurNotifier(client: http.Client()));

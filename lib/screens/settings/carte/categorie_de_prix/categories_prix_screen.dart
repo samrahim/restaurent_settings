@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
-import 'package:restaurent/providers/providers.dart';
-import 'package:restaurent/providers/salle_provider.dart';
+import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
+import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_prix/catgorie_detaits.dart';
 import 'package:restaurent/widgets/widgets.dart';
 import 'package:restaurent/consts.dart';
@@ -41,8 +42,10 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Consumer(
-        builder: (context, drawerProvider, _) {
-          final state = drawerProvider.state;
+        builder: (context, ref, _) {
+          final salles = ref.watch(salleRiverpod);
+
+          final state = ref.watch(drawerRiverpod);
 
           if (state is DrawerCreateCategoriePrix) {
             final m = state.model;
@@ -76,8 +79,9 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                         fillColor: Colors.grey[50],
                       ),
                       onChanged: (v) {
-                        context
-                            .read<DrawerProvider>()
+                        final container = ProviderScope.containerOf(context);
+                        container
+                            .read(drawerRiverpod.notifier)
                             .updateCreateCategoriePrixModel(m.copyWith(nom: v));
                       },
                     ),
@@ -96,8 +100,9 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                         fillColor: Colors.grey[50],
                       ),
                       onChanged: (v) {
-                        context
-                            .read<DrawerProvider>()
+                        final container = ProviderScope.containerOf(context);
+                        container
+                            .read(drawerRiverpod.notifier)
                             .updateCreateCategoriePrixModel(
                               m.copyWith(nomCourt: v),
                             );
@@ -162,8 +167,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                                     AppTextStyle.indingosubHeading.color,
                                 value: value,
                                 onChanged: (v) {
-                                  context
-                                      .read<DrawerProvider>()
+                                  final container = ProviderScope.containerOf(
+                                    context,
+                                  );
+                                  container
+                                      .read(drawerRiverpod.notifier)
                                       .updateCreateCategoriePrixModel(copy(v));
                                 },
                               ),
@@ -196,8 +204,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                               initialTime: m.heureDebut ?? TimeOfDay.now(),
                             );
                             if (t != null && context.mounted) {
-                              context
-                                  .read<DrawerProvider>()
+                              final container = ProviderScope.containerOf(
+                                context,
+                              );
+                              container
+                                  .read(drawerRiverpod.notifier)
                                   .updateCreateCategoriePrixModel(
                                     m.copyWith(heureDebut: t),
                                   );
@@ -227,8 +238,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                               initialTime: m.heureFin ?? TimeOfDay.now(),
                             );
                             if (t != null && context.mounted) {
-                              context
-                                  .read<DrawerProvider>()
+                              final container = ProviderScope.containerOf(
+                                context,
+                              );
+                              container
+                                  .read(drawerRiverpod.notifier)
                                   .updateCreateCategoriePrixModel(
                                     m.copyWith(heureFin: t),
                                   );
@@ -240,11 +254,12 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                     ],
 
                     SalleIdsPicker(
-                      salles: Provider.of<SalleProvider>(context).salles,
+                      salles: salles,
                       selectedSalleIds: m.salleIDS!,
                       onSelectionChanged: (selectedIds) {
-                        context
-                            .read<DrawerProvider>()
+                        final container = ProviderScope.containerOf(context);
+                        container
+                            .read(drawerRiverpod.notifier)
                             .updateCreateCategoriePrixModel(
                               m.copyWith(salleIDS: selectedIds),
                             );
@@ -307,8 +322,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                                     sel
                                         ? jours.add(d.toString())
                                         : jours.remove(d);
-                                    context
-                                        .read<DrawerProvider>()
+                                    final container = ProviderScope.containerOf(
+                                      context,
+                                    );
+                                    container
+                                        .read(drawerRiverpod.notifier)
                                         .updateCreateCategoriePrixModel(
                                           m.copyWith(joursDactivite: jours),
                                         );
@@ -324,9 +342,11 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                     const SizedBox(height: 24),
                     CreateButton(
                       onPressed: () {
-                        final provider =
-                            context.read<CategorieDePrixProvider>();
-                        provider.create(m);
+                        final riverpod = ref.read(
+                          categorieDePrixRiverpod.notifier,
+                        );
+                        riverpod.create(m);
+
                         _scaffoldKey.currentState?.closeEndDrawer();
                       },
                       buttonText: "Créer la catégorie",
@@ -344,8 +364,8 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                   label: 'nom',
                   initialValue: state.model.nom,
                   onSaved: (v) {
-                    final provider = context.read<CategorieDePrixProvider>();
-                    provider.update(state.model.copyWith(nom: v));
+                    final riverpod = ref.read(categorieDePrixRiverpod.notifier);
+                    riverpod.update(state.model.copyWith(nom: v));
                   },
                 );
 
@@ -355,8 +375,8 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                   initialValue: state.model.nomCourt,
                   fieldType: FieldType.string,
                   onSaved: (v) {
-                    final provider = context.read<CategorieDePrixProvider>();
-                    provider.update(state.model.copyWith(nom: v));
+                    final riverpod = ref.read(categorieDePrixRiverpod.notifier);
+                    riverpod.update(state.model.copyWith(nomCourt: v));
                   },
                 );
 
@@ -366,8 +386,8 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                   initialValue: state.model.afficherNomCourtEnCommande,
                   fieldType: FieldType.boolean,
                   onSaved: (v) {
-                    final provider = context.read<CategorieDePrixProvider>();
-                    provider.update(
+                    final riverpod = ref.read(categorieDePrixRiverpod.notifier);
+                    riverpod.update(
                       state.model.copyWith(afficherNomCourtEnCommande: v),
                     );
                   },
@@ -379,8 +399,8 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                   initialValue: state.model.afficherNomCourtEnEncaissement,
                   fieldType: FieldType.boolean,
                   onSaved: (v) {
-                    final provider = context.read<CategorieDePrixProvider>();
-                    provider.update(
+                    final riverpod = ref.read(categorieDePrixRiverpod.notifier);
+                    riverpod.update(
                       state.model.copyWith(afficherNomCourtEnEncaissement: v),
                     );
                   },
@@ -388,12 +408,12 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
               case 'Salles':
                 return UpdateAttributeDrawer(
                   label: 'Salles',
-                  options: Provider.of<SalleProvider>(context).salles,
+                  options: salles,
                   initialValue: state.model.salleIDS,
                   fieldType: FieldType.choice,
                   onSaved: (v) {
-                    final provider = context.read<CategorieDePrixProvider>();
-                    provider.update(state.model.copyWith(salleIDS: v));
+                    final riverpod = ref.read(categorieDePrixRiverpod.notifier);
+                    riverpod.update(state.model.copyWith(salleIDS: v));
                   },
                 );
               case 'Afficher nom court en fabrication':
@@ -402,8 +422,8 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                   initialValue: state.model.afficherNomCourtEnFabrication,
                   fieldType: FieldType.boolean,
                   onSaved: (v) {
-                    final provider = context.read<CategorieDePrixProvider>();
-                    provider.update(
+                    final riverpod = ref.read(categorieDePrixRiverpod.notifier);
+                    riverpod.update(
                       state.model.copyWith(afficherNomCourtEnFabrication: v),
                     );
                   },
@@ -415,8 +435,8 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                   initialValue: state.model.joursDactivite,
                   fieldType: FieldType.choice,
                   onSaved: (v) {
-                    final provider = context.read<CategorieDePrixProvider>();
-                    provider.update(state.model.copyWith(joursDactivite: v));
+                    final riverpod = ref.read(categorieDePrixRiverpod.notifier);
+                    riverpod.update(state.model.copyWith(joursDactivite: v));
                   },
                 );
               default:
@@ -428,8 +448,9 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
       ),
       body: Container(
         color: Colors.grey.shade200,
-        child: Consumer<CategorieDePrixProvider>(
-          builder: (context, provider, _) {
+        child: Consumer(
+          builder: (context, ref, _) {
+            final provider = ref.watch(categorieDePrixRiverpod);
             return Column(
               children: [
                 if (provider.selected != null)
@@ -444,7 +465,9 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                     leading: IconButton(
                       icon: const Icon(Icons.arrow_back),
                       onPressed: () {
-                        provider.clearSelection();
+                        ref
+                            .read(categorieDePrixRiverpod.notifier)
+                            .clearSelection();
                       },
                     ),
                   )
@@ -459,8 +482,9 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                       ActionButton(onPressed: () {}, text: "Reorganiser"),
                       ActionButton(
                         onPressed: () {
-                          context
-                              .read<DrawerProvider>()
+                          final container = ProviderScope.containerOf(context);
+                          container
+                              .read(drawerRiverpod.notifier)
                               .openCreateCategoriePrixDrawer(model);
 
                           _scaffoldKey.currentState?.openEndDrawer();
@@ -477,9 +501,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                     ),
                   )
                 else
-                  Expanded(
-                    child: _buildCategorieDePrixList(provider: provider),
-                  ),
+                  Expanded(child: _buildCategorieDePrixList(ref: ref)),
               ],
             );
           },
@@ -488,9 +510,9 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
     );
   }
 
-  Widget _buildCategorieDePrixList({
-    required CategorieDePrixProvider provider,
-  }) {
+  Widget _buildCategorieDePrixList({required WidgetRef ref}) {
+    final state = ref.watch(categorieDePrixRiverpod);
+    final notifier = ref.read(categorieDePrixRiverpod.notifier);
     return Container(
       color: Colors.grey.shade200,
       margin: const EdgeInsets.all(6),
@@ -504,7 +526,7 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
             margin: const EdgeInsets.all(18),
             child: Column(
               children: [
-                ...provider.categories.map(
+                ...state.categories.map(
                   (categorie) => Column(
                     children: [
                       InkWell(
@@ -520,10 +542,10 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                           ),
                         ),
                         onTap: () {
-                          provider.select(categorie);
+                          notifier.select(categorie);
                         },
                       ),
-                      categorie != provider.categories.last
+                      categorie != state.categories.last
                           ? const Divider()
                           : const SizedBox(),
                     ],
