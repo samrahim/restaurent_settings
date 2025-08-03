@@ -58,119 +58,130 @@ class _ModificateursSupplementsScreenState
             return Drawer(
               width: MediaQuery.of(context).size.width * .33,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16.0),
-                          child: Text(
-                            'Créer une nouvelle sous-catégorie',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      child: Text(
+                        'Créer une nouvelle sous-catégorie',
+                        style: AppTextStyle.indingoHeading,
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    TextFormField(
+                      controller: supplement,
+
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Le nom est requis";
+                        }
+                        return null;
+                      },
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+
+                      decoration: InputDecoration(
+                        labelText: 'Nom',
+                        labelStyle: AppTextStyle.indingosubHeading,
+
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: supplement,
-                          decoration: InputDecoration(
-                            labelText: 'Nom',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[50],
-                          ),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: prix,
+                      decoration: InputDecoration(
+                        labelText: 'Prix',
+                        labelStyle: AppTextStyle.indingosubHeading,
+
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: prix,
-                          decoration: InputDecoration(
-                            labelText: 'Prix',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[50],
-                          ),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    CustomContainer(
+                      child: ListTile(
+                        title: Text(
+                          'Actif',
+                          style: AppTextStyle.indingosubHeading,
                         ),
-                        const SizedBox(height: 16),
-                        CustomContainer(
-                          child: ListTile(
-                            title: Text(
-                              'Actif',
-                              style: AppTextStyle.indingosubHeading,
-                            ),
-                            trailing: Switch(
-                              value: subActif,
-                              activeColor: AppColors.indingo400,
-                              onChanged: (value) {
-                                setState(() {
-                                  subActif = !subActif;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 4.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey.shade400),
-                            color: Colors.grey[50],
-                          ),
-                          child: DropdownButtonFormField<TauxTvaModel>(
-                            value: tvaModel,
-                            decoration: const InputDecoration(
-                              labelText: 'TVA',
-                              border: InputBorder.none,
-                            ),
-                            items:
-                                tauxEtTvaState.tauxTvas
-                                    .map(
-                                      (e) => DropdownMenuItem(
-                                        value: e,
-                                        child: Text(e.tauxTva.toString()),
-                                      ),
-                                    )
-                                    .toList(),
-                            onChanged: (value) {
-                              if (value != null) {
-                                setState(() {
-                                  tvaModel = value;
-                                });
-                              }
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        CreateButton(
-                          onPressed: () {
-                            SubCategorieDeModificateur sub =
-                                SubCategorieDeModificateur(
-                                  nom: supplement.text,
-                                  actif: subActif,
-                                  prix: double.parse(prix.text),
-                                  tvaValue: 32,
-                                );
-                            categorieModificateurNotifier.update(
-                              categorieModificateurState.selected!.copyWith(
-                                modificateurs: [sub],
-                              ),
-                            );
-                            supplement.clear();
-                            prix.clear();
-                            _scaffoldKey.currentState?.closeDrawer();
+                        trailing: Switch(
+                          value: subActif,
+                          activeColor: AppColors.indingo400,
+                          onChanged: (value) {
+                            setState(() {
+                              subActif = !subActif;
+                            });
                           },
-                          buttonText: 'Créer',
                         ),
-                      ],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 4.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade400),
+                        color: Colors.grey[50],
+                      ),
+                      child: DropdownButtonFormField<TauxTvaModel>(
+                        value: tvaModel,
+                        decoration: const InputDecoration(
+                          labelText: 'TVA',
+                          border: InputBorder.none,
+                        ),
+                        items:
+                            tauxEtTvaState.tauxTvas
+                                .map(
+                                  (e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(
+                                      e.tauxTva.toString(),
+                                      style: AppTextStyle.indingosubHeading,
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              tvaModel = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    CreateButton(
+                      onPressed: () {
+                        SubCategorieDeModificateur sub =
+                            SubCategorieDeModificateur(
+                              nom: supplement.text,
+                              actif: subActif,
+                              prix: double.parse(prix.text),
+                              tvaValue: 32,
+                            );
+                        categorieModificateurNotifier.update(
+                          categorieModificateurState.selected!.copyWith(
+                            modificateurs: [sub],
+                          ),
+                        );
+                        supplement.clear();
+                        prix.clear();
+                        _scaffoldKey.currentState?.closeDrawer();
+                      },
+                      buttonText: 'Créer',
                     ),
                   ],
                 ),
@@ -180,35 +191,6 @@ class _ModificateursSupplementsScreenState
           return const SizedBox.shrink();
         },
       ),
-
-      /*
-        (provider.attachemntProductScreen &&
-                        provider.selectedCategorie == null)
-                    ? ProduitAttachement(scaffoldKey: _scaffoldKey)
-                    : (provider.selectedCategorie == null &&
-                        !provider.loadingall)
-                    ? _buildCategoriesList(provider)
-                    : (provider.selectedCategorie != null &&
-                        !provider.loadingselected)
-                    ? ModificateurDetails(scaffoldKey: _scaffoldKey)
-                    : Center(child: CircularProgressIndicator()),
-
-
-                     categorieModificateurState.loadingAll
-              ? const Center(child: CircularProgressIndicator())
-              : (categorieModificateurState.selected == null &&
-                  !categorieModificateurState.loadingAll)
-              ? _buildCategoriesList(
-                categorieModificateurState,
-                categorieModificateurNotifier,
-              )
-              : (categorieModificateurState.selected != null &&
-                  !categorieModificateurState.loadingSelected)
-              ? ModificateurDetails(scaffoldKey: _scaffoldKey)
-              : (categorieModificateurState.attachmentProductScreen)
-              ? ProduitAttachement(scaffoldKey: _scaffoldKey)
-              : const Center(child: CircularProgressIndicator()),
-      */
       body:
           (categorieModificateurState.attachmentProductScreen &&
                   categorieModificateurState.selected == null)

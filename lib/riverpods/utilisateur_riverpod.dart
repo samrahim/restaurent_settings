@@ -49,14 +49,14 @@ class UtilisateurNotifier extends StateNotifier<UtilisateurState> {
     required String prenom,
     required String qrCode,
     required String role,
-    required String motPasseSchema,
+    required String? motPasseSchema,
   }) {
     final newUser = UtilisateurModel(
       id: DateTime.now().toString(),
       nom: nom,
       prenom: prenom,
       groupe: groupe,
-      motPasseSchema: motPasseSchema,
+      motPasseSchema: motPasseSchema ?? '',
       motPasseChiffre: motPasseChiffre,
       qrCode: qrCode,
       role: role,

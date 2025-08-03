@@ -20,7 +20,7 @@ class _GroupesUtilisateursScreenState
   TextEditingController nom = TextEditingController();
   TextEditingController prenom = TextEditingController();
   TextEditingController groupe = TextEditingController();
-  TextEditingController motPasseSchema = TextEditingController();
+
   TextEditingController motPasseChiffre = TextEditingController();
   TextEditingController qrCode = TextEditingController();
   String role = roleList[0];
@@ -32,7 +32,7 @@ class _GroupesUtilisateursScreenState
     nom.dispose();
     prenom.dispose();
     groupe.dispose();
-    motPasseSchema.dispose();
+
     motPasseChiffre.dispose();
     qrCode.dispose();
     super.dispose();
@@ -87,7 +87,6 @@ class _GroupesUtilisateursScreenState
 
                 const SizedBox(height: 16),
 
-                // Dropdown Groupe
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 4.0),
                   decoration: BoxDecoration(
@@ -104,7 +103,13 @@ class _GroupesUtilisateursScreenState
                     items:
                         groupeList
                             .map(
-                              (e) => DropdownMenuItem(value: e, child: Text(e)),
+                              (e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(
+                                  e,
+                                  style: AppTextStyle.indingosubHeading,
+                                ),
+                              ),
                             )
                             .toList(),
                     onChanged: (value) {
@@ -119,7 +124,6 @@ class _GroupesUtilisateursScreenState
 
                 const SizedBox(height: 16),
 
-                // Dropdown Role
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 4.0),
                   decoration: BoxDecoration(
@@ -136,7 +140,13 @@ class _GroupesUtilisateursScreenState
                     items:
                         roleList
                             .map(
-                              (e) => DropdownMenuItem(value: e, child: Text(e)),
+                              (e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(
+                                  e,
+                                  style: AppTextStyle.indingosubHeading,
+                                ),
+                              ),
                             )
                             .toList(),
                     onChanged: (value) {
@@ -150,18 +160,6 @@ class _GroupesUtilisateursScreenState
                 ),
 
                 const SizedBox(height: 16),
-
-                CustomTextField(
-                  controller: motPasseSchema,
-                  label: "Mot de passe schema",
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Le mot de passe schema est requis';
-                    }
-                    return null;
-                  },
-                ),
 
                 const SizedBox(height: 16),
 
@@ -182,6 +180,7 @@ class _GroupesUtilisateursScreenState
                 CustomTextField(
                   controller: qrCode,
                   label: "QR Code",
+
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -202,8 +201,12 @@ class _GroupesUtilisateursScreenState
                         prenom: prenom.text,
                         qrCode: qrCode.text,
                         role: role,
-                        motPasseSchema: motPasseSchema.text,
+                        motPasseSchema: null,
                       );
+                      nom.clear();
+                      prenom.clear();
+                      qrCode.clear();
+
                       _scaffoldKey.currentState?.closeEndDrawer();
                     }
                   },
@@ -328,276 +331,282 @@ class _GroupesUtilisateursScreenState
                 flex: 3,
                 child:
                     utilisateurState.selectedUtilisateur != null
-                        ? Card(
-                          margin: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Colors.white,
+                        ? SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          child: Card(
+                            margin: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Colors.white,
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          CustomListTile(
+                                            onTap: () {
+                                              final container =
+                                                  ProviderScope.containerOf(
+                                                    context,
+                                                  );
+                                              container
+                                                  .read(drawerRiverpod.notifier)
+                                                  .openUpdateUtilisateurAttributeDrawer(
+                                                    utilisateurState
+                                                        .selectedUtilisateur!,
+                                                    'nom',
+                                                    utilisateurState
+                                                        .selectedUtilisateur!
+                                                        .nom,
+                                                  );
+
+                                              _scaffoldKey.currentState
+                                                  ?.openEndDrawer();
+                                            },
+                                            trailing: null,
+                                            title: Text(
+                                              'Nom',
+                                              style: AppTextStyle.greyHeading,
+                                            ),
+                                            trailingwidget: Text(
+                                              utilisateurState
+                                                  .selectedUtilisateur!
+                                                  .nom,
+                                              style:
+                                                  AppTextStyle
+                                                      .indingosubHeading,
+                                            ),
+                                            leading: null,
+                                          ),
+                                          Divider(),
+                                          CustomListTile(
+                                            onTap: () {
+                                              final container =
+                                                  ProviderScope.containerOf(
+                                                    context,
+                                                  );
+                                              container
+                                                  .read(drawerRiverpod.notifier)
+                                                  .openUpdateUtilisateurAttributeDrawer(
+                                                    utilisateurState
+                                                        .selectedUtilisateur!,
+                                                    'prenom',
+                                                    utilisateurState
+                                                        .selectedUtilisateur!
+                                                        .prenom,
+                                                  );
+
+                                              _scaffoldKey.currentState
+                                                  ?.openEndDrawer();
+                                            },
+                                            leading: null,
+                                            trailing: null,
+                                            title: Text(
+                                              'Prénom',
+                                              style: AppTextStyle.greyHeading,
+                                            ),
+                                            trailingwidget: Text(
+                                              utilisateurState
+                                                  .selectedUtilisateur!
+                                                  .prenom,
+                                              style:
+                                                  AppTextStyle
+                                                      .indingosubHeading,
+                                            ),
+                                          ),
+                                          Divider(),
+                                          CustomListTile(
+                                            onTap: () {
+                                              final container =
+                                                  ProviderScope.containerOf(
+                                                    context,
+                                                  );
+                                              container
+                                                  .read(drawerRiverpod.notifier)
+                                                  .openUpdateUtilisateurAttributeDrawer(
+                                                    utilisateurState
+                                                        .selectedUtilisateur!,
+                                                    'groupe',
+                                                    utilisateurState
+                                                        .selectedUtilisateur!
+                                                        .groupe,
+                                                  );
+
+                                              _scaffoldKey.currentState
+                                                  ?.openEndDrawer();
+                                            },
+                                            leading: null,
+                                            trailing: null,
+                                            title: Text(
+                                              'Groupe',
+                                              style: AppTextStyle.greyHeading,
+                                            ),
+                                            trailingwidget: Text(
+                                              utilisateurState
+                                                  .selectedUtilisateur!
+                                                  .groupe,
+                                              style:
+                                                  AppTextStyle
+                                                      .indingosubHeading,
+                                            ),
+                                          ),
+                                          Divider(),
+                                          CustomListTile(
+                                            onTap: () {
+                                              final container =
+                                                  ProviderScope.containerOf(
+                                                    context,
+                                                  );
+                                              container
+                                                  .read(drawerRiverpod.notifier)
+                                                  .openUpdateUtilisateurAttributeDrawer(
+                                                    utilisateurState
+                                                        .selectedUtilisateur!,
+                                                    'role',
+                                                    utilisateurState
+                                                        .selectedUtilisateur!
+                                                        .role,
+                                                  );
+
+                                              _scaffoldKey.currentState
+                                                  ?.openEndDrawer();
+                                            },
+                                            leading: null,
+                                            trailing: null,
+                                            title: Text(
+                                              'Role',
+                                              style: AppTextStyle.greyHeading,
+                                            ),
+                                            trailingwidget: Text(
+                                              utilisateurState
+                                                  .selectedUtilisateur!
+                                                  .role,
+                                              style:
+                                                  AppTextStyle
+                                                      .indingosubHeading,
+                                            ),
+                                          ),
+                                          Divider(),
+                                          CustomListTile(
+                                            onTap: () {
+                                              final container =
+                                                  ProviderScope.containerOf(
+                                                    context,
+                                                  );
+                                              container
+                                                  .read(drawerRiverpod.notifier)
+                                                  .openUpdateUtilisateurAttributeDrawer(
+                                                    utilisateurState
+                                                        .selectedUtilisateur!,
+                                                    'motPasseSchema',
+                                                    utilisateurState
+                                                        .selectedUtilisateur!
+                                                        .motPasseSchema,
+                                                  );
+
+                                              _scaffoldKey.currentState
+                                                  ?.openEndDrawer();
+                                            },
+                                            leading: null,
+                                            trailing: null,
+                                            title: Text(
+                                              'Mot de passe schema',
+                                              style: AppTextStyle.greyHeading,
+                                            ),
+                                            trailingwidget: Text(
+                                              "*****",
+                                              style:
+                                                  AppTextStyle
+                                                      .indingosubHeading,
+                                            ),
+                                          ),
+                                          Divider(),
+                                          CustomListTile(
+                                            onTap: () {
+                                              final container =
+                                                  ProviderScope.containerOf(
+                                                    context,
+                                                  );
+                                              container
+                                                  .read(drawerRiverpod.notifier)
+                                                  .openUpdateUtilisateurAttributeDrawer(
+                                                    utilisateurState
+                                                        .selectedUtilisateur!,
+                                                    'motPasseChiffre',
+                                                    utilisateurState
+                                                        .selectedUtilisateur!
+                                                        .motPasseChiffre,
+                                                  );
+
+                                              _scaffoldKey.currentState
+                                                  ?.openEndDrawer();
+                                            },
+                                            leading: null,
+                                            trailing: null,
+                                            title: Text(
+                                              'Mot de passe chiffre',
+                                              style: AppTextStyle.greyHeading,
+                                            ),
+                                            trailingwidget: Text(
+                                              "*****",
+                                              style:
+                                                  AppTextStyle
+                                                      .indingosubHeading,
+                                            ),
+                                          ),
+                                          Divider(),
+                                          CustomListTile(
+                                            onTap: () {
+                                              final container =
+                                                  ProviderScope.containerOf(
+                                                    context,
+                                                  );
+                                              container
+                                                  .read(drawerRiverpod.notifier)
+                                                  .openUpdateUtilisateurAttributeDrawer(
+                                                    utilisateurState
+                                                        .selectedUtilisateur!,
+                                                    'qrCode',
+                                                    utilisateurState
+                                                        .selectedUtilisateur!
+                                                        .qrCode,
+                                                  );
+
+                                              _scaffoldKey.currentState
+                                                  ?.openEndDrawer();
+                                            },
+                                            leading: null,
+                                            trailing: null,
+                                            title: Text(
+                                              'QR Code',
+                                              style: AppTextStyle.greyHeading,
+                                            ),
+                                            trailingwidget: Text(
+                                              utilisateurState
+                                                  .selectedUtilisateur!
+                                                  .qrCode,
+                                              style:
+                                                  AppTextStyle
+                                                      .indingosubHeading,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        CustomListTile(
-                                          onTap: () {
-                                            final container =
-                                                ProviderScope.containerOf(
-                                                  context,
-                                                );
-                                            container
-                                                .read(drawerRiverpod.notifier)
-                                                .openUpdateUtilisateurAttributeDrawer(
-                                                  utilisateurState
-                                                      .selectedUtilisateur!,
-                                                  'nom',
-                                                  utilisateurState
-                                                      .selectedUtilisateur!
-                                                      .nom,
-                                                );
-
-                                            _scaffoldKey.currentState
-                                                ?.openEndDrawer();
-                                          },
-                                          trailing: null,
-                                          title: Text(
-                                            'Nom',
-                                            style: AppTextStyle.greyHeading,
-                                          ),
-                                          trailingwidget: Text(
-                                            utilisateurState
-                                                .selectedUtilisateur!
-                                                .nom,
-                                            style:
-                                                AppTextStyle.indingosubHeading,
-                                          ),
-                                          leading: null,
-                                        ),
-                                        Divider(),
-                                        CustomListTile(
-                                          onTap: () {
-                                            final container =
-                                                ProviderScope.containerOf(
-                                                  context,
-                                                );
-                                            container
-                                                .read(drawerRiverpod.notifier)
-                                                .openUpdateUtilisateurAttributeDrawer(
-                                                  utilisateurState
-                                                      .selectedUtilisateur!,
-                                                  'prenom',
-                                                  utilisateurState
-                                                      .selectedUtilisateur!
-                                                      .prenom,
-                                                );
-
-                                            _scaffoldKey.currentState
-                                                ?.openEndDrawer();
-                                          },
-                                          leading: null,
-                                          trailing: null,
-                                          title: Text(
-                                            'Prénom',
-                                            style: AppTextStyle.greyHeading,
-                                          ),
-                                          trailingwidget: Text(
-                                            utilisateurState
-                                                .selectedUtilisateur!
-                                                .prenom,
-                                            style:
-                                                AppTextStyle.indingosubHeading,
-                                          ),
-                                        ),
-                                        Divider(),
-                                        CustomListTile(
-                                          onTap: () {
-                                            final container =
-                                                ProviderScope.containerOf(
-                                                  context,
-                                                );
-                                            container
-                                                .read(drawerRiverpod.notifier)
-                                                .openUpdateUtilisateurAttributeDrawer(
-                                                  utilisateurState
-                                                      .selectedUtilisateur!,
-                                                  'groupe',
-                                                  utilisateurState
-                                                      .selectedUtilisateur!
-                                                      .groupe,
-                                                );
-
-                                            _scaffoldKey.currentState
-                                                ?.openEndDrawer();
-                                          },
-                                          leading: null,
-                                          trailing: null,
-                                          title: Text(
-                                            'Groupe',
-                                            style: AppTextStyle.greyHeading,
-                                          ),
-                                          trailingwidget: Text(
-                                            utilisateurState
-                                                .selectedUtilisateur!
-                                                .groupe,
-                                            style:
-                                                AppTextStyle.indingosubHeading,
-                                          ),
-                                        ),
-                                        Divider(),
-                                        CustomListTile(
-                                          onTap: () {
-                                            final container =
-                                                ProviderScope.containerOf(
-                                                  context,
-                                                );
-                                            container
-                                                .read(drawerRiverpod.notifier)
-                                                .openUpdateUtilisateurAttributeDrawer(
-                                                  utilisateurState
-                                                      .selectedUtilisateur!,
-                                                  'role',
-                                                  utilisateurState
-                                                      .selectedUtilisateur!
-                                                      .role,
-                                                );
-
-                                            _scaffoldKey.currentState
-                                                ?.openEndDrawer();
-                                          },
-                                          leading: null,
-                                          trailing: null,
-                                          title: Text(
-                                            'Role',
-                                            style: AppTextStyle.greyHeading,
-                                          ),
-                                          trailingwidget: Text(
-                                            utilisateurState
-                                                .selectedUtilisateur!
-                                                .role,
-                                            style:
-                                                AppTextStyle.indingosubHeading,
-                                          ),
-                                        ),
-                                        Divider(),
-                                        CustomListTile(
-                                          onTap: () {
-                                            final container =
-                                                ProviderScope.containerOf(
-                                                  context,
-                                                );
-                                            container
-                                                .read(drawerRiverpod.notifier)
-                                                .openUpdateUtilisateurAttributeDrawer(
-                                                  utilisateurState
-                                                      .selectedUtilisateur!,
-                                                  'motPasseSchema',
-                                                  utilisateurState
-                                                      .selectedUtilisateur!
-                                                      .motPasseSchema,
-                                                );
-
-                                            _scaffoldKey.currentState
-                                                ?.openEndDrawer();
-                                          },
-                                          leading: null,
-                                          trailing: null,
-                                          title: Text(
-                                            'Mot de passe schema',
-                                            style: AppTextStyle.greyHeading,
-                                          ),
-                                          trailingwidget: Text(
-                                            utilisateurState
-                                                .selectedUtilisateur!
-                                                .motPasseSchema,
-                                            style:
-                                                AppTextStyle.indingosubHeading,
-                                          ),
-                                        ),
-                                        Divider(),
-                                        CustomListTile(
-                                          onTap: () {
-                                            final container =
-                                                ProviderScope.containerOf(
-                                                  context,
-                                                );
-                                            container
-                                                .read(drawerRiverpod.notifier)
-                                                .openUpdateUtilisateurAttributeDrawer(
-                                                  utilisateurState
-                                                      .selectedUtilisateur!,
-                                                  'motPasseChiffre',
-                                                  utilisateurState
-                                                      .selectedUtilisateur!
-                                                      .motPasseChiffre,
-                                                );
-
-                                            _scaffoldKey.currentState
-                                                ?.openEndDrawer();
-                                          },
-                                          leading: null,
-                                          trailing: null,
-                                          title: Text(
-                                            'Mot de passe chiffre',
-                                            style: AppTextStyle.greyHeading,
-                                          ),
-                                          trailingwidget: Text(
-                                            utilisateurState
-                                                .selectedUtilisateur!
-                                                .motPasseChiffre,
-                                            style:
-                                                AppTextStyle.indingosubHeading,
-                                          ),
-                                        ),
-                                        Divider(),
-                                        CustomListTile(
-                                          onTap: () {
-                                            final container =
-                                                ProviderScope.containerOf(
-                                                  context,
-                                                );
-                                            container
-                                                .read(drawerRiverpod.notifier)
-                                                .openUpdateUtilisateurAttributeDrawer(
-                                                  utilisateurState
-                                                      .selectedUtilisateur!,
-                                                  'qrCode',
-                                                  utilisateurState
-                                                      .selectedUtilisateur!
-                                                      .qrCode,
-                                                );
-
-                                            _scaffoldKey.currentState
-                                                ?.openEndDrawer();
-                                          },
-                                          leading: null,
-                                          trailing: null,
-                                          title: Text(
-                                            'QR Code',
-                                            style: AppTextStyle.greyHeading,
-                                          ),
-                                          trailingwidget: Text(
-                                            utilisateurState
-                                                .selectedUtilisateur!
-                                                .qrCode,
-                                            style:
-                                                AppTextStyle.indingosubHeading,
-                                          ),
-                                        ),
-                                      ],
+                                    const SizedBox(height: 16),
+                                    ButtonSupprimer(
+                                      onTap: () {},
+                                      text: 'Supprimer',
+                                      style: null,
                                     ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  ButtonSupprimer(
-                                    onTap: () {},
-                                    text: 'Supprimer',
-                                    style: null,
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -622,7 +631,10 @@ class _GroupesUtilisateursScreenState
           }
           if (state is DrawerUpdateUtilisateurAttributeState) {
             return UpdateAttributeDrawer(
-              fieldType: FieldType.string,
+              fieldType:
+                  state.attributeName == "motPasseSchema"
+                      ? FieldType.pattern
+                      : FieldType.string,
               label: state.attributeName,
               initialValue: state.currentValue as String,
               onSaved: (value) {
@@ -656,6 +668,7 @@ class _GroupesUtilisateursScreenState
                           ? value
                           : state.utilisateur.qrCode,
                 );
+                print(updated.motPasseSchema);
                 utilisateurNotifier.updateUtilisateur(updated);
               },
             );
