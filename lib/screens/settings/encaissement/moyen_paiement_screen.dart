@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/models.dart';
-import 'package:restaurent/providers/providers.dart';
 import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
-import 'package:restaurent/riverpods/moyen_de_paiement_riverpod.dart';
 import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/widgets/widgets.dart';
 

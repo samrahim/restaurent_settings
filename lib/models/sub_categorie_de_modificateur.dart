@@ -1,13 +1,11 @@
 import 'package:equatable/equatable.dart';
 
 class SubCategorieDeModificateur extends Equatable {
-  final String id;
   final String nom;
   final double prix;
   final double tvaValue;
   final bool actif;
   const SubCategorieDeModificateur({
-    required this.id,
     required this.nom,
     required this.prix,
     required this.tvaValue,
@@ -15,7 +13,6 @@ class SubCategorieDeModificateur extends Equatable {
   });
   factory SubCategorieDeModificateur.fromJson(Map<String, dynamic> json) {
     return SubCategorieDeModificateur(
-      id: json['id'] ?? "",
       nom: json['nom'] ?? '',
       prix: (json['prix'] ?? 0).toDouble(),
       tvaValue: (json['tauxTva'] ?? 0).toDouble(),
@@ -27,7 +24,7 @@ class SubCategorieDeModificateur extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, nom, prix, tvaValue];
+  List<Object?> get props => [nom, prix, tvaValue];
   SubCategorieDeModificateur copyWith({
     String? id,
     String? nom,
@@ -36,7 +33,6 @@ class SubCategorieDeModificateur extends Equatable {
     bool? actif,
   }) {
     return SubCategorieDeModificateur(
-      id: id ?? this.id,
       nom: nom ?? this.nom,
       prix: prix ?? this.prix,
       tvaValue: tvaValue ?? this.tvaValue,

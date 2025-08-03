@@ -2,10 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart' as provider_package;
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/taux_tva_model.dart';
-import 'package:restaurent/providers/drawer_provider.dart';
+import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
 import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
@@ -37,8 +36,12 @@ class _TauxTVAScreenState extends ConsumerState<TauxTVAScreen> {
         actions: [
           ActionButton(
             onPressed: () {
-              context.read<DrawerProvider>().openCreateTauxTvaDrawer();
+              final container = ProviderScope.containerOf(context);
+              container.read(drawerRiverpod.notifier).openCreateTauxTvaDrawer();
+
               _scaffoldKey.currentState?.openEndDrawer();
+              // context.read<DrawerProvider>().openCreateTauxTvaDrawer();
+              // _scaffoldKey.currentState?.openEndDrawer();
             },
             text: 'Nouveau',
           ),
@@ -137,9 +140,10 @@ class _TauxTVAScreenState extends ConsumerState<TauxTVAScreen> {
   }
 
   Widget _buildDrawerWithBloc(BuildContext context) {
-    return provider_package.Consumer<DrawerProvider>(
+    return Consumer(
       builder: (context, drawerProvider, _) {
-        final state = drawerProvider.state;
+        final state = ref.watch(drawerRiverpod);
+
         return _buildDrawerContent(context, state);
       },
     );

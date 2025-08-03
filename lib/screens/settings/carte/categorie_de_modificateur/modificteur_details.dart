@@ -24,6 +24,7 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
     );
     final modificateur = categorieModificateurState.selected;
     final salles = ref.watch(salleRiverpod);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -103,9 +104,7 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
                                 ],
                               ),
                             ),
-
-                            Container(
-                              color: Colors.white,
+                            SizedBox(
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
@@ -433,20 +432,5 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
       title: Text(nom, style: AppTextStyle.indingosubHeading),
       trailing: const Icon(Icons.drag_handle),
     );
-  }
-
-  String _getAffectationModeText(AffectationMode? mode) {
-    if (mode == null) return 'Pour seulement';
-
-    switch (mode) {
-      case AffectationMode.POUR_TOUT:
-        return 'Pour tout';
-      case AffectationMode.POUR_SEULEMENT:
-        return 'Pour seulement';
-      case AffectationMode.POUR_TOUT_SAUF:
-        return 'Pour tout sauf';
-      case AffectationMode.AJOUTER_A_LIST_EXSISTANTE:
-        return 'Ajouter à une liste existante';
-    }
   }
 }

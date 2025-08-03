@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/models.dart';
 import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
@@ -26,6 +25,7 @@ class _ModificateursSupplementsScreenState
   TextEditingController supplement = TextEditingController();
   TauxTvaModel tvaModel = tauxTvaList[0];
   bool isSelectingProduits = false;
+  bool subActif = false;
   CategorieDeModificateur createmodificateur = CategorieDeModificateur(
     couleur: '',
     icone: '',
@@ -54,7 +54,7 @@ class _ModificateursSupplementsScreenState
       drawer: Consumer(
         builder: (context, drawerProvider, _) {
           final state = ref.watch(drawerRiverpod);
-          if (state is DrawerCreateCategorieDeModificateur) {
+          if (state is DrawerCreateSubCategorieDeModificateur) {
             return Drawer(
               width: MediaQuery.of(context).size.width * .33,
               child: Padding(
@@ -78,7 +78,6 @@ class _ModificateursSupplementsScreenState
                         const SizedBox(height: 16),
                         TextField(
                           controller: supplement,
-
                           decoration: InputDecoration(
                             labelText: 'Nom',
                             border: OutlineInputBorder(
@@ -91,7 +90,6 @@ class _ModificateursSupplementsScreenState
                         const SizedBox(height: 16),
                         TextField(
                           controller: prix,
-
                           decoration: InputDecoration(
                             labelText: 'Prix',
                             border: OutlineInputBorder(
@@ -102,6 +100,24 @@ class _ModificateursSupplementsScreenState
                           ),
                         ),
                         const SizedBox(height: 16),
+                        CustomContainer(
+                          child: ListTile(
+                            title: Text(
+                              'Actif',
+                              style: AppTextStyle.indingosubHeading,
+                            ),
+                            trailing: Switch(
+                              value: subActif,
+                              activeColor: AppColors.indingo400,
+                              onChanged: (value) {
+                                setState(() {
+                                  subActif = !subActif;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16),
                         Container(
                           margin: EdgeInsets.symmetric(vertical: 4.0),
                           decoration: BoxDecoration(
@@ -136,7 +152,21 @@ class _ModificateursSupplementsScreenState
                         const SizedBox(height: 16),
                         CreateButton(
                           onPressed: () {
-                            // Handle create sub-category
+                            SubCategorieDeModificateur sub =
+                                SubCategorieDeModificateur(
+                                  nom: supplement.text,
+                                  actif: subActif,
+                                  prix: double.parse(prix.text),
+                                  tvaValue: 32,
+                                );
+                            categorieModificateurNotifier.update(
+                              categorieModificateurState.selected!.copyWith(
+                                modificateurs: [sub],
+                              ),
+                            );
+                            supplement.clear();
+                            prix.clear();
+                            _scaffoldKey.currentState?.closeDrawer();
                           },
                           buttonText: 'Créer',
                         ),
@@ -322,7 +352,6 @@ class _ModificateursSupplementsScreenState
         }
 
         if (state is DrawerUpdateCategorieDeModificateur) {
-          print(state.modificateur.couleur);
           final modificateur = state.modificateur;
           final attribute = state.attributeName;
 
@@ -337,6 +366,7 @@ class _ModificateursSupplementsScreenState
                 modificateur,
                 value,
               );
+
               notifier.update(updated);
             },
           );
@@ -424,7 +454,10 @@ class _ModificateursSupplementsScreenState
       case 'icone':
         return model.copyWith(icone: value as String);
       case 'salle':
-        return model.copyWith(sallesIDS: [...model.sallesIDS!, value.id]);
+        return model.copyWith(
+          sallesIDS: value['choices'],
+          salleMode: value['affectationMode'],
+        );
       default:
         return model;
     }
@@ -480,26 +513,6 @@ class _ModificateursSupplementsScreenState
             borderRadius: BorderRadius.circular(4),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildIconeField(CategorieDeModificateur createModel) {
-    return CustomContainer(
-      child: TextFormField(
-        initialValue: createModel.icone,
-        decoration: const InputDecoration(
-          labelText: 'Icône',
-          border: InputBorder.none,
-        ),
-        onChanged: (value) {
-          final updated = createModel.copyWith(icone: value);
-
-          final container = ProviderScope.containerOf(context);
-          container
-              .read(drawerRiverpod.notifier)
-              .openCreateCategorieDeModificateur(updated);
-        },
       ),
     );
   }

@@ -51,10 +51,8 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
             widget.initialValue != null
                 ? List<int>.from(widget.initialValue)
                 : <int>[];
-        // Initialize affectation mode for salle field
+
         if (widget.label == 'salle') {
-          // Try to get the current affectation mode from the modificateur
-          // This will be handled by the provider when the drawer is opened
           _selectedAffectationMode = AffectationMode.POUR_SEULEMENT;
         }
       } else {
@@ -175,7 +173,6 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
             else if (widget.fieldType == FieldType.choice)
               Column(
                 children: [
-                  // Special case for 'salle' field - add AffectationMode dropdown
                   if (widget.label == 'salle')
                     Container(
                       margin: const EdgeInsets.symmetric(vertical: 8.0),
