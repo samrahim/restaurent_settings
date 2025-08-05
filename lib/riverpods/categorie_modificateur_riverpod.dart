@@ -127,7 +127,7 @@ class CategorieModificateurNotifier
       CategorieDeModificateur mod = CategorieDeModificateur.fromJson(data);
       state = state.copyWith(allCategories: [...state.allCategories, mod]);
     } else {
-      throw '${response.body}';
+      throw response.body;
     }
   }
 

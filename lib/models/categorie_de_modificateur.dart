@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:restaurent/consts.dart';
 import 'package:restaurent/models/sub_categorie_de_modificateur.dart';
 

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurent/models/peripherique_model.dart.dart';
-import 'package:restaurent/screens/reglage_screen.dart';
 
 enum ConnectionResult { notStarted, success, failed }
 

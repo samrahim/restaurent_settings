@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:network_tools_flutter/network_tools_flutter.dart';
@@ -6,8 +7,12 @@ import 'screens/reglage_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final appDocDir = await getApplicationDocumentsDirectory();
-  await configureNetworkTools(appDocDir.path, enableDebugging: true);
+  if (kIsWeb) {
+  } else {
+    final appDocDir = await getApplicationDocumentsDirectory();
+    await configureNetworkTools(appDocDir.path, enableDebugging: true);
+  }
+
   runApp(ProviderScope(child: const MyApp()));
 }
 

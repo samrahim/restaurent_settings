@@ -668,7 +668,7 @@ class _GroupesUtilisateursScreenState
                           ? value
                           : state.utilisateur.qrCode,
                 );
-                print(updated.motPasseSchema);
+
                 utilisateurNotifier.updateUtilisateur(updated);
               },
             );
