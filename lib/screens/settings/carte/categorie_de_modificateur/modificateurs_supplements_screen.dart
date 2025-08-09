@@ -194,7 +194,10 @@ class _ModificateursSupplementsScreenState
       body:
           (categorieModificateurState.attachmentProductScreen &&
                   categorieModificateurState.selected == null)
-              ? ProduitAttachement(scaffoldKey: _scaffoldKey)
+              ? ProduitAttachement(
+                scaffoldKey: _scaffoldKey,
+                provider: categorieModificateurRiverpod,
+              )
               : (categorieModificateurState.selected == null &&
                   !categorieModificateurState.loadingAll)
               ? _buildCategoriesList(

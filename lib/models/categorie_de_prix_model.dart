@@ -5,7 +5,7 @@ class CategorieDePrixModel extends Equatable {
   final String? id;
   final String? nom;
   final String? nomCourt;
-  final bool? actif;
+  final bool? status;
   final bool? afficherNomCourtEnCommande;
   final bool? afficherNomCourtEnEncaissement;
   final bool? afficherNomCourtEnFabrication;
@@ -16,14 +16,14 @@ class CategorieDePrixModel extends Equatable {
   final TimeOfDay? heureDebut;
   final TimeOfDay? heureFin;
   final int priorite;
-  final List<int> produitsIds;
+  final List<String>? produitsIds;
   final bool jourFerie;
 
   const CategorieDePrixModel({
-    required this.id,
+    this.id,
     required this.nom,
     required this.nomCourt,
-    required this.actif,
+    required this.status,
     required this.afficherNomCourtEnCommande,
     required this.afficherNomCourtEnEncaissement,
     required this.afficherNomCourtEnFabrication,
@@ -41,7 +41,7 @@ class CategorieDePrixModel extends Equatable {
     String? id,
     String? nom,
     String? nomCourt,
-    bool? actif,
+    bool? status,
     bool? afficherNomCourtEnCommande,
     bool? afficherNomCourtEnEncaissement,
     bool? actifDansTouteLaJournee,
@@ -53,14 +53,14 @@ class CategorieDePrixModel extends Equatable {
 
     bool? afficherNomCourtEnFabrication,
     int? priorite,
-    List<int>? produitsIds,
+    List<String>? produitsIds,
     bool? jourFerie,
   }) {
     return CategorieDePrixModel(
       id: id ?? this.id,
       nom: nom ?? this.nom,
       nomCourt: nomCourt ?? this.nomCourt,
-      actif: actif ?? this.actif,
+      status: status ?? this.status,
       afficherNomCourtEnCommande:
           afficherNomCourtEnCommande ?? this.afficherNomCourtEnCommande,
       afficherNomCourtEnEncaissement:
@@ -85,7 +85,7 @@ class CategorieDePrixModel extends Equatable {
     id,
     nom,
     nomCourt,
-    actif,
+    status,
     afficherNomCourtEnCommande,
     afficherNomCourtEnEncaissement,
     afficherNomCourtEnFabrication,
@@ -104,7 +104,7 @@ class CategorieDePrixModel extends Equatable {
       id: json['id'] as String?,
       nom: json['nom'] as String?,
       nomCourt: json['nomCourt'] as String?,
-      actif: json['actif'] as bool?,
+      status: json['status'] as bool?,
       afficherNomCourtEnCommande: json['afficherNomCourtCommande'] as bool?,
       afficherNomCourtEnEncaissement:
           json['afficherNomCourtEncaissement'] as bool?,
@@ -120,16 +120,23 @@ class CategorieDePrixModel extends Equatable {
           (json['salleIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
       heureDebut:
           json['heureDebut'] != null
-              ? TimeOfDay.fromDateTime(DateTime.parse(json['heureDebut']))
+              ? TimeOfDay(
+                hour: int.parse(json['heureDebut'].split(':')[0]),
+                minute: int.parse(json['heureDebut'].split(':')[1]),
+              )
               : null,
+
       heureFin:
           json['heureFin'] != null
-              ? TimeOfDay.fromDateTime(DateTime.parse(json['heureFin']))
+              ? TimeOfDay(
+                hour: int.parse(json['heureFin'].split(':')[0]),
+                minute: int.parse(json['heureFin'].split(':')[1]),
+              )
               : null,
       priorite: json['priorite'] as int? ?? 0,
       produitsIds:
-          (json['produitIds'] as List<dynamic>?)
-              ?.map((e) => e as int)
+          (json['produits'] as List<dynamic>?)
+              ?.map((e) => e['id'] as String)
               .toList() ??
           [],
       jourFerie: json['jourFerie'] as bool? ?? false,
@@ -152,67 +159,67 @@ class CategorieDePrixModel extends Equatable {
 
       'salleIds': model.salleIDS,
       'produitIds': model.produitsIds,
-      'actif': model.actif,
+      'status': model.status,
       'jourFerie': model.jourFerie,
     };
   }
 }
 
-List<CategorieDePrixModel> categoriesPrixList = [
-  CategorieDePrixModel(
-    id: '1',
-    nom: 'Happy Hour',
-    nomCourt: 'HH',
-    actif: true,
-    afficherNomCourtEnCommande: true,
-    afficherNomCourtEnEncaissement: false,
-    afficherNomCourtEnFabrication: true,
-    actifDansTouteLaJournee: true,
+// List<CategorieDePrixModel> categoriesPrixList = [
+//   CategorieDePrixModel(
+//     id: '1',
+//     nom: 'Happy Hour',
+//     nomCourt: 'HH',
+//     status: true,
+//     afficherNomCourtEnCommande: true,
+//     afficherNomCourtEnEncaissement: false,
+//     afficherNomCourtEnFabrication: true,
+//     actifDansTouteLaJournee: true,
 
-    salleIDS: [1],
-    heureDebut: null,
-    heureFin: null,
-    produitsIds: [],
-    joursDactivite: ['Lundi', 'Mardi'],
-    priorite: 12,
-    jourFerie: false,
-  ),
-  CategorieDePrixModel(
-    id: '2',
-    nom: 'Terrasse',
-    nomCourt: 'TR',
-    actif: true,
-    afficherNomCourtEnCommande: true,
-    afficherNomCourtEnEncaissement: false,
-    afficherNomCourtEnFabrication: true,
-    actifDansTouteLaJournee: false,
+//     salleIDS: [1],
+//     heureDebut: null,
+//     heureFin: null,
+//     produitsIds: [],
+//     joursDactivite: ['Lundi', 'Mardi'],
+//     priorite: 12,
+//     jourFerie: false,
+//   ),
+//   CategorieDePrixModel(
+//     id: '2',
+//     nom: 'Terrasse',
+//     nomCourt: 'TR',
+//     status: true,
+//     afficherNomCourtEnCommande: true,
+//     afficherNomCourtEnEncaissement: false,
+//     afficherNomCourtEnFabrication: true,
+//     actifDansTouteLaJournee: false,
 
-    salleIDS: [2, 1],
-    heureDebut: TimeOfDay(hour: 17, minute: 0),
-    heureFin: TimeOfDay(hour: 19, minute: 0),
-    produitsIds: [],
-    joursDactivite: ['Lundi', 'Jeudi'],
-    priorite: 10,
+//     salleIDS: [2, 1],
+//     heureDebut: TimeOfDay(hour: 17, minute: 0),
+//     heureFin: TimeOfDay(hour: 19, minute: 0),
+//     produitsIds: [],
+//     joursDactivite: ['Lundi', 'Jeudi'],
+//     priorite: 10,
 
-    jourFerie: false,
-  ),
+//     jourFerie: false,
+//   ),
 
-  CategorieDePrixModel(
-    id: '3',
-    nom: 'Emporter',
-    nomCourt: 'EM',
-    actif: true,
-    afficherNomCourtEnCommande: true,
-    afficherNomCourtEnEncaissement: false,
-    afficherNomCourtEnFabrication: true,
-    actifDansTouteLaJournee: false,
+//   CategorieDePrixModel(
+//     id: '3',
+//     nom: 'Emporter',
+//     nomCourt: 'EM',
+//     status: true,
+//     afficherNomCourtEnCommande: true,
+//     afficherNomCourtEnEncaissement: false,
+//     afficherNomCourtEnFabrication: true,
+//     actifDansTouteLaJournee: false,
 
-    salleIDS: [1],
-    heureDebut: TimeOfDay(hour: 17, minute: 0),
-    heureFin: TimeOfDay(hour: 19, minute: 0),
-    produitsIds: [],
-    joursDactivite: ['Lundi', 'Jeudi'],
-    priorite: 20,
-    jourFerie: false,
-  ),
-];
+//     salleIDS: [1],
+//     heureDebut: TimeOfDay(hour: 17, minute: 0),
+//     heureFin: TimeOfDay(hour: 19, minute: 0),
+//     produitsIds: [],
+//     joursDactivite: ['Lundi', 'Jeudi'],
+//     priorite: 20,
+//     jourFerie: false,
+//   ),
+// ];

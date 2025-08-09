@@ -612,7 +612,6 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
                                     ),
                                     const Divider(),
 
-                                    const Divider(),
                                     CustomListTile(
                                       onTap: null,
                                       leading: null,
@@ -894,24 +893,24 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
                                             ?.openEndDrawer();
                                       },
                                       leading: null,
-                                      trailing:
-                                          moyenDePaiementState
-                                                      .selected
-                                                      ?.sallesIDS !=
-                                                  null
-                                              ? moyenDePaiementState
-                                                  .selected
-                                                  ?.sallesIDS!
-                                                  .map(
-                                                    (id) =>
-                                                        salleList
-                                                            .firstWhere(
-                                                              (s) => s.id == id,
-                                                            )
-                                                            .name,
-                                                  )
-                                                  .join(', ')
-                                              : 'Aucune salle sélectionnée',
+                                      trailing: null,
+                                      // moyenDePaiementState
+                                      //             .selected
+                                      //             ?.sallesIDS !=
+                                      //         null
+                                      //     ? moyenDePaiementState
+                                      //         .selected
+                                      //         ?.sallesIDS!
+                                      //         .map(
+                                      //           (id) =>
+                                      //               salleList
+                                      //                   .firstWhere(
+                                      //                     (s) => s.id == id,
+                                      //                   )
+                                      //                   .name,
+                                      //         )
+                                      //         .join(', ')
+                                      //     : 'Aucune salle sélectionnée',
                                       title: Text(
                                         'Disponible dans les salles',
                                         style: AppTextStyle.greyHeading,

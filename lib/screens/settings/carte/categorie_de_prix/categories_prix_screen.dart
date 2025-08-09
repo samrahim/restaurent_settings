@@ -3,31 +3,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent/models/categorie_de_prix_model.dart';
 import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
 import 'package:restaurent/screens/reglage_screen.dart';
+import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificateurs_supplements_screen.dart';
+import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/produit_attachement.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_prix/catgorie_detaits.dart';
 import 'package:restaurent/widgets/widgets.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/riverpods/categorie_de_prix_riverpod.dart';
 
-class CategoriesPrixScreen extends StatefulWidget {
+class CategoriesPrixScreen extends ConsumerStatefulWidget {
   const CategoriesPrixScreen({super.key});
 
   @override
-  State<CategoriesPrixScreen> createState() => _CategoriesPrixScreenState();
+  ConsumerState<CategoriesPrixScreen> createState() =>
+      _CategoriesPrixScreenState();
 }
 
-class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
+class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   CategorieDePrixModel model = CategorieDePrixModel(
-    id: categoriesPrixList.length.toString(),
     nom: '',
     nomCourt: '',
-    actif: false,
-
+    status: false,
     afficherNomCourtEnCommande: false,
     afficherNomCourtEnEncaissement: false,
     afficherNomCourtEnFabrication: false,
     actifDansTouteLaJournee: false,
-
     joursDactivite: [],
     salleIDS: [],
     heureDebut: const TimeOfDay(hour: 12, minute: 00),
@@ -39,12 +40,13 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final categorieDePrixNotifier = ref.read(categorieDePrixRiverpod.notifier);
+    final categoriePrixState = ref.watch(categorieDePrixRiverpod);
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Consumer(
         builder: (context, ref, _) {
           final salles = ref.watch(salleRiverpod);
-
           final state = ref.watch(drawerRiverpod);
 
           if (state is DrawerCreateCategoriePrix) {
@@ -87,7 +89,6 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Nom court
                     TextFormField(
                       initialValue: m.nomCourt,
                       decoration: InputDecoration(
@@ -113,8 +114,8 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                     ...[
                       [
                         'Activer catégorie',
-                        m.actif,
-                        (bool v) => m.copyWith(actif: v),
+                        m.status,
+                        (bool v) => m.copyWith(status: v),
                       ],
                       [
                         'Afficher nom court (Commande)',
@@ -162,7 +163,6 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                               ),
                               trailingwidget: Switch(
                                 inactiveTrackColor: Colors.grey[300],
-
                                 activeColor:
                                     AppTextStyle.indingosubHeading.color,
                                 value: value,
@@ -338,6 +338,19 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
                         ],
                       ),
                     ),
+                    SizedBox(height: 16),
+                    CustomContainer(
+                      child: CustomListTile(
+                        leading: 'Prodtuid',
+                        title: null,
+                        trailing: null,
+                        onTap: () {
+                          categorieDePrixNotifier.openAttachmentScreen();
+                          _scaffoldKey.currentState?.closeEndDrawer();
+                        },
+                        trailingwidget: null,
+                      ),
+                    ),
 
                     const SizedBox(height: 24),
                     CreateButton(
@@ -446,115 +459,93 @@ class _CategoriesPrixScreenState extends State<CategoriesPrixScreen> {
           return SizedBox.shrink();
         },
       ),
-      body: Container(
-        color: Colors.grey.shade200,
-        child: Consumer(
-          builder: (context, ref, _) {
-            final provider = ref.watch(categorieDePrixRiverpod);
-            return Column(
-              children: [
-                if (provider.selected != null)
-                  AppBar(
-                    backgroundColor: Colors.white,
-                    centerTitle: true,
-                    title: Text(
-                      provider.selected!.nom!,
-                      style: AppTextStyle.indingoHeading,
-                    ),
-                    actions: [const SizedBox()],
-                    leading: IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        ref
-                            .read(categorieDePrixRiverpod.notifier)
-                            .clearSelection();
-                      },
-                    ),
-                  )
-                else
-                  AppBar(
-                    title: Text(
-                      'Catégories de prix',
-                      style: AppTextStyle.largeindingotext,
-                    ),
-                    centerTitle: true,
-                    actions: [
-                      ActionButton(onPressed: () {}, text: "Reorganiser"),
-                      ActionButton(
-                        onPressed: () {
-                          final container = ProviderScope.containerOf(context);
-                          container
-                              .read(drawerRiverpod.notifier)
-                              .openCreateCategoriePrixDrawer(model);
-
-                          _scaffoldKey.currentState?.openEndDrawer();
-                        },
-                        text: "Nouveau",
-                      ),
-                    ],
-                  ),
-                if (provider.selected != null)
-                  Expanded(
-                    child: CategorieDePrixDetails(
-                      categorieDePrixModel: provider.selected!,
-                      scaffoldKey: _scaffoldKey,
-                    ),
-                  )
-                else
-                  Expanded(child: _buildCategorieDePrixList(ref: ref)),
-              ],
-            );
-          },
-        ),
-      ),
+      body:
+          (categoriePrixState.selected == null &&
+                  categoriePrixState.attachmentProductScreen)
+              ? ProduitAttachement(
+                scaffoldKey: _scaffoldKey,
+                provider: categorieDePrixRiverpod,
+              )
+              : (categoriePrixState.selected == null &&
+                  !categoriePrixState.attachmentProductScreen)
+              ? Expanded(child: _buildCategorieDePrixList(ref: ref))
+              : (categoriePrixState.selected != null &&
+                  !categoriePrixState.attachmentProductScreen)
+              ? Expanded(
+                child: CategorieDePrixDetails(
+                  categorieDePrixModel: categoriePrixState.selected!,
+                  scaffoldKey: _scaffoldKey,
+                ),
+              )
+              : SizedBox.shrink(),
     );
   }
 
   Widget _buildCategorieDePrixList({required WidgetRef ref}) {
     final state = ref.watch(categorieDePrixRiverpod);
     final notifier = ref.read(categorieDePrixRiverpod.notifier);
-    return Container(
-      color: Colors.grey.shade200,
-      margin: const EdgeInsets.all(6),
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.white,
-            ),
-            margin: const EdgeInsets.all(18),
-            child: Column(
-              children: [
-                ...state.categories.map(
-                  (categorie) => Column(
-                    children: [
-                      InkWell(
-                        child: ListTile(
-                          hoverColor: Colors.grey.shade200,
-                          title: Text(
-                            categorie.nom!,
-                            style: AppTextStyle.indingoHeading,
-                          ),
-                          trailing: const Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.indigo,
-                          ),
-                        ),
-                        onTap: () {
-                          notifier.select(categorie);
-                        },
-                      ),
-                      categorie != state.categories.last
-                          ? const Divider()
-                          : const SizedBox(),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Catégories de prix', style: AppTextStyle.indingoHeading),
+        centerTitle: true,
+        actions: [
+          ActionButton(onPressed: () {}, text: "Reorganiser"),
+          ActionButton(
+            onPressed: () {
+              final container = ProviderScope.containerOf(context);
+              container
+                  .read(drawerRiverpod.notifier)
+                  .openCreateCategoriePrixDrawer(model);
+
+              _scaffoldKey.currentState?.openEndDrawer();
+            },
+            text: "Nouveau",
           ),
         ],
+      ),
+      body: Container(
+        color: Colors.grey.shade200,
+        margin: const EdgeInsets.all(6),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.white,
+              ),
+              margin: const EdgeInsets.all(18),
+              child: Column(
+                children: [
+                  ...state.categories.map(
+                    (categorie) => Column(
+                      children: [
+                        InkWell(
+                          child: ListTile(
+                            hoverColor: Colors.grey.shade200,
+                            title: Text(
+                              categorie.nom!,
+                              style: AppTextStyle.indingoHeading,
+                            ),
+                            trailing: const Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.indigo,
+                            ),
+                          ),
+                          onTap: () {
+                            notifier.select(categorie);
+                          },
+                        ),
+                        categorie != state.categories.last
+                            ? const Divider()
+                            : const SizedBox(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

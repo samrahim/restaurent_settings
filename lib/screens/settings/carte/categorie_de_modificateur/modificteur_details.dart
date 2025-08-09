@@ -112,7 +112,7 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
                                 itemBuilder: (context, index) {
                                   return Column(
                                     children: [
-                                      _buildModifierTile(
+                                      buildModifierTile(
                                         modificateur.modificateurs[index].nom,
                                       ),
                                       if (index !=
@@ -160,7 +160,7 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
 
                                   return Column(
                                     children: [
-                                      _buildModifierTile(
+                                      buildModifierTile(
                                         product.name ?? 'Nom non défini',
                                       ),
                                       if (index !=
@@ -426,11 +426,11 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
               : SizedBox.shrink(),
     );
   }
+}
 
-  Widget _buildModifierTile(String nom) {
-    return ListTile(
-      title: Text(nom, style: AppTextStyle.indingosubHeading),
-      trailing: const Icon(Icons.drag_handle),
-    );
-  }
+Widget buildModifierTile(String nom) {
+  return ListTile(
+    title: Text(nom, style: AppTextStyle.indingosubHeading),
+    trailing: const Icon(Icons.drag_handle),
+  );
 }

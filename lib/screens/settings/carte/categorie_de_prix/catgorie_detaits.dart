@@ -5,6 +5,7 @@ import 'package:restaurent/models/categorie_de_prix_model.dart';
 import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/riverpods/drawer_riverpod/drawer_riverpod.dart';
 import 'package:restaurent/screens/reglage_screen.dart';
+import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificteur_details.dart';
 import 'package:restaurent/widgets/button_supprimer.dart';
 import 'package:restaurent/widgets/custom_list_tile.dart';
 
@@ -31,83 +32,129 @@ class _CategorieDePrixDetailsState
     final drawerNotifier = ref.read(drawerRiverpod.notifier);
     final model = widget.categorieDePrixModel;
 
-    return Row(
-      children: [
-        Expanded(
-          flex: 3,
-          child: Card(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Catégorie de prix',
-                    style: AppTextStyle.greyHeading,
-                  ),
-                ),
-                ListTile(
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  tileColor: AppColors.greyaccent,
-                  leading: Text(
-                    "Information générale",
-                    style: AppTextStyle.indingosubHeading.copyWith(
-                      color: AppColors.indingo400,
+    final categorieDePrixNotifier = ref.read(categorieDePrixRiverpod.notifier);
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        title: Text(model.nom!, style: AppTextStyle.indingoHeading),
+        actions: [const SizedBox()],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            categorieDePrixNotifier.clearSelection();
+          },
+        ),
+      ),
+      body: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Card(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'CATÉGORIE DE PRIX',
+                          style: AppTextStyle.greysubHeading,
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 32),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text('Produits', style: AppTextStyle.greyHeading),
-                ),
-                ListTile(
-                  onTap: () {},
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  leading: Text(
-                    "Produits associés",
-                    style: AppTextStyle.indingosubHeading.copyWith(
-                      color: AppColors.indingo400,
+                  Container(
+                    color: Colors.grey.shade400,
+                    child: ListTile(
+                      title: Text(
+                        'Informations générales',
+                        style: AppTextStyle.indingoHeading,
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('PRODUITS', style: AppTextStyle.greysubHeading),
+                        IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.add, color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: model.produitsIds?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final product = ref
+                            .read(productRiverpod.notifier)
+                            .getProductById(model.produitsIds![index]);
+
+                        if (product == null) {
+                          return SizedBox.shrink();
+                        }
+
+                        return Column(
+                          children: [
+                            buildModifierTile(product.name ?? 'Nom non défini'),
+                            if (model.produitsIds != null &&
+                                index != model.produitsIds?.length)
+                              Divider(),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 24),
+          Expanded(
+            flex: 5,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 16),
+                            _buildInfoCard(drawerNotifier, model),
+                            const SizedBox(height: 16),
+                            _buildScheduleCard(
+                              drawerNotifier,
+                              model,
+                              salleList,
+                            ),
+                            ButtonSupprimer(
+                              style: null,
+                              onTap: () {},
+                              text: 'Supprimer',
+                            ),
+                            const SizedBox(height: 17),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
           ),
-        ),
-        const SizedBox(width: 24),
-        Expanded(
-          flex: 5,
-          child: Column(
-            children: [
-              Expanded(
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 16),
-                          _buildInfoCard(drawerNotifier, model),
-                          const SizedBox(height: 16),
-                          _buildScheduleCard(drawerNotifier, model, salleList),
-                          ButtonSupprimer(
-                            style: null,
-                            onTap: () {},
-                            text: 'Supprimer',
-                          ),
-                          const SizedBox(height: 17),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

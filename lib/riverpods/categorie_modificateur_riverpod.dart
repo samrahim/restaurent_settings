@@ -52,6 +52,7 @@ class CategorieModificateurNotifier
           loadingSelected: true,
           allCategories: [],
           selected: null,
+
           attachmentProductScreen: false,
           createmodificateur: CategorieDeModificateur(
             couleur: '',
@@ -104,8 +105,6 @@ class CategorieModificateurNotifier
 
   void setAttachmentProductScreen(bool value) {
     state = state.copyWith(attachmentProductScreen: value);
-    print(state.selected);
-    print(' i called and the state is ${state.attachmentProductScreen}');
   }
 
   void openAttachmentScreen() {
@@ -132,25 +131,23 @@ class CategorieModificateurNotifier
   }
 
   Future<void> update(CategorieDeModificateur updated) async {
-    final response = await client.post(
-      Uri.parse('${baseUrl}modificateurs/categories/createOrUpdate'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(updated.toJson()),
-    );
-
-    final Map<String, dynamic> responseJson = json.decode(response.body);
-    if (response.statusCode != 200) {
-      final CategorieDeModificateur res = CategorieDeModificateur.fromJson(
-        responseJson,
+    try {
+      final response = await client.post(
+        Uri.parse('${baseUrl}modificateurs/categories/createOrUpdate'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(updated.toJson()),
       );
-      return;
-    } else {
-      final updatedList =
-          state.allCategories.map((e) {
-            return e.id == updated.id ? updated : e;
-          }).toList();
 
-      state = state.copyWith(allCategories: updatedList, selected: updated);
+      if (response.statusCode != 200) {
+        final updatedList =
+            state.allCategories.map((e) {
+              return e.id == updated.id ? updated : e;
+            }).toList();
+
+        state = state.copyWith(allCategories: updatedList, selected: updated);
+      }
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 }

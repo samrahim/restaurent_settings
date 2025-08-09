@@ -56,6 +56,7 @@ class UtilisateurModel extends Equatable {
 }
 
 List<String> groupeList = ['Groupe 1', 'Groupe 2', 'Groupe 3'];
+
 List<UtilisateurModel> utilisateurList = [
   UtilisateurModel(
     id: '1',
