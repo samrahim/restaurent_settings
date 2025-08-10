@@ -85,14 +85,33 @@ class CategorieDePrixNotifier extends StateNotifier<CategorieDePrixState> {
     setAttachmentProductScreen(true);
   }
 
-  void update(CategorieDePrixModel updatedModel) {
-    print(updatedModel.toJson());
-    final updatedList =
-        state.categories.map((cat) {
-          return cat.id == updatedModel.id ? updatedModel : cat;
-        }).toList();
+  void update(CategorieDePrixModel updatedModel) async {
+    try {
+      final body = json.encode(updatedModel.toJson());
+      final response = await client.put(
+        Uri.parse(
+          'http://51.15.211.239:8444/api/categorie-prix/${updatedModel.id}',
+        ),
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
 
-    state = state.copyWith(categories: updatedList, selected: updatedModel);
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw Exception(
+          'Server error ${response.statusCode}: ${response.body}',
+        );
+      }
+
+      final updatedList =
+          state.categories
+              .map((e) => e.id == updatedModel.id ? updatedModel : e)
+              .toList();
+      print('we change it ${updatedModel.toJson()}');
+      state = state.copyWith(categories: updatedList, selected: updatedModel);
+    } catch (e, st) {
+      print('Update failed: $e\n$st');
+      rethrow;
+    }
   }
 
   void loadAll() async {

@@ -455,7 +455,12 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
                   fieldType: FieldType.choice,
                   onSaved: (v) {
                     final riverpod = ref.read(categorieDePrixRiverpod.notifier);
-                    riverpod.update(state.model.copyWith(salleIDS: v));
+                    riverpod.update(
+                      state.model.copyWith(
+                        salleIDS: v['choices'],
+                        salleMode: (v['affectationMode'] as AffectationMode),
+                      ),
+                    );
                   },
                 );
               case 'Afficher nom court en fabrication':
@@ -481,6 +486,7 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
                     riverpod.update(state.model.copyWith(joursDactivite: v));
                   },
                 );
+
               default:
                 return SizedBox.shrink();
             }
@@ -533,45 +539,47 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
       body: Container(
         color: Colors.grey.shade200,
         margin: const EdgeInsets.all(6),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.white,
-              ),
-              margin: const EdgeInsets.all(18),
-              child: Column(
-                children: [
-                  ...state.categories.map(
-                    (categorie) => Column(
-                      children: [
-                        InkWell(
-                          child: ListTile(
-                            hoverColor: Colors.grey.shade200,
-                            title: Text(
-                              categorie.nom!,
-                              style: AppTextStyle.indingoHeading,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white,
+                ),
+                margin: const EdgeInsets.all(18),
+                child: Column(
+                  children: [
+                    ...state.categories.map(
+                      (categorie) => Column(
+                        children: [
+                          InkWell(
+                            child: ListTile(
+                              hoverColor: Colors.grey.shade200,
+                              title: Text(
+                                categorie.nom!,
+                                style: AppTextStyle.indingoHeading,
+                              ),
+                              trailing: const Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.indigo,
+                              ),
                             ),
-                            trailing: const Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.indigo,
-                            ),
+                            onTap: () {
+                              notifier.select(categorie);
+                            },
                           ),
-                          onTap: () {
-                            notifier.select(categorie);
-                          },
-                        ),
-                        categorie != state.categories.last
-                            ? const Divider()
-                            : const SizedBox(),
-                      ],
+                          categorie != state.categories.last
+                              ? const Divider()
+                              : const SizedBox(),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

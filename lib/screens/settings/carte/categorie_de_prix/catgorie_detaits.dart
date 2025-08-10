@@ -321,7 +321,16 @@ class _CategorieDePrixDetailsState
           if (!(model.actifDansTouteLaJournee ?? true)) ...[
             const Divider(),
             CustomListTile(
-              onTap: null,
+              onTap: () async {
+                final t = await showTimePicker(
+                  context: context,
+                  initialTime: model.heureDebut ?? TimeOfDay.now(),
+                );
+                if (t != null && context.mounted) {
+                  final riverpod = ref.read(categorieDePrixRiverpod.notifier);
+                  riverpod.update(model.copyWith(heureDebut: t));
+                }
+              },
               trailingwidget: null,
               title: null,
               leading: "Horaire de début",
@@ -330,7 +339,16 @@ class _CategorieDePrixDetailsState
             ),
             const Divider(),
             CustomListTile(
-              onTap: null,
+              onTap: () async {
+                final t = await showTimePicker(
+                  context: context,
+                  initialTime: model.heureFin ?? TimeOfDay.now(),
+                );
+                if (t != null && context.mounted) {
+                  final riverpod = ref.read(categorieDePrixRiverpod.notifier);
+                  riverpod.update(model.copyWith(heureFin: t));
+                }
+              },
               trailingwidget: null,
               title: null,
               leading: "Horaire de fin",

@@ -208,7 +208,10 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                               }
                               return DropdownMenuItem<AffectationMode>(
                                 value: mode,
-                                child: Text(displayText),
+                                child: Text(
+                                  displayText,
+                                  style: AppTextStyle.indingosubHeading,
+                                ),
                               );
                             }).toList(),
                         onChanged: (AffectationMode? value) {
