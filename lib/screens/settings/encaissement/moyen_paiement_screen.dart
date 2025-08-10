@@ -309,7 +309,7 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
                       ),
 
                       SalleIdsPicker(
-                        salles: salleList,
+                        salles: salleList.salles,
                         selectedSalleIds: m.sallesIDS ?? [],
                         onSelectionChanged: (newSalles) {
                           final updated = m.copyWith(sallesIDS: newSalles);
@@ -499,7 +499,7 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
               case 'DisponibleDansLesSalles':
                 return UpdateAttributeDrawer(
                   fieldType: FieldType.choice,
-                  options: salleList,
+                  options: salleList.salles,
                   label: 'Disponible dans les salles',
                   initialValue: (state.currentValue) as List<int>,
                   onSaved: (v) {

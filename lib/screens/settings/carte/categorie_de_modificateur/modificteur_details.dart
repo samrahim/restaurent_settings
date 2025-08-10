@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/models/models.dart';
 import 'package:restaurent/models/salle_model.dart';
+import 'package:restaurent/riverpods/drawer_riverpod/drawer_riverpod.dart';
 import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
@@ -23,7 +25,6 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
       categorieModificateurRiverpod.notifier,
     );
     final modificateur = categorieModificateurState.selected;
-    final salles = ref.watch(salleRiverpod);
 
     return Scaffold(
       appBar: AppBar(
@@ -236,53 +237,7 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
                                           leading: null,
                                           trailing: null,
                                         ),
-                                        const Divider(),
 
-                                        CustomListTile(
-                                          onTap: () {
-                                            final container =
-                                                ProviderScope.containerOf(
-                                                  context,
-                                                );
-                                            container
-                                                .read(drawerRiverpod.notifier)
-                                                .openUpdateCategorieDeModificateur(
-                                                  modificateur,
-                                                  'salle',
-                                                  modificateur.sallesIDS,
-                                                );
-
-                                            widget.scaffoldKey.currentState!
-                                                .openEndDrawer();
-                                          },
-                                          title: Text(
-                                            'Afficher dans les salles et comptoirs',
-                                            style: AppTextStyle.greyHeading,
-                                          ),
-                                          leading: null,
-                                          trailing:
-                                              modificateur.sallesIDS != null
-                                                  ? modificateur.sallesIDS!
-                                                      .map(
-                                                        (id) =>
-                                                            salles
-                                                                .firstWhere(
-                                                                  (s) =>
-                                                                      s.id ==
-                                                                      id,
-                                                                  orElse:
-                                                                      () => SalleModel(
-                                                                        id: 33,
-                                                                        name:
-                                                                            "sal",
-                                                                      ),
-                                                                )
-                                                                .name,
-                                                      )
-                                                      .join(', ')
-                                                  : 'Aucune salle sélectionnée',
-                                          trailingwidget: null,
-                                        ),
                                         const Divider(),
 
                                         CustomListTile(
@@ -326,9 +281,12 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
                                             ),
                                           ),
                                         ),
+                                        Divider(),
+                                        buildScheduleCard(modificateur),
                                       ],
                                     ),
                                   ),
+
                                   const SizedBox(height: 32),
                                   Container(
                                     margin: const EdgeInsets.only(top: 4),
@@ -424,6 +382,29 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
                 ],
               )
               : SizedBox.shrink(),
+    );
+  }
+
+  Widget buildScheduleCard(CategorieDeModificateur model) {
+    List<String?> salleName = [];
+
+    model.sallesIDS?.forEach((e) {
+      final salle = ref.watch(salleRiverpod.notifier).getSalleById(e);
+      if (salle != null) {
+        salleName.add(salle.name);
+      }
+    });
+    return CustomListTile(
+      onTap: () {
+        final container = ProviderScope.containerOf(context);
+        container
+            .read(drawerRiverpod.notifier)
+            .openUpdateCategorieDeModificateur(model, 'salle', model.sallesIDS);
+      },
+      trailingwidget: null,
+      title: null,
+      leading: 'Salles concernées par la catégorie de prix',
+      trailing: salleName.join(','),
     );
   }
 }

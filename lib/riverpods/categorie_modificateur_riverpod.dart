@@ -52,7 +52,6 @@ class CategorieModificateurNotifier
           loadingSelected: true,
           allCategories: [],
           selected: null,
-
           attachmentProductScreen: false,
           createmodificateur: CategorieDeModificateur(
             couleur: '',

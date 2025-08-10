@@ -56,9 +56,25 @@ class CategorieDePrixNotifier extends StateNotifier<CategorieDePrixState> {
     state = state.copyWith(selected: null);
   }
 
-  void create(CategorieDePrixModel model) {
-    final updatedList = [...state.categories, model];
-    state = state.copyWith(categories: updatedList);
+  void create(CategorieDePrixModel model) async {
+    print(model.toJson());
+    final response = await client.post(
+      Uri.parse("http://51.15.211.239:8444/api/categorie-prix"),
+      body: json.encode(model.toJson()),
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'X-User': 'admin',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = json.decode(response.body);
+      CategorieDePrixModel mod = CategorieDePrixModel.fromJson(data);
+      state = state.copyWith(categories: [...state.categories, mod]);
+    } else {
+      throw response.body;
+    }
   }
 
   void setAttachmentProductScreen(bool value) {
@@ -90,6 +106,7 @@ class CategorieDePrixNotifier extends StateNotifier<CategorieDePrixState> {
         final categories =
             data.map((e) => CategorieDePrixModel.fromJson(e)).toList();
         state = state.copyWith(categories: categories, selected: null);
+
         state = state.copyWith(isLoading: false);
       } catch (e) {
         print(e.toString());

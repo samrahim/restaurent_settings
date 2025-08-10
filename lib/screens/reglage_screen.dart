@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurent/consts.dart';
-import 'package:restaurent/models/models.dart';
-import 'package:restaurent/models/salle_model.dart';
 import 'package:restaurent/riverpods/drawer_riverpod/drawer_riverpod.dart';
 import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
 import 'package:restaurent/riverpods/riverpods.dart';
@@ -13,11 +11,9 @@ final settingsRiverpod = StateNotifierProvider<SettingsNotifier, SettingsState>(
 );
 final httpClientProvider = Provider<http.Client>((ref) => http.Client());
 
-final salleRiverpod = StateNotifierProvider<SalleNotifier, List<SalleModel>>((
-  ref,
-) {
+final salleRiverpod = StateNotifierProvider<SalleNotifier, SalleState>((ref) {
   final client = ref.watch(httpClientProvider);
-  return SalleNotifier(client: client);
+  return SalleNotifier(client: client)..getSalles();
 });
 
 final tauxEtTvaRiverpod =
@@ -53,7 +49,7 @@ final productRiverpod = StateNotifierProvider<ProductNotifier, ProductState>((
   ref,
 ) {
   final client = ref.watch(httpClientProvider);
-  return ProductNotifier(client: client);
+  return ProductNotifier(client: client)..getProds();
 });
 
 final categorieDePrixRiverpod =

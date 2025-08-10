@@ -1,5 +1,6 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import "package:equatable/equatable.dart";
+import "package:flutter/material.dart";
+import "package:restaurent/consts.dart";
 
 class CategorieDePrixModel extends Equatable {
   final String? id;
@@ -10,7 +11,8 @@ class CategorieDePrixModel extends Equatable {
   final bool? afficherNomCourtEnEncaissement;
   final bool? afficherNomCourtEnFabrication;
   final bool? actifDansTouteLaJournee;
-
+  final bool? actif;
+  final bool? categorieActive;
   final List<String>? joursDactivite;
   final List<int>? salleIDS;
   final TimeOfDay? heureDebut;
@@ -18,6 +20,8 @@ class CategorieDePrixModel extends Equatable {
   final int priorite;
   final List<String>? produitsIds;
   final bool jourFerie;
+  final AffectationMode? salleMode;
+  final AffectationMode? produitMode;
 
   const CategorieDePrixModel({
     this.id,
@@ -28,7 +32,6 @@ class CategorieDePrixModel extends Equatable {
     required this.afficherNomCourtEnEncaissement,
     required this.afficherNomCourtEnFabrication,
     required this.actifDansTouteLaJournee,
-
     required this.joursDactivite,
     required this.salleIDS,
     required this.heureDebut,
@@ -36,6 +39,10 @@ class CategorieDePrixModel extends Equatable {
     required this.priorite,
     required this.produitsIds,
     required this.jourFerie,
+    required this.salleMode,
+    required this.produitMode,
+    required this.actif,
+    required this.categorieActive,
   });
   CategorieDePrixModel copyWith({
     String? id,
@@ -50,11 +57,14 @@ class CategorieDePrixModel extends Equatable {
     List<int>? salleIDS,
     TimeOfDay? heureDebut,
     TimeOfDay? heureFin,
-
     bool? afficherNomCourtEnFabrication,
     int? priorite,
     List<String>? produitsIds,
     bool? jourFerie,
+    AffectationMode? salleMode,
+    AffectationMode? produitMode,
+    bool? actif,
+    bool? categorieActive,
   }) {
     return CategorieDePrixModel(
       id: id ?? this.id,
@@ -69,7 +79,6 @@ class CategorieDePrixModel extends Equatable {
           afficherNomCourtEnFabrication ?? this.afficherNomCourtEnFabrication,
       actifDansTouteLaJournee:
           actifDansTouteLaJournee ?? this.actifDansTouteLaJournee,
-
       joursDactivite: joursDactivite ?? this.joursDactivite,
       salleIDS: salleIDS ?? this.salleIDS,
       heureDebut: heureDebut ?? this.heureDebut,
@@ -77,6 +86,10 @@ class CategorieDePrixModel extends Equatable {
       priorite: priorite ?? this.priorite,
       produitsIds: produitsIds ?? this.produitsIds,
       jourFerie: jourFerie ?? this.jourFerie,
+      salleMode: salleMode ?? this.salleMode,
+      produitMode: produitMode ?? this.produitMode,
+      actif: actif ?? this.actif,
+      categorieActive: categorieActive ?? this.categorieActive,
     );
   }
 
@@ -90,7 +103,6 @@ class CategorieDePrixModel extends Equatable {
     afficherNomCourtEnEncaissement,
     afficherNomCourtEnFabrication,
     actifDansTouteLaJournee,
-
     joursDactivite,
     salleIDS,
     heureDebut,
@@ -98,128 +110,99 @@ class CategorieDePrixModel extends Equatable {
     produitsIds,
     priorite,
     jourFerie,
+    salleMode,
+    produitMode,
+    actif,
+    categorieActive,
   ];
   factory CategorieDePrixModel.fromJson(Map<String, dynamic> json) {
     return CategorieDePrixModel(
-      id: json['id'] as String?,
-      nom: json['nom'] as String?,
-      nomCourt: json['nomCourt'] as String?,
-      status: json['status'] as bool?,
-      afficherNomCourtEnCommande: json['afficherNomCourtCommande'] as bool?,
+      id: json["id"] as String?,
+      nom: json["nom"] as String?,
+      nomCourt: json["nomCourt"] as String?,
+      status: json["status"] as bool?,
+      afficherNomCourtEnCommande: json["afficherNomCourtCommande"] as bool?,
       afficherNomCourtEnEncaissement:
-          json['afficherNomCourtEncaissement'] as bool?,
+          json["afficherNomCourtEncaissement"] as bool?,
       afficherNomCourtEnFabrication:
-          json['afficherNomCourtFabrication'] as bool?,
-      actifDansTouteLaJournee: json['actifTouteJournee'] as bool?,
-
+          json["afficherNomCourtFabrication"] as bool?,
+      actifDansTouteLaJournee: json["actifTouteJournee"] as bool?,
+      actif: json["actif"] as bool?,
       joursDactivite:
-          (json['joursActivite'] as List<dynamic>?)
+          (json["joursActivite"] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList(),
       salleIDS:
-          (json['salleIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
-      heureDebut:
-          json['heureDebut'] != null
-              ? TimeOfDay(
-                hour: int.parse(json['heureDebut'].split(':')[0]),
-                minute: int.parse(json['heureDebut'].split(':')[1]),
-              )
-              : null,
-
-      heureFin:
-          json['heureFin'] != null
-              ? TimeOfDay(
-                hour: int.parse(json['heureFin'].split(':')[0]),
-                minute: int.parse(json['heureFin'].split(':')[1]),
-              )
-              : null,
-      priorite: json['priorite'] as int? ?? 0,
-      produitsIds:
-          (json['produits'] as List<dynamic>?)
-              ?.map((e) => e['id'] as String)
+          (json["salles"] as List<dynamic>?)
+              ?.map((e) => e["id"] as int)
               .toList() ??
           [],
-      jourFerie: json['jourFerie'] as bool? ?? false,
+      heureDebut:
+          json["heureDebut"] != null
+              ? TimeOfDay(
+                hour: int.parse(json["heureDebut"].split(":")[0]),
+                minute: int.parse(json["heureDebut"].split(":")[1]),
+              )
+              : null,
+      heureFin:
+          json["heureFin"] != null
+              ? TimeOfDay(
+                hour: int.parse(json["heureFin"].split(":")[0]),
+                minute: int.parse(json["heureFin"].split(":")[1]),
+              )
+              : null,
+      priorite: json["priorite"] as int? ?? 0,
+      categorieActive: json["categorieActive"] as bool?,
+      produitsIds:
+          (json["produits"] as List<dynamic>?)
+              ?.map((e) => e["id"] as String)
+              .toList() ??
+          [],
+      jourFerie: json["jourFerie"] as bool? ?? false,
+      produitMode: AffectationMode.values.firstWhere(
+        (e) => e.name == json["produitMode"],
+        orElse: () => AffectationMode.POUR_SEULEMENT,
+      ),
+      salleMode: AffectationMode.values.firstWhere(
+        (e) => e.name == json["salleMode"],
+        orElse: () => AffectationMode.POUR_SEULEMENT,
+      ),
     );
   }
 
-  Map<String, dynamic> toJson(CategorieDePrixModel model) {
-    return {
-      'nom': model.nom,
-      'nomCourt': model.nomCourt,
-
-      'afficherNomCourtCommande': model.afficherNomCourtEnCommande,
-      'afficherNomCourtEncaissement': model.afficherNomCourtEnEncaissement,
-      'afficherNomCourtFabrication': model.afficherNomCourtEnFabrication,
-      'actifTouteJournee': model.actifDansTouteLaJournee,
-      'joursActivite':
-          model.joursDactivite?.map((e) => e.toUpperCase()).toList(),
-      'heureDebut': model.heureDebut.toString(),
-      'heureFin': model.heureFin.toString(),
-
-      'salleIds': model.salleIDS,
-      'produitIds': model.produitsIds,
-      'status': model.status,
-      'jourFerie': model.jourFerie,
+  Map<String, dynamic> toJson() {
+    final map = {
+      "nom": nom,
+      "nomCourt": nomCourt,
+      "afficherNomCourtCommande": afficherNomCourtEnCommande,
+      "afficherNomCourtEncaissement": afficherNomCourtEnEncaissement,
+      "afficherNomCourtFabrication": afficherNomCourtEnFabrication,
+      "actifTouteJournee": actifDansTouteLaJournee,
+      "joursActivite":
+          joursDactivite
+              ?.where((e) => e != "" && e.trim().isNotEmpty)
+              .map((e) => e.trim().toUpperCase())
+              .toList(),
+      "heureDebut":
+          "${heureDebut?.hour == 0 ? "00" : heureDebut?.hour}:${heureDebut?.minute == 0 ? "00" : heureDebut?.minute}:00",
+      "heureFin":
+          "${heureFin?.hour == 0 ? "00" : heureFin?.hour}:${heureFin?.minute == 0 ? "00" : heureFin?.minute}:00",
+      "salleIds": salleIDS,
+      "produitIds": produitsIds,
+      "status": status,
+      "jourFerie": jourFerie,
+      "priorite": priorite,
+      "actif": actif,
+      "categorieActive": categorieActive,
+      "dateDebut": "2025-07-14",
+      "dateFin": "2025-07-14",
+      "salleMode": salleMode?.name ?? AffectationMode.POUR_SEULEMENT,
+      "produitMode": produitMode?.name ?? AffectationMode.POUR_SEULEMENT,
     };
+
+    map.removeWhere(
+      (key, value) => value == null || (value is String && value.isEmpty),
+    );
+    return map;
   }
 }
-
-// List<CategorieDePrixModel> categoriesPrixList = [
-//   CategorieDePrixModel(
-//     id: '1',
-//     nom: 'Happy Hour',
-//     nomCourt: 'HH',
-//     status: true,
-//     afficherNomCourtEnCommande: true,
-//     afficherNomCourtEnEncaissement: false,
-//     afficherNomCourtEnFabrication: true,
-//     actifDansTouteLaJournee: true,
-
-//     salleIDS: [1],
-//     heureDebut: null,
-//     heureFin: null,
-//     produitsIds: [],
-//     joursDactivite: ['Lundi', 'Mardi'],
-//     priorite: 12,
-//     jourFerie: false,
-//   ),
-//   CategorieDePrixModel(
-//     id: '2',
-//     nom: 'Terrasse',
-//     nomCourt: 'TR',
-//     status: true,
-//     afficherNomCourtEnCommande: true,
-//     afficherNomCourtEnEncaissement: false,
-//     afficherNomCourtEnFabrication: true,
-//     actifDansTouteLaJournee: false,
-
-//     salleIDS: [2, 1],
-//     heureDebut: TimeOfDay(hour: 17, minute: 0),
-//     heureFin: TimeOfDay(hour: 19, minute: 0),
-//     produitsIds: [],
-//     joursDactivite: ['Lundi', 'Jeudi'],
-//     priorite: 10,
-
-//     jourFerie: false,
-//   ),
-
-//   CategorieDePrixModel(
-//     id: '3',
-//     nom: 'Emporter',
-//     nomCourt: 'EM',
-//     status: true,
-//     afficherNomCourtEnCommande: true,
-//     afficherNomCourtEnEncaissement: false,
-//     afficherNomCourtEnFabrication: true,
-//     actifDansTouteLaJournee: false,
-
-//     salleIDS: [1],
-//     heureDebut: TimeOfDay(hour: 17, minute: 0),
-//     heureFin: TimeOfDay(hour: 19, minute: 0),
-//     produitsIds: [],
-//     joursDactivite: ['Lundi', 'Jeudi'],
-//     priorite: 20,
-//     jourFerie: false,
-//   ),
-// ];

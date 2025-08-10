@@ -6,9 +6,9 @@ import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificateurs_supplements_screen.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/produit_attachement.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_prix/catgorie_detaits.dart';
+import 'package:restaurent/widgets/salleMode_picker.dart';
 import 'package:restaurent/widgets/widgets.dart';
 import 'package:restaurent/consts.dart';
-import 'package:restaurent/riverpods/categorie_de_prix_riverpod.dart';
 
 class CategoriesPrixScreen extends ConsumerStatefulWidget {
   const CategoriesPrixScreen({super.key});
@@ -33,9 +33,13 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
     salleIDS: [],
     heureDebut: const TimeOfDay(hour: 12, minute: 00),
     heureFin: const TimeOfDay(hour: 12, minute: 00),
-    priorite: 10,
+    priorite: 1,
     jourFerie: false,
     produitsIds: [],
+    salleMode: AffectationMode.POUR_TOUT,
+    produitMode: AffectationMode.POUR_TOUT,
+    actif: false,
+    categorieActive: false,
   );
 
   @override
@@ -87,7 +91,8 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
                             .updateCreateCategoriePrixModel(m.copyWith(nom: v));
                       },
                     ),
-                    const SizedBox(height: 16),
+
+                    const SizedBox(height: 8),
 
                     TextFormField(
                       initialValue: m.nomCourt,
@@ -109,13 +114,35 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
                             );
                       },
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      initialValue: m.priorite.toString(),
+                      decoration: InputDecoration(
+                        labelText: 'Priorite',
+                        labelStyle: AppTextStyle.indingosubHeading,
 
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
+                      onChanged: (v) {
+                        final container = ProviderScope.containerOf(context);
+                        container
+                            .read(drawerRiverpod.notifier)
+                            .updateCreateCategoriePrixModel(
+                              m.copyWith(priorite: int.parse(v.toString())),
+                            );
+                      },
+                    ),
+                    const SizedBox(height: 8),
                     ...[
+                      ['Actif', m.actif, (bool v) => m.copyWith(actif: v)],
                       [
                         'Activer catégorie',
-                        m.status,
-                        (bool v) => m.copyWith(status: v),
+                        m.categorieActive,
+                        (bool v) => m.copyWith(categorieActive: v),
                       ],
                       [
                         'Afficher nom court (Commande)',
@@ -134,7 +161,7 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
                         (bool v) =>
                             m.copyWith(afficherNomCourtEnFabrication: v),
                       ],
-
+                      ['Status', m.status, (bool v) => m.copyWith(status: v)],
                       [
                         'Actif toute la journée',
                         m.actifDansTouteLaJournee,
@@ -250,11 +277,14 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
                           },
                         ),
                       ),
-                      const SizedBox(height: 16),
                     ],
+                    const SizedBox(height: 8),
+
+                    buildSalleModeDropdown(null, m, context),
+                    const SizedBox(height: 8),
 
                     SalleIdsPicker(
-                      salles: salles,
+                      salles: salles.salles,
                       selectedSalleIds: m.salleIDS!,
                       onSelectionChanged: (selectedIds) {
                         final container = ProviderScope.containerOf(context);
@@ -359,7 +389,6 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
                           categorieDePrixRiverpod.notifier,
                         );
                         riverpod.create(m);
-
                         _scaffoldKey.currentState?.closeEndDrawer();
                       },
                       buttonText: "Créer la catégorie",
@@ -421,7 +450,7 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
               case 'Salles':
                 return UpdateAttributeDrawer(
                   label: 'Salles',
-                  options: salles,
+                  options: salles.salles,
                   initialValue: state.model.salleIDS,
                   fieldType: FieldType.choice,
                   onSaved: (v) {
@@ -468,14 +497,12 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
               )
               : (categoriePrixState.selected == null &&
                   !categoriePrixState.attachmentProductScreen)
-              ? Expanded(child: _buildCategorieDePrixList(ref: ref))
+              ? _buildCategorieDePrixList(ref: ref)
               : (categoriePrixState.selected != null &&
                   !categoriePrixState.attachmentProductScreen)
-              ? Expanded(
-                child: CategorieDePrixDetails(
-                  categorieDePrixModel: categoriePrixState.selected!,
-                  scaffoldKey: _scaffoldKey,
-                ),
+              ? CategorieDePrixDetails(
+                categorieDePrixModel: categoriePrixState.selected!,
+                scaffoldKey: _scaffoldKey,
               )
               : SizedBox.shrink(),
     );

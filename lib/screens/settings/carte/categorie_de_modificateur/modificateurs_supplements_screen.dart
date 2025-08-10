@@ -7,6 +7,7 @@ import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/riverpods/categorie_modificateur_riverpod.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificteur_details.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/produit_attachement.dart';
+import 'package:restaurent/widgets/salleMode_picker.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
 class ModificateursSupplementsScreen extends ConsumerStatefulWidget {
@@ -318,12 +319,11 @@ class _ModificateursSupplementsScreenState
                   const SizedBox(height: 16),
                   _buildCouleurField(createModel),
                   const SizedBox(height: 16),
-
                   _buildObligatoireField(createModel),
                   const SizedBox(height: 16),
                   _buildTypeSelectionField(createModel),
                   const SizedBox(height: 16),
-                  _buildSalleModeDropdown(createModel),
+                  buildSalleModeDropdown(createModel, null, context),
                   const SizedBox(height: 16),
                   _buildSallePicker(createModel),
                   const SizedBox(height: 16),
@@ -376,7 +376,7 @@ class _ModificateursSupplementsScreenState
       case 'obligatoire':
         return ['true', 'false'];
       case 'salle':
-        return ref.watch(salleRiverpod);
+        return ref.watch(salleRiverpod).salles;
       default:
         return [];
     }
@@ -478,7 +478,6 @@ class _ModificateursSupplementsScreenState
         onTap: () {
           openColorPicker(
             context: context,
-
             currentColor: hexToColor(createModel.couleur ?? '#FFFFFFFF'),
             onColorSelected: (Color selectedColor) {
               final updated = createModel.copyWith(
@@ -558,48 +557,10 @@ class _ModificateursSupplementsScreenState
     );
   }
 
-  Widget _buildSalleModeDropdown(CategorieDeModificateur createModel) {
-    return CustomContainer(
-      child: DropdownButtonFormField<AffectationMode>(
-        value: createModel.salleMode,
-        decoration: const InputDecoration(
-          labelText: 'Affectation mode',
-          border: InputBorder.none,
-        ),
-        items:
-            AffectationMode.values
-                .where((v) => v != AffectationMode.AJOUTER_A_LIST_EXSISTANTE)
-                .map(
-                  (v) => DropdownMenuItem(
-                    value: v,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Text(
-                        v.name.replaceAll("_", " "),
-                        style: AppTextStyle.indingosubHeading,
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
-        onChanged: (v) {
-          if (v != null) {
-            final updated = createModel.copyWith(salleMode: v);
-
-            final container = ProviderScope.containerOf(context);
-            container
-                .read(drawerRiverpod.notifier)
-                .openCreateCategorieDeModificateur(updated);
-          }
-        },
-      ),
-    );
-  }
-
   Widget _buildSallePicker(CategorieDeModificateur createModel) {
     final salles = ref.watch(salleRiverpod);
     return SalleIdsPicker(
-      salles: salles,
+      salles: salles.salles,
       selectedSalleIds: createModel.sallesIDS!,
       onSelectionChanged: (updatedSalleIds) {
         final updated = createModel.copyWith(sallesIDS: updatedSalleIds);

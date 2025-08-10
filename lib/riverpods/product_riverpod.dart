@@ -27,7 +27,6 @@ class ProductNotifier extends StateNotifier<ProductState> {
 
   ProductNotifier({required this.client})
     : super(ProductState(prod: [], searchResults: [])) {
-    print('i send request');
     getProds();
   }
 

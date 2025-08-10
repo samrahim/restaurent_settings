@@ -28,7 +28,6 @@ class _CategorieDePrixDetailsState
     extends ConsumerState<CategorieDePrixDetails> {
   @override
   Widget build(BuildContext context) {
-    final salleList = ref.watch(salleRiverpod);
     final drawerNotifier = ref.read(drawerRiverpod.notifier);
     final model = widget.categorieDePrixModel;
 
@@ -136,7 +135,7 @@ class _CategorieDePrixDetailsState
                             _buildScheduleCard(
                               drawerNotifier,
                               model,
-                              salleList,
+                              model.salleIDS ?? [],
                             ),
                             ButtonSupprimer(
                               style: null,
@@ -260,23 +259,16 @@ class _CategorieDePrixDetailsState
   Widget _buildScheduleCard(
     DrawerNotifier drawerNotifier,
     CategorieDePrixModel model,
-    List<SalleModel> salles,
+    List<int> salles,
   ) {
-    final selectedSalleNames =
-        model.salleIDS != null
-            ? model.salleIDS!
-                .map(
-                  (id) =>
-                      salles
-                          .firstWhere(
-                            (s) => s.id == id,
-                            orElse:
-                                () => SalleModel(id: 0, name: 'Salle inconnue'),
-                          )
-                          .name,
-                )
-                .join(', ')
-            : 'Aucune salle sélectionnée';
+    List<String?> salleName = [];
+
+    model.salleIDS?.forEach((e) {
+      final salle = ref.watch(salleRiverpod.notifier).getSalleById(e);
+      if (salle != null) {
+        salleName.add(salle.name);
+      }
+    });
 
     return Card(
       color: Colors.white,
@@ -296,6 +288,7 @@ class _CategorieDePrixDetailsState
           const Divider(),
           CustomListTile(
             onTap: () {
+              print(model.joursDactivite);
               drawerNotifier.openUpdateCategorieDePrixAttributs(
                 model,
                 'jours d\'activite',
@@ -307,7 +300,7 @@ class _CategorieDePrixDetailsState
             trailing: null,
             leading: 'Jours d\'activite de la catégorie de prix',
             trailingwidget: Text(
-              model.joursDactivite?.join(", ") ?? '',
+              model.joursDactivite?.join(",") ?? '',
               style: AppTextStyle.indingosubHeading,
             ),
           ),
@@ -324,7 +317,7 @@ class _CategorieDePrixDetailsState
             trailingwidget: null,
             title: null,
             leading: 'Salles concernées par la catégorie de prix',
-            trailing: selectedSalleNames,
+            trailing: salleName.join(','),
           ),
           if (!(model.actifDansTouteLaJournee ?? true)) ...[
             const Divider(),

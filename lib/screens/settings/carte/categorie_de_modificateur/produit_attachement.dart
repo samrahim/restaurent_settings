@@ -424,7 +424,7 @@ class _ProduitAttachementState extends ConsumerState<ProduitAttachement> {
                             color: Colors.grey[50],
                           ),
                           child: DropdownButtonFormField<AffectationMode>(
-                            // value: state.model.po,
+                            value: state.model.produitMode,
                             decoration: const InputDecoration(
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.symmetric(
@@ -460,15 +460,15 @@ class _ProduitAttachementState extends ConsumerState<ProduitAttachement> {
                                     .toList(),
                             onChanged: (AffectationMode? value) {
                               if (value != null) {
-                                // final updated = state.model.copyWith(
-                                //   produitMode: value,
-                                // );
-                                // final container = ProviderScope.containerOf(
-                                //   context,
-                                // );
-                                // container
-                                //     .read(drawerRiverpod.notifier)
-                                //     .openCreateCategorieDeModificateur(updated);
+                                final updated = state.model.copyWith(
+                                  produitMode: value,
+                                );
+                                final container = ProviderScope.containerOf(
+                                  context,
+                                );
+                                container
+                                    .read(drawerRiverpod.notifier)
+                                    .updateCreateCategoriePrixModel(updated);
                               }
                             },
                           ),
@@ -614,7 +614,7 @@ class _ProduitAttachementState extends ConsumerState<ProduitAttachement> {
                                   );
                                   container
                                       .read(drawerRiverpod.notifier)
-                                      .openCreateCategoriePrixDrawer(updated);
+                                      .updateCreateCategoriePrixModel(updated);
                                 } else if (produitsIds != null &&
                                     !produitsIds.contains(produit.id)) {
                                   final updatedIds = List<String>.from(
@@ -629,7 +629,7 @@ class _ProduitAttachementState extends ConsumerState<ProduitAttachement> {
                                   );
                                   container
                                       .read(drawerRiverpod.notifier)
-                                      .openCreateCategoriePrixDrawer(updated);
+                                      .updateCreateCategoriePrixModel(updated);
                                 }
                               },
                             ),
