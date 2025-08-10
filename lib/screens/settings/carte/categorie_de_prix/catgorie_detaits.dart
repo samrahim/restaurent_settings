@@ -288,7 +288,6 @@ class _CategorieDePrixDetailsState
           const Divider(),
           CustomListTile(
             onTap: () {
-              print(model.joursDactivite);
               drawerNotifier.openUpdateCategorieDePrixAttributs(
                 model,
                 'jours d\'activite',
@@ -309,7 +308,7 @@ class _CategorieDePrixDetailsState
             onTap: () {
               drawerNotifier.openUpdateCategorieDePrixAttributs(
                 model,
-                'Salles',
+                'salle',
                 model.salleIDS,
               );
               widget.scaffoldKey.currentState?.openEndDrawer();

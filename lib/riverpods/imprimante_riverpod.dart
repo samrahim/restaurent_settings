@@ -101,13 +101,12 @@ class ImprimanteNotifier extends StateNotifier<ImprimanteState> {
       ),
     );
     List data = json.decode(response.body);
-    print("res ${response.body}");
+
     final peripheriques = data.map((e) => Peripherique.fromJson(e)).toList();
     state = state.copyWith(peripheriques: peripheriques);
   }
 
   Future<void> createImprimant() async {
-    print(state.ip);
     final p = Peripherique(
       nom: state.emaplacemt,
       ip: state.ip,

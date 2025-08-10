@@ -131,22 +131,30 @@ class CategorieModificateurNotifier
 
   Future<void> update(CategorieDeModificateur updated) async {
     try {
+      final body = json.encode(updated.toJson());
+
       final response = await client.post(
         Uri.parse('${baseUrl}modificateurs/categories/createOrUpdate'),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode(updated.toJson()),
+        body: body,
       );
 
-      if (response.statusCode != 200) {
-        final updatedList =
-            state.allCategories.map((e) {
-              return e.id == updated.id ? updated : e;
-            }).toList();
-
-        state = state.copyWith(allCategories: updatedList, selected: updated);
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw Exception(
+          'Server error ${response.statusCode}: ${response.body}',
+        );
       }
-    } catch (e) {
-      throw Exception(e.toString());
+      final updatedCopy = CategorieDeModificateur.fromJson(updated.toJson());
+
+      final updatedList =
+          state.allCategories
+              .map((e) => e.id == updatedCopy.id ? updatedCopy : e)
+              .toList();
+
+      state = state.copyWith(allCategories: updatedList, selected: updatedCopy);
+    } catch (e, st) {
+      print('Update failed: $e\n$st');
+      rethrow;
     }
   }
 }

@@ -40,7 +40,6 @@ class SalleNotifier extends StateNotifier<SalleState> {
   }
 
   SalleModel? getSalleById(int id) {
-    print("i called++++++++++++++++++");
     for (SalleModel salle in state.salles) {
       if (salle.id == id) {
         return salle;

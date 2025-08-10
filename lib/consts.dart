@@ -243,7 +243,6 @@ const List<String> joursSemaine = [
 ];
 
 Color hexToColor(String? hexString) {
-  print(hexString);
   if (hexString == null || hexString.isEmpty) {
     // Fallback to white if the string is null or empty
     return const Color(0xFFFFFFFF);

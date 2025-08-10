@@ -86,6 +86,7 @@ class CategorieDePrixNotifier extends StateNotifier<CategorieDePrixState> {
   }
 
   void update(CategorieDePrixModel updatedModel) {
+    print(updatedModel.toJson());
     final updatedList =
         state.categories.map((cat) {
           return cat.id == updatedModel.id ? updatedModel : cat;
@@ -109,7 +110,7 @@ class CategorieDePrixNotifier extends StateNotifier<CategorieDePrixState> {
 
         state = state.copyWith(isLoading: false);
       } catch (e) {
-        print(e.toString());
+        throw Exception(e);
       }
     } else {
       print("errro");

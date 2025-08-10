@@ -175,7 +175,12 @@ class _ModificateursSupplementsScreenState
                             );
                         categorieModificateurNotifier.update(
                           categorieModificateurState.selected!.copyWith(
-                            modificateurs: [sub],
+                            modificateurs: [
+                              ...categorieModificateurState
+                                  .selected!
+                                  .modificateurs,
+                              sub,
+                            ],
                           ),
                         );
                         supplement.clear();

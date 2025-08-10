@@ -400,6 +400,7 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
         container
             .read(drawerRiverpod.notifier)
             .openUpdateCategorieDeModificateur(model, 'salle', model.sallesIDS);
+        widget.scaffoldKey.currentState?.openEndDrawer();
       },
       trailingwidget: null,
       title: null,

@@ -447,9 +447,9 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
                     );
                   },
                 );
-              case 'Salles':
+              case 'salle':
                 return UpdateAttributeDrawer(
-                  label: 'Salles',
+                  label: 'salle',
                   options: salles.salles,
                   initialValue: state.model.salleIDS,
                   fieldType: FieldType.choice,
