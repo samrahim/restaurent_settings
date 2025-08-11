@@ -11,6 +11,7 @@ class CategorieModificateurState {
   final CategorieDeModificateur? selected;
   final bool attachmentProductScreen;
   final CategorieDeModificateur createmodificateur;
+  final bool? updateProds;
 
   const CategorieModificateurState({
     required this.loadingAll,
@@ -19,6 +20,7 @@ class CategorieModificateurState {
     required this.selected,
     required this.attachmentProductScreen,
     required this.createmodificateur,
+    required this.updateProds,
   });
 
   CategorieModificateurState copyWith({
@@ -28,6 +30,7 @@ class CategorieModificateurState {
     CategorieDeModificateur? selected,
     bool? attachmentProductScreen,
     CategorieDeModificateur? createmodificateur,
+    bool? updateProds,
   }) {
     return CategorieModificateurState(
       loadingAll: loadingAll ?? this.loadingAll,
@@ -37,6 +40,7 @@ class CategorieModificateurState {
       attachmentProductScreen:
           attachmentProductScreen ?? this.attachmentProductScreen,
       createmodificateur: createmodificateur ?? this.createmodificateur,
+      updateProds: updateProds,
     );
   }
 }
@@ -53,6 +57,7 @@ class CategorieModificateurNotifier
           allCategories: [],
           selected: null,
           attachmentProductScreen: false,
+          updateProds: false,
           createmodificateur: CategorieDeModificateur(
             couleur: '',
             icone: '',
@@ -130,6 +135,7 @@ class CategorieModificateurNotifier
   }
 
   Future<void> update(CategorieDeModificateur updated) async {
+    print(updated.toJson());
     try {
       final body = json.encode(updated.toJson());
 
@@ -156,5 +162,17 @@ class CategorieModificateurNotifier
       print('Update failed: $e\n$st');
       rethrow;
     }
+  }
+
+  openUpdateProduct() {
+    state.copyWith(updateProds: true);
+  }
+
+  closeUpdateProduct() {
+    state.copyWith(updateProds: false);
+  }
+
+  void updateSelected(CategorieDeModificateur updated) {
+    state = state.copyWith(selected: updated);
   }
 }

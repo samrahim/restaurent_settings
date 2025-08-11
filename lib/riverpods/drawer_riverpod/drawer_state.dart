@@ -127,3 +127,11 @@ class DrawerCreateSubCategorieDeModificateur extends DrawerState {
   @override
   List<Object?> get props => [modificateur];
 }
+
+class UpdateProdsScreenModificateur extends DrawerState {
+  final CategorieDeModificateur modificateur;
+
+  UpdateProdsScreenModificateur({required this.modificateur});
+  @override
+  List<Object?> get props => [];
+}

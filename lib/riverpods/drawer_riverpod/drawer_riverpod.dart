@@ -94,4 +94,8 @@ class DrawerNotifier extends StateNotifier<DrawerState> {
   void resetDrawer() {
     state = DrawerInitial();
   }
+
+  void updateProdModificateur({required CategorieDeModificateur modificateur}) {
+    state = UpdateProdsScreenModificateur(modificateur: modificateur);
+  }
 }

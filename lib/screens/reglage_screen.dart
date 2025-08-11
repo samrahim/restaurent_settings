@@ -6,6 +6,10 @@ import 'package:restaurent/riverpods/drawer_riverpod/drawer_riverpod.dart';
 import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
 import 'package:restaurent/riverpods/riverpods.dart';
 
+final tempSelectedIdsProvider = StateProvider<List<String>>((ref) {
+  return [];
+});
+
 final settingsRiverpod = StateNotifierProvider<SettingsNotifier, SettingsState>(
   (ref) => SettingsNotifier(initialSettings: routes)..loadSettings(),
 );
