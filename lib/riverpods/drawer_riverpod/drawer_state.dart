@@ -133,5 +133,14 @@ class UpdateProdsScreenModificateur extends DrawerState {
 
   UpdateProdsScreenModificateur({required this.modificateur});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [modificateur];
+}
+
+class UpdateProdsCategoriePrix extends DrawerState {
+  final CategorieDePrixModel model;
+
+  UpdateProdsCategoriePrix({required this.model});
+
+  @override
+  List<Object?> get props => [model];
 }

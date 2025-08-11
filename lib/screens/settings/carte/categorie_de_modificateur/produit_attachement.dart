@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_debouncer/flutter_debouncer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent/consts.dart';
-import 'package:restaurent/models/produits_model.dart';
 import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
 import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/widgets/update_prod_ui.dart';
@@ -29,11 +28,12 @@ class _ProduitAttachementState extends ConsumerState<ProduitAttachement> {
     super.dispose();
   }
 
+  AffectationMode mode = AffectationMode.POUR_SEULEMENT;
+
   @override
   Widget build(BuildContext context) {
     final notifier = ref.read(widget.provider.notifier);
 
-    final productState = ref.watch(productRiverpod);
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -59,6 +59,7 @@ class _ProduitAttachementState extends ConsumerState<ProduitAttachement> {
 
           if (state is DrawerCreateCategorieDeModificateur) {
             return ProductSelectionScreen(
+              currentMode: mode,
               selectedIds: state.modificateur.produitsIds ?? [],
               isForCreate: true,
               onSelectionChanged: (ids) {
@@ -82,6 +83,8 @@ class _ProduitAttachementState extends ConsumerState<ProduitAttachement> {
             return ProductSelectionScreen(
               selectedIds: state.model.produitsIds ?? [],
               isForCreate: true,
+              currentMode: mode,
+
               onSelectionChanged: (ids) {
                 final updated = state.model.copyWith(produitsIds: ids);
                 ref

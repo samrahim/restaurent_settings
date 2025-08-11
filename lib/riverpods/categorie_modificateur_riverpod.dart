@@ -132,10 +132,10 @@ class CategorieModificateurNotifier
     } else {
       throw response.body;
     }
+    print(newCategorie.toJson());
   }
 
   Future<void> update(CategorieDeModificateur updated) async {
-    print(updated.toJson());
     try {
       final body = json.encode(updated.toJson());
 

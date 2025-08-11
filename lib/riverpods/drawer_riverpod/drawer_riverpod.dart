@@ -98,4 +98,8 @@ class DrawerNotifier extends StateNotifier<DrawerState> {
   void updateProdModificateur({required CategorieDeModificateur modificateur}) {
     state = UpdateProdsScreenModificateur(modificateur: modificateur);
   }
+
+  void updateProdCategorieDePrix({required CategorieDePrixModel model}) {
+    state = UpdateProdsCategoriePrix(model: model);
+  }
 }
