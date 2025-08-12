@@ -31,11 +31,24 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
     actif: true,
   );
   TextEditingController nameController = TextEditingController();
+  TextEditingController variation = TextEditingController();
+
+  TextEditingController gestionDuTropPercu = TextEditingController();
+  TextEditingController modeEncaissement = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final moyenDePaiementState = ref.watch(moyenDePaiementRiverpod);
     final moyenDePaiementNotifier = ref.read(moyenDePaiementRiverpod.notifier);
     final salleList = ref.watch(salleRiverpod);
+    List<String?> salleName = [];
+
+    moyenDePaiementState.selected?.sallesIDS?.forEach((e) {
+      final salle = ref.watch(salleRiverpod.notifier).getSalleById(e);
+      if (salle != null) {
+        salleName.add(salle.name);
+      }
+    });
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Consumer(
@@ -46,329 +59,268 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
 
             return Drawer(
               width: MediaQuery.of(context).size.width * .3,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
-                        child: Text(
-                          'Créer une nouvelle moyen de paiement',
-                          style: AppTextStyle.indingoHeading,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      CustomTextField(
-                        controller: nameController,
-                        label: 'Nom de la catégorie',
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Nom de la catégorie est requis';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          final updated = m.copyWith(nom: value);
-                          ref
-                              .read(drawerRiverpod.notifier)
-                              .openCreatePaiementMethodeDrawer(updated);
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: AppColors.greyaccent!,
-                            width: .9,
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          child: Text(
+                            'Créer une nouvelle moyen de paiement',
+                            style: AppTextStyle.indingoHeading,
                           ),
                         ),
-                        child: DropdownButtonFormField<String>(
-                          value: m.modeEncaissement,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: AppColors.greyaccent!,
-                              ),
-                            ),
-                            labelText: 'Mode d’encaissement',
-                          ),
-                          items:
-                              modeEncaissementList
-                                  .map(
-                                    (v) => DropdownMenuItem(
-                                      value: v,
-                                      child: Text(
-                                        v,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged: (v) {
-                            if (v != null) {
-                              final updated = m.copyWith(modeEncaissement: v);
-                              ref
-                                  .read(drawerRiverpod.notifier)
-                                  .openCreatePaiementMethodeDrawer(updated);
+                        const SizedBox(height: 16),
+                        CustomTextField(
+                          controller: nameController,
+                          label: 'Nom de la catégorie',
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Nom de la catégorie est requis';
                             }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            final updated = m.copyWith(nom: value);
+                            ref
+                                .read(drawerRiverpod.notifier)
+                                .openCreatePaiementMethodeDrawer(updated);
                           },
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: AppColors.greyaccent!,
-                            width: .9,
-                          ),
+                        const SizedBox(height: 16),
+                        CustomTextField(
+                          controller: modeEncaissement,
+                          label: 'Mode d’encaissement',
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Mode d’encaissement est requis';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            final updated = m.copyWith(modeEncaissement: value);
+                            ref
+                                .read(drawerRiverpod.notifier)
+                                .openCreatePaiementMethodeDrawer(updated);
+                          },
                         ),
-                        child: DropdownButtonFormField<String>(
-                          value: m.getsionDuTropPercu,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: AppColors.greyaccent!,
-                              ),
-                            ),
-                            labelText: 'Gestion du trop-perçu',
-                          ),
 
-                          items:
-                              gestionDuTropPercuList
-                                  .map(
-                                    (v) => DropdownMenuItem(
-                                      value: v,
-                                      child: Text(
-                                        v,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged: (v) {
-                            if (v != null) {
-                              final updated = m.copyWith(getsionDuTropPercu: v);
-                              ref
-                                  .read(drawerRiverpod.notifier)
-                                  .openCreatePaiementMethodeDrawer(updated);
+                        const SizedBox(height: 16),
+                        CustomTextField(
+                          controller: gestionDuTropPercu,
+                          label: 'Gestion du trop-perçu',
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Gestion du trop-perçu est requis';
                             }
+                            return null;
                           },
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: AppColors.greyaccent!,
-                            width: .9,
-                          ),
-                        ),
-                        child: SwitchListTile(
-                          activeColor: AppColors.indingo400,
-                          title: Text(
-                            'Ouverture du tiroir caisse',
-                            style: AppTextStyle.indingosubHeading,
-                          ),
-                          value: m.ouvertureDeTiroirCaisse ?? false,
-                          onChanged: (v) {
+                          onChanged: (value) {
                             final updated = m.copyWith(
-                              ouvertureDeTiroirCaisse: v,
+                              getsionDuTropPercu: value,
                             );
                             ref
                                 .read(drawerRiverpod.notifier)
                                 .openCreatePaiementMethodeDrawer(updated);
                           },
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: AppColors.greyaccent!,
-                            width: .9,
-                          ),
-                        ),
-                        child: SwitchListTile(
-                          title: Text(
-                            'Disponible en mode express',
-                            style: AppTextStyle.indingosubHeading,
-                          ),
-                          value: m.disponibleEnModeExpress ?? false,
-                          activeColor: AppColors.indingo400,
-                          onChanged: (v) {
-                            final updated = m.copyWith(
-                              disponibleEnModeExpress: v,
-                            );
-                            ref
-                                .read(drawerRiverpod.notifier)
-                                .openCreatePaiementMethodeDrawer(updated);
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: AppColors.greyaccent!,
-                            width: .9,
-                          ),
-                        ),
-                        child: DropdownButtonFormField<String>(
-                          value: m.variationDuMoyenDePaiement,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: AppColors.greyaccent!,
-                              ),
+                        const SizedBox(height: 16),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: AppColors.greyaccent!,
+                              width: .9,
                             ),
-                            labelText: 'Variation',
                           ),
-
-                          items:
-                              moyenDePaiementList
-                                  .map(
-                                    (v) => DropdownMenuItem(
-                                      value: v,
-                                      child: Text(
-                                        v,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged: (v) {
-                            if (v != null) {
+                          child: SwitchListTile(
+                            activeColor: AppColors.indingo400,
+                            title: Text(
+                              'Ouverture du tiroir caisse',
+                              style: AppTextStyle.indingosubHeading,
+                            ),
+                            value: m.ouvertureDeTiroirCaisse ?? false,
+                            onChanged: (v) {
                               final updated = m.copyWith(
-                                variationDuMoyenDePaiement: v,
+                                ouvertureDeTiroirCaisse: v,
                               );
                               ref
                                   .read(drawerRiverpod.notifier)
                                   .openCreatePaiementMethodeDrawer(updated);
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: AppColors.greyaccent!,
+                              width: .9,
+                            ),
+                          ),
+                          child: SwitchListTile(
+                            title: Text(
+                              'Disponible en mode express',
+                              style: AppTextStyle.indingosubHeading,
+                            ),
+                            value: m.disponibleEnModeExpress ?? false,
+                            activeColor: AppColors.indingo400,
+                            onChanged: (v) {
+                              final updated = m.copyWith(
+                                disponibleEnModeExpress: v,
+                              );
+                              ref
+                                  .read(drawerRiverpod.notifier)
+                                  .openCreatePaiementMethodeDrawer(updated);
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        CustomTextField(
+                          controller: variation,
+                          label: 'Variation',
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'La variation est requis';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            final updated = m.copyWith(
+                              variationDuMoyenDePaiement: value,
+                            );
+                            ref
+                                .read(drawerRiverpod.notifier)
+                                .openCreatePaiementMethodeDrawer(updated);
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: AppColors.greyaccent!,
+                              width: .9,
+                            ),
+                          ),
+                          child: SwitchListTile(
+                            activeColor: AppColors.indingo400,
+                            title: Text(
+                              'Compter à la fin du service',
+                              style: AppTextStyle.indingosubHeading,
+                            ),
+                            value: m.compterAlaFinDuService ?? false,
+                            onChanged: (v) {
+                              final updated = m.copyWith(
+                                compterAlaFinDuService: v,
+                              );
+                              ref
+                                  .read(drawerRiverpod.notifier)
+                                  .openCreatePaiementMethodeDrawer(updated);
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: AppColors.greyaccent!,
+                              width: .9,
+                            ),
+                          ),
+                          child: SwitchListTile(
+                            activeColor: AppColors.indingo400,
+                            title: Text(
+                              'Renseigner le fond de caisse',
+                              style: AppTextStyle.indingosubHeading,
+                            ),
+                            value: m.rensignerleFondDeCaisee ?? false,
+                            onChanged: (v) {
+                              final updated = m.copyWith(
+                                rensignerleFondDeCaisee: v,
+                              );
+                              ref
+                                  .read(drawerRiverpod.notifier)
+                                  .openCreatePaiementMethodeDrawer(updated);
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        SalleIdsPicker(
+                          salles: salleList.salles,
+                          selectedSalleIds: m.sallesIDS as List<int> ?? [],
+                          onSelectionChanged: (newSalles) {
+                            final updated = m.copyWith(sallesIDS: newSalles);
+                            ref
+                                .read(drawerRiverpod.notifier)
+                                .openCreatePaiementMethodeDrawer(updated);
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: AppColors.greyaccent!,
+                              width: .9,
+                            ),
+                          ),
+                          child: SwitchListTile(
+                            activeColor: AppColors.indingo400,
+                            title: Text(
+                              'Actif',
+                              style: AppTextStyle.indingosubHeading,
+                            ),
+                            value: m.actif ?? false,
+                            onChanged: (v) {
+                              final updated = m.copyWith(actif: v);
+                              ref
+                                  .read(drawerRiverpod.notifier)
+                                  .openCreatePaiementMethodeDrawer(updated);
+                            },
+                          ),
+                        ),
+
+                        const SizedBox(height: 32),
+
+                        CreateButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate() &&
+                                context.mounted) {
+                              await ref
+                                  .read(moyenDePaiementRiverpod.notifier)
+                                  .create(model: state.model);
+
+                              nameController.clear();
+                              final container = ProviderScope.containerOf(
+                                context,
+                              );
+                              container
+                                  .read(drawerRiverpod.notifier)
+                                  .resetDrawer();
+                            } else {
+                              null;
                             }
                           },
+                          buttonText: 'Crée une nouvelle moyen de paiement',
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: AppColors.greyaccent!,
-                            width: .9,
-                          ),
-                        ),
-                        child: SwitchListTile(
-                          activeColor: AppColors.indingo400,
-                          title: Text(
-                            'Compter à la fin du service',
-                            style: AppTextStyle.indingosubHeading,
-                          ),
-                          value: m.compterAlaFinDuService ?? false,
-                          onChanged: (v) {
-                            final updated = m.copyWith(
-                              compterAlaFinDuService: v,
-                            );
-                            ref
-                                .read(drawerRiverpod.notifier)
-                                .openCreatePaiementMethodeDrawer(updated);
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: AppColors.greyaccent!,
-                            width: .9,
-                          ),
-                        ),
-                        child: SwitchListTile(
-                          activeColor: AppColors.indingo400,
-                          title: Text(
-                            'Renseigner le fond de caisse',
-                            style: AppTextStyle.indingosubHeading,
-                          ),
-                          value: m.rensignerleFondDeCaisee ?? false,
-                          onChanged: (v) {
-                            final updated = m.copyWith(
-                              rensignerleFondDeCaisee: v,
-                            );
-                            ref
-                                .read(drawerRiverpod.notifier)
-                                .openCreatePaiementMethodeDrawer(updated);
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      SalleIdsPicker(
-                        salles: salleList.salles,
-                        selectedSalleIds: m.sallesIDS as List<int> ?? [],
-                        onSelectionChanged: (newSalles) {
-                          final updated = m.copyWith(sallesIDS: newSalles);
-                          ref
-                              .read(drawerRiverpod.notifier)
-                              .openCreatePaiementMethodeDrawer(updated);
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: AppColors.greyaccent!,
-                            width: .9,
-                          ),
-                        ),
-                        child: SwitchListTile(
-                          activeColor: AppColors.indingo400,
-                          title: Text(
-                            'Actif',
-                            style: AppTextStyle.indingosubHeading,
-                          ),
-                          value: m.actif ?? false,
-                          onChanged: (v) {
-                            final updated = m.copyWith(actif: v);
-                            ref
-                                .read(drawerRiverpod.notifier)
-                                .openCreatePaiementMethodeDrawer(updated);
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      CreateButton(
-                        onPressed: () async {
-                          await ref
-                              .read(moyenDePaiementRiverpod.notifier)
-                              .create(model: state.model);
-
-                          nameController.clear();
-                          Navigator.pop(context);
-                        },
-                        buttonText: 'Crée une nouvelle moyen de paiement',
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -985,24 +937,7 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
                                                     ?.openEndDrawer();
                                               },
                                               leading: null,
-                                              trailing: null,
-                                              // moyenDePaiementState
-                                              //             .selected
-                                              //             ?.sallesIDS !=
-                                              //         null
-                                              //     ? moyenDePaiementState
-                                              //         .selected
-                                              //         ?.sallesIDS!
-                                              //         .map(
-                                              //           (id) =>
-                                              //               salleList
-                                              //                   .firstWhere(
-                                              //                     (s) => s.id == id,
-                                              //                   )
-                                              //                   .name,
-                                              //         )
-                                              //         .join(', ')
-                                              //     : 'Aucune salle sélectionnée',
+                                              trailing: salleName.join(","),
                                               title: Text(
                                                 'Disponible dans les salles',
                                                 style: AppTextStyle.greyHeading,
