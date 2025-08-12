@@ -88,7 +88,7 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                 ),
 
                 child: SwitchListTile(
-                  activeColor: AppColors.primary,
+                  activeColor: AppColors.indingo400,
 
                   title: Text('Activer ?', style: AppTextStyle.greysubHeading),
                   value: _boolValue,
@@ -111,7 +111,10 @@ class _UpdateAttributeDrawerState extends State<UpdateAttributeDrawer> {
                         .map(
                           (e) => DropdownMenuItem<String>(
                             value: e.toString(),
-                            child: Text(e.toString()),
+                            child: Text(
+                              e.toString(),
+                              style: AppTextStyle.indingosubHeading,
+                            ),
                           ),
                         )
                         .toList(),

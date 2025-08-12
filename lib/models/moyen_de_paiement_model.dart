@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class MoyenDePaiementModel extends Equatable {
-  final String? id;
+  final int? id;
   final String? nom;
   final String? icon;
   final String? modeEncaissement;
@@ -47,7 +47,7 @@ class MoyenDePaiementModel extends Equatable {
   MoyenDePaiementModel copyWith({
     String? nom,
     String? icon,
-    String? id,
+    int? id,
     String? modeEncaissement,
     String? getsionDuTropPercu,
     bool? ouvertureDeTiroirCaisse,
@@ -78,11 +78,61 @@ class MoyenDePaiementModel extends Equatable {
       actif: actif ?? this.actif,
     );
   }
+
+  factory MoyenDePaiementModel.fromJson(Map<String, dynamic> json) {
+    return MoyenDePaiementModel(
+      id: json['id'],
+      nom: json['nom'],
+      icon: json['icon'],
+      modeEncaissement: json['modeEncaissement'],
+      getsionDuTropPercu: json['getsionDuTropPercu'],
+      ouvertureDeTiroirCaisse: json['ouvertureDeTiroirCaisse'],
+      disponibleEnModeExpress: json['disponibleEnModeExpress'],
+      variationDuMoyenDePaiement: json['variationDuMoyenDePaiement'],
+      compterAlaFinDuService: json['compterAlaFinDuService'],
+      rensignerleFondDeCaisee: json['rensignerleFondDeCaisee'],
+      sallesIDS:
+          (json['sallesIDS'] as List<dynamic>).map((e) => e as int).toList(),
+      actif: json['actif'],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    if (id == null) {
+      return {
+        "nom": nom,
+        "icon": "icon",
+        "modeEncaissement": modeEncaissement,
+        "getsionDuTropPercu": getsionDuTropPercu,
+        "ouvertureDeTiroirCaisse": ouvertureDeTiroirCaisse,
+        "disponibleEnModeExpress": disponibleEnModeExpress,
+        "variationDuMoyenDePaiement": variationDuMoyenDePaiement,
+        "compterAlaFinDuService": compterAlaFinDuService,
+        "rensignerleFondDeCaisee": rensignerleFondDeCaisee,
+        "sallesIDS": sallesIDS,
+        "actif": actif,
+      };
+    } else {
+      return {
+        "id": id,
+        "nom": nom,
+        "icon": icon,
+        "modeEncaissement": modeEncaissement,
+        "getsionDuTropPercu": getsionDuTropPercu,
+        "ouvertureDeTiroirCaisse": ouvertureDeTiroirCaisse,
+        "disponibleEnModeExpress": disponibleEnModeExpress,
+        "variationDuMoyenDePaiement": variationDuMoyenDePaiement,
+        "compterAlaFinDuService": compterAlaFinDuService,
+        "rensignerleFondDeCaisee": rensignerleFondDeCaisee,
+        "sallesIDS": sallesIDS,
+        "actif": actif,
+      };
+    }
+  }
 }
 
 List<MoyenDePaiementModel> moyenPaiementList = [
   MoyenDePaiementModel(
-    id: '1',
+    id: 1,
     nom: 'Carte de crédit',
     icon: null,
     modeEncaissement: 'Calculatrice classique',
@@ -96,7 +146,7 @@ List<MoyenDePaiementModel> moyenPaiementList = [
     actif: true,
   ),
   MoyenDePaiementModel(
-    id: '2',
+    id: 2,
     nom: 'Espèces',
     icon: null,
     modeEncaissement: 'Calculatrice classique',
@@ -110,7 +160,7 @@ List<MoyenDePaiementModel> moyenPaiementList = [
     actif: true,
   ),
   MoyenDePaiementModel(
-    id: '3',
+    id: 3,
     nom: 'Ticket Restaurant',
     icon: null,
     modeEncaissement: 'Calculatrice classique',

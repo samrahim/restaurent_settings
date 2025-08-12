@@ -496,16 +496,21 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
       ),
       body:
           (categoriePrixState.selected == null &&
-                  categoriePrixState.attachmentProductScreen)
+                      categoriePrixState.attachmentProductScreen) &&
+                  !categoriePrixState.isLoading!
               ? ProduitAttachement(
                 scaffoldKey: _scaffoldKey,
                 provider: categorieDePrixRiverpod,
               )
+              : categoriePrixState.isLoading!
+              ? Center(child: CircularProgressIndicator())
               : (categoriePrixState.selected == null &&
-                  !categoriePrixState.attachmentProductScreen)
+                      !categoriePrixState.attachmentProductScreen) &&
+                  !categoriePrixState.isLoading!
               ? _buildCategorieDePrixList(ref: ref)
               : (categoriePrixState.selected != null &&
-                  !categoriePrixState.attachmentProductScreen)
+                      !categoriePrixState.attachmentProductScreen) &&
+                  !categoriePrixState.isLoading!
               ? CategorieDePrixDetails(
                 categorieDePrixModel: categoriePrixState.selected!,
                 scaffoldKey: _scaffoldKey,

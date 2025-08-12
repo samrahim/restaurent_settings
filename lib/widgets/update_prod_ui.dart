@@ -119,7 +119,10 @@ class ProductSelectionScreen extends ConsumerWidget {
                                 .map(
                                   (v) => DropdownMenuItem(
                                     value: v,
-                                    child: Text(v.name.replaceAll("_", " ")),
+                                    child: Text(
+                                      v.name.replaceAll("_", " "),
+                                      style: AppTextStyle.indingosubHeading,
+                                    ),
                                   ),
                                 )
                                 .toList()
@@ -127,7 +130,10 @@ class ProductSelectionScreen extends ConsumerWidget {
                                 .map(
                                   (v) => DropdownMenuItem(
                                     value: v,
-                                    child: Text(v.name.replaceAll("_", " ")),
+                                    child: Text(
+                                      v.name.replaceAll("_", " "),
+                                      style: AppTextStyle.indingosubHeading,
+                                    ),
                                   ),
                                 )
                                 .toList(),

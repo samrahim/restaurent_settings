@@ -7,7 +7,7 @@ import 'package:restaurent/models/categorie_de_prix_model.dart';
 class CategorieDePrixState {
   final List<CategorieDePrixModel> categories;
   final CategorieDePrixModel? selected;
-  final bool isLoading;
+  final bool? isLoading;
   final bool attachmentProductScreen;
 
   const CategorieDePrixState({
@@ -57,7 +57,7 @@ class CategorieDePrixNotifier extends StateNotifier<CategorieDePrixState> {
   }
 
   void create(CategorieDePrixModel model) async {
-    print(model.toJson());
+    state = state.copyWith(isLoading: true);
     final response = await client.post(
       Uri.parse("http://51.15.211.239:8444/api/categorie-prix"),
       body: json.encode(model.toJson()),
@@ -71,7 +71,10 @@ class CategorieDePrixNotifier extends StateNotifier<CategorieDePrixState> {
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body);
       CategorieDePrixModel mod = CategorieDePrixModel.fromJson(data);
-      state = state.copyWith(categories: [...state.categories, mod]);
+      state = state.copyWith(
+        categories: [...state.categories, mod],
+        isLoading: false,
+      );
     } else {
       throw response.body;
     }
@@ -86,33 +89,32 @@ class CategorieDePrixNotifier extends StateNotifier<CategorieDePrixState> {
   }
 
   Future<void> update(CategorieDePrixModel updatedModel) async {
-    print('we change it ${updatedModel.toJson()}');
-    // try {
-    //   final body = json.encode(updatedModel.toJson());
-    //   final response = await client.put(
-    //     Uri.parse(
-    //       'http://51.15.211.239:8444/api/categorie-prix/${updatedModel.id}',
-    //     ),
-    //     headers: {'Content-Type': 'application/json'},
-    //     body: body,
-    //   );
+    try {
+      final body = json.encode(updatedModel.toJson());
+      final response = await client.put(
+        Uri.parse(
+          'http://51.15.211.239:8444/api/categorie-prix/${updatedModel.id}',
+        ),
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
 
-    //   if (response.statusCode < 200 || response.statusCode >= 300) {
-    //     throw Exception(
-    //       'Server error ${response.statusCode}: ${response.body}',
-    //     );
-    //   }
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw Exception(
+          'Server error ${response.statusCode}: ${response.body}',
+        );
+      }
 
-    //   final updatedList =
-    //       state.categories
-    //           .map((e) => e.id == updatedModel.id ? updatedModel : e)
-    //           .toList();
+      final updatedList =
+          state.categories
+              .map((e) => e.id == updatedModel.id ? updatedModel : e)
+              .toList();
 
-    //   state = state.copyWith(categories: updatedList, selected: updatedModel);
-    // } catch (e, st) {
-    //   print('Update failed: $e\n$st');
-    //   rethrow;
-    // }
+      state = state.copyWith(categories: updatedList, selected: updatedModel);
+    } catch (e, st) {
+      print('Update failed: $e\n$st');
+      rethrow;
+    }
   }
 
   void loadAll() async {
@@ -126,9 +128,11 @@ class CategorieDePrixNotifier extends StateNotifier<CategorieDePrixState> {
       try {
         final categories =
             data.map((e) => CategorieDePrixModel.fromJson(e)).toList();
-        state = state.copyWith(categories: categories, selected: null);
-
-        state = state.copyWith(isLoading: false);
+        state = state.copyWith(
+          categories: categories,
+          selected: null,
+          isLoading: false,
+        );
       } catch (e) {
         throw Exception(e);
       }
