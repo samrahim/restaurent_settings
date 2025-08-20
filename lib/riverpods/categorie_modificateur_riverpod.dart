@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurent/models/categorie_de_modificateur.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/models/models.dart';
 
 class CategorieModificateurState {
   final bool loadingAll;
@@ -172,7 +173,91 @@ class CategorieModificateurNotifier
     state.copyWith(updateProds: false);
   }
 
-  void updateSelected(CategorieDeModificateur updated) {
-    state = state.copyWith(selected: updated);
+  void updateSubcategori({
+    required SubCategorieDeModificateur subCategorie,
+  }) async {
+    final body = json.encode(subCategorie.toJson());
+    final response = await client.put(
+      Uri.parse(
+        "${baseUrl}modificateurs/categories/${state.selected!.id}/modificateurs",
+      ),
+      body: body,
+      headers: {'Content-Type': 'application/json'},
+    );
+    final decoded = jsonDecode(response.body);
+    final updatedSubCategorie = SubCategorieDeModificateur.fromJson(decoded);
+    final updatedList =
+        state.selected!.modificateurs.map((e) {
+          if (e.id == updatedSubCategorie.id) {
+            return updatedSubCategorie;
+          }
+          return e;
+        }).toList();
+
+    final newSelected = state.selected!.copyWith(modificateurs: updatedList);
+    state = state.copyWith(selected: newSelected);
+  }
+
+  void createSubCategorie({
+    required SubCategorieDeModificateur subCategorie,
+  }) async {
+    final response = await client.put(
+      Uri.parse(
+        "${baseUrl}modificateurs/categories/${state.selected!.id}/modificateurs",
+      ),
+      body: json.encode(subCategorie.toJson()),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      state = state.copyWith(
+        selected: state.selected!.copyWith(
+          modificateurs: [
+            ...state.selected!.modificateurs,
+            SubCategorieDeModificateur.fromJson(json.decode(response.body)),
+          ],
+        ),
+      );
+    }
+  }
+
+  Future<void> updateSallesAndProds({
+    required AffectationMode? salleMode,
+    required List<int>? salles,
+    required AffectationMode? produitsMode,
+    required List<String>? produitsId,
+  }) async {
+    Map<String, dynamic> body = {};
+    if (salleMode != null && salles != null) {
+      body['salleMode'] = salleMode.name;
+      body['salleIds'] = salles;
+    } else if (produitsMode != null && produitsId != null) {
+      body['produitMode'] = produitsMode.name;
+      body['produitIds'] = produitsId;
+    } else {
+      throw Exception('Invalid parameters for salle or produit mode');
+    }
+
+    final response = await client.put(
+      Uri.parse(
+        "${baseUrl}modificateurs/categories/relie-salles-produits/${state.selected!.id}",
+      ),
+      body: json.encode(body),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = json.decode(response.body);
+
+      state = state.copyWith(
+        selected: state.selected!.copyWith(
+          sallesIDS: List<int>.from(
+            data['salleIds'] ?? state.selected!.sallesIDS,
+          ),
+          produitsIds: List<String>.from(
+            data['produitIds'] ?? state.selected!.produitsIds,
+          ),
+        ),
+      );
+    }
   }
 }

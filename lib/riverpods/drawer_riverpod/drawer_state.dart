@@ -144,3 +144,15 @@ class UpdateProdsCategoriePrix extends DrawerState {
   @override
   List<Object?> get props => [model];
 }
+
+class UpdateSubcategorie extends DrawerState {
+  final CategorieDeModificateur modificateur;
+  final SubCategorieDeModificateur selectedSubCategorieDeModificateur;
+
+  UpdateSubcategorie({
+    required this.modificateur,
+    required this.selectedSubCategorieDeModificateur,
+  });
+  @override
+  List<Object?> get props => [modificateur, selectedSubCategorieDeModificateur];
+}

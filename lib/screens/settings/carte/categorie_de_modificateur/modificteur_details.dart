@@ -126,8 +126,19 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
                             itemBuilder: (context, index) {
                               return Column(
                                 children: [
-                                  buildModifierTile(
-                                    modificateur.modificateurs[index].nom,
+                                  InkWell(
+                                    onDoubleTap: () {
+                                      drawerNotifier.openUpdateSubCategorie(
+                                        modificateur: modificateur,
+                                        subCategorie:
+                                            modificateur.modificateurs[index],
+                                      );
+                                      widget.scaffoldKey.currentState!
+                                          .openDrawer();
+                                    },
+                                    child: buildModifierTile(
+                                      modificateur.modificateurs[index].nom,
+                                    ),
                                   ),
                                   if (index !=
                                       modificateur.modificateurs.length - 1)
@@ -397,11 +408,11 @@ class _ModificateurDetailsState extends ConsumerState<ModificateurDetails> {
             });
           },
           onBack: () async {
-            await categorieModificateurNotifier.update(
-              modificateur.copyWith(
-                produitMode: mode,
-                produitsIds: tempSelected,
-              ),
+            await categorieModificateurNotifier.updateSallesAndProds(
+              produitsId: tempSelected,
+              produitsMode: mode,
+              salleMode: null,
+              salles: null,
             );
             ref.read(tempSelectedIdsProvider.notifier).state.clear();
             drawerNotifier.resetDrawer();

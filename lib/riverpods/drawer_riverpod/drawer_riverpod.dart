@@ -91,6 +91,16 @@ class DrawerNotifier extends StateNotifier<DrawerState> {
     state = DrawerCreateImprimant();
   }
 
+  void openUpdateSubCategorie({
+    required CategorieDeModificateur modificateur,
+    required SubCategorieDeModificateur subCategorie,
+  }) {
+    state = UpdateSubcategorie(
+      modificateur: modificateur,
+      selectedSubCategorieDeModificateur: subCategorie,
+    );
+  }
+
   void resetDrawer() {
     state = DrawerInitial();
   }

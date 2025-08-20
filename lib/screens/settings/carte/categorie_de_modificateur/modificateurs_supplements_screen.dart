@@ -5,8 +5,10 @@ import 'package:restaurent/models/models.dart';
 import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
 import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/riverpods/categorie_modificateur_riverpod.dart';
+import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/create_sub_categorie_drawer.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/modificteur_details.dart';
 import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/produit_attachement.dart';
+import 'package:restaurent/screens/settings/carte/categorie_de_modificateur/update_sub_categorie.dart';
 import 'package:restaurent/widgets/salleMode_picker.dart';
 import 'package:restaurent/widgets/widgets.dart';
 
@@ -22,9 +24,6 @@ class _ModificateursSupplementsScreenState
     extends ConsumerState<ModificateursSupplementsScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TextEditingController prix = TextEditingController();
-  TextEditingController supplement = TextEditingController();
-  TauxTvaModel tvaModel = tauxTvaList[0];
   bool isSelectingProduits = false;
   bool subActif = false;
   CategorieDeModificateur createmodificateur = CategorieDeModificateur(
@@ -56,142 +55,12 @@ class _ModificateursSupplementsScreenState
         builder: (context, drawerProvider, _) {
           final state = ref.watch(drawerRiverpod);
           if (state is DrawerCreateSubCategorieDeModificateur) {
-            return Drawer(
-              width: MediaQuery.of(context).size.width * .33,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: Text(
-                        'Créer une nouvelle sous-catégorie',
-                        style: AppTextStyle.indingoHeading,
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    TextFormField(
-                      controller: supplement,
-
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Le nom est requis";
-                        }
-                        return null;
-                      },
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-
-                      decoration: InputDecoration(
-                        labelText: 'Nom',
-                        labelStyle: AppTextStyle.indingosubHeading,
-
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[50],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: prix,
-                      decoration: InputDecoration(
-                        labelText: 'Prix',
-                        labelStyle: AppTextStyle.indingosubHeading,
-
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[50],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    CustomContainer(
-                      child: ListTile(
-                        title: Text(
-                          'Actif',
-                          style: AppTextStyle.indingosubHeading,
-                        ),
-                        trailing: Switch(
-                          value: subActif,
-                          activeColor: AppColors.indingo400,
-                          onChanged: (value) {
-                            setState(() {
-                              subActif = !subActif;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 4.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey.shade400),
-                        color: Colors.grey[50],
-                      ),
-                      child: DropdownButtonFormField<TauxTvaModel>(
-                        value: tvaModel,
-                        decoration: const InputDecoration(
-                          labelText: 'TVA',
-                          border: InputBorder.none,
-                        ),
-                        items:
-                            tauxEtTvaState.tauxTvas
-                                .map(
-                                  (e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Text(
-                                      e.tauxTva.toString(),
-                                      style: AppTextStyle.indingosubHeading,
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              tvaModel = value;
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    CreateButton(
-                      onPressed: () {
-                        SubCategorieDeModificateur sub =
-                            SubCategorieDeModificateur(
-                              nom: supplement.text,
-                              actif: subActif,
-                              prix: double.parse(prix.text),
-                              tvaValue: 32,
-                            );
-                        categorieModificateurNotifier.update(
-                          categorieModificateurState.selected!.copyWith(
-                            modificateurs: [
-                              ...categorieModificateurState
-                                  .selected!
-                                  .modificateurs,
-                              sub,
-                            ],
-                          ),
-                        );
-                        supplement.clear();
-                        prix.clear();
-                        _scaffoldKey.currentState?.closeDrawer();
-                      },
-                      buttonText: 'Créer',
-                    ),
-                  ],
-                ),
-              ),
+            return CreateSubCategorieDrawer(scaffoldKey: _scaffoldKey);
+          } else if (state is UpdateSubcategorie) {
+            return UpdateSubcategorieDrawer(
+              subCategorie: state.selectedSubCategorieDeModificateur,
+              tauxTvas: tauxEtTvaState.tauxTvas,
+              scaffoldKey: _scaffoldKey,
             );
           }
           return const SizedBox.shrink();
@@ -356,8 +225,16 @@ class _ModificateursSupplementsScreenState
                 modificateur,
                 value,
               );
-
-              notifier.update(updated);
+              if (attribute == 'salle') {
+                notifier.updateSallesAndProds(
+                  salles: value['choices'],
+                  salleMode: (value['affectationMode'] as AffectationMode),
+                  produitsMode: null,
+                  produitsId: null,
+                );
+              } else {
+                notifier.update(updated);
+              }
             },
           );
         }
