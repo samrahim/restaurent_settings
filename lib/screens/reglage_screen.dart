@@ -25,12 +25,6 @@ final tauxEtTvaRiverpod =
       return TauxEtTvaNotifier();
     });
 
-final utilisateurRiverpod =
-    StateNotifierProvider<UtilisateurNotifier, UtilisateurState>((ref) {
-      final client = ref.watch(httpClientProvider);
-      return UtilisateurNotifier(client: client);
-    });
-
 final categorieModificateurRiverpod = StateNotifierProvider<
   CategorieModificateurNotifier,
   CategorieModificateurState

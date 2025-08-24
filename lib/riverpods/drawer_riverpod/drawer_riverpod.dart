@@ -5,8 +5,8 @@ import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
 class DrawerNotifier extends StateNotifier<DrawerState> {
   DrawerNotifier() : super(DrawerInitial());
 
-  void openCreateUtilisateurDrawer() {
-    state = DrawerCreateUtilisateur(isOpen: true);
+  void openCreateUtilisateurDrawer(UtilisateurModel model) {
+    state = DrawerCreateUtilisateur(model: model);
   }
 
   void openCreatePaiementMethodeDrawer(MoyenDePaiementModel model) {

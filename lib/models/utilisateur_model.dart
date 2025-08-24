@@ -2,90 +2,116 @@ import 'package:equatable/equatable.dart';
 import 'package:restaurent/consts.dart';
 
 class UtilisateurModel extends Equatable {
-  String id;
-  String nom;
-  String prenom;
-  String groupe;
-  String motPasseSchema;
-  String motPasseChiffre;
-  String qrCode;
-  String role;
-  UtilisateurModel({
-    this.id = '',
-    this.nom = '',
-    this.prenom = '',
-    this.groupe = '',
-    this.motPasseSchema = '',
-    this.motPasseChiffre = '',
-    this.qrCode = '',
-    this.role = '',
+  final String? id;
+  final String? firstname;
+  final String? lastname;
+  final String? username;
+  final String? phonenumber;
+  final String? sex;
+  final String? email;
+  final String? motPasseSchema;
+  final String? pwd;
+  final String? codepin;
+  final String? role;
+  final String? dateOfBirth;
+
+  const UtilisateurModel({
+    this.id,
+    required this.firstname,
+    required this.lastname,
+    required this.username,
+    required this.phonenumber,
+    required this.sex,
+    required this.email,
+    required this.motPasseSchema,
+    required this.pwd,
+    required this.dateOfBirth,
+    required this.codepin,
+    required this.role,
   });
-  UtilisateurModel copyWith({
-    String? id,
-    String? nom,
-    String? prenom,
-    String? groupe,
-    String? motPasseSchema,
-    String? motPasseChiffre,
-    String? qrCode,
-    String? role,
-  }) {
-    return UtilisateurModel(
-      id: id ?? this.id,
-      nom: nom ?? this.nom,
-      prenom: prenom ?? this.prenom,
-      groupe: groupe ?? this.groupe,
-      motPasseSchema: motPasseSchema ?? this.motPasseSchema,
-      motPasseChiffre: motPasseChiffre ?? this.motPasseChiffre,
-      qrCode: qrCode ?? this.qrCode,
-      role: role ?? this.role,
-    );
-  }
 
   @override
   List<Object?> get props => [
     id,
-    nom,
-    prenom,
-    groupe,
+    firstname,
+    lastname,
+    username,
+    phonenumber,
+    sex,
+    email,
     motPasseSchema,
-    motPasseChiffre,
-    qrCode,
+    pwd,
+    dateOfBirth,
+    codepin,
     role,
   ];
+  UtilisateurModel copyWith({
+    String? firstname,
+    String? lastname,
+    String? username,
+    String? phonenumber,
+    String? sex,
+    String? email,
+    String? motPasseSchema,
+    String? pwd,
+    String? codepin,
+    String? role,
+    String? dateOfBirth,
+  }) {
+    return UtilisateurModel(
+      id: id,
+      firstname: firstname ?? this.firstname,
+      lastname: lastname ?? this.lastname,
+      username: username ?? this.username,
+      phonenumber: phonenumber ?? this.phonenumber,
+      sex: sex ?? this.sex,
+      email: email ?? this.email,
+      motPasseSchema: motPasseSchema ?? this.motPasseSchema,
+      pwd: pwd ?? this.pwd,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      codepin: codepin ?? this.codepin,
+      role: role ?? this.role,
+    );
+  }
+
+  factory UtilisateurModel.fromJson(Map<String, dynamic> map) {
+    return UtilisateurModel(
+      id: map['id'],
+      firstname: map['firstname'],
+      lastname: map['lastname'],
+      username: map['username'],
+      phonenumber: map['phoneNumber'],
+      sex: map['sex'],
+      email: map['email'],
+      motPasseSchema: map['motPasseSchema'],
+      pwd: map['pwd'],
+      dateOfBirth: map['dateBirth'],
+      codepin: map['codepin'],
+      role: map['role'],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    if (id == null) {
+      return {
+        'firstname': firstname,
+        'lastname': lastname,
+        'phoneNumber': phonenumber,
+        'pwd': pwd,
+        'email': email,
+        'role': role,
+        'dateBirth': dateOfBirth,
+      };
+    } else {
+      return {
+        'id': id,
+        'firstname': firstname,
+        'lastname': lastname,
+        'phoneNumber': phonenumber,
+        'pwd': pwd,
+        'email': email,
+        'role': role,
+        'dateBirth': dateOfBirth,
+      };
+    }
+  }
 }
-
-List<String> groupeList = ['Groupe 1', 'Groupe 2', 'Groupe 3'];
-
-List<UtilisateurModel> utilisateurList = [
-  UtilisateurModel(
-    id: '1',
-    nom: 'John',
-    prenom: 'Doe',
-    groupe: 'Groupe 1',
-    motPasseSchema: '123456',
-    motPasseChiffre: '123456',
-    qrCode: '123456',
-    role: roleList[0],
-  ),
-  UtilisateurModel(
-    id: '2',
-    nom: 'Moussa',
-    prenom: 'Moussa',
-    groupe: 'Groupe 2',
-    motPasseSchema: '123456',
-    motPasseChiffre: '123456',
-    qrCode: '123456',
-    role: roleList[1],
-  ),
-  UtilisateurModel(
-    id: '3',
-    nom: 'karim',
-    prenom: 'karim',
-    groupe: 'Groupe 3',
-    motPasseSchema: '123456',
-    motPasseChiffre: '123456',
-    qrCode: '123456',
-    role: roleList[2],
-  ),
-];

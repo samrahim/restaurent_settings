@@ -227,6 +227,7 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
                           ),
                           onTap: () async {
                             final t = await showTimePicker(
+                              initialEntryMode: TimePickerEntryMode.inputOnly,
                               context: context,
                               initialTime: m.heureDebut ?? TimeOfDay.now(),
                             );
@@ -261,6 +262,7 @@ class _CategoriesPrixScreenState extends ConsumerState<CategoriesPrixScreen> {
                           ),
                           onTap: () async {
                             final t = await showTimePicker(
+                              initialEntryMode: TimePickerEntryMode.inputOnly,
                               context: context,
                               initialTime: m.heureFin ?? TimeOfDay.now(),
                             );

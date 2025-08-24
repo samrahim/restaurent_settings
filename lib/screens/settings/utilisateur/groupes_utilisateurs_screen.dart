@@ -1,10 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent/consts.dart';
+import 'package:restaurent/models/roles.dart';
 import 'package:restaurent/models/utilisateur_model.dart';
 import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
+import 'package:restaurent/riverpods/riverpods.dart';
 import 'package:restaurent/screens/reglage_screen.dart';
 import 'package:restaurent/widgets/widgets.dart';
+
+final roleRiverpood = StateNotifierProvider<RolesNotifier, RoleState>((ref) {
+  final client = ref.watch(httpClientProvider);
+  return RolesNotifier(client: client);
+});
+Map<String, List<UtilisateurModel>> groupUsersByRole(
+  List<UtilisateurModel> users,
+) {
+  final Map<String, List<UtilisateurModel>> grouped = {};
+  for (var user in users) {
+    final role = user.role ?? "Autre";
+    if (!grouped.containsKey(role)) {
+      grouped[role] = [];
+    }
+    grouped[role]!.add(user);
+  }
+  return grouped;
+}
+
+final utilisateurRiverpod =
+    StateNotifierProvider<UtilisateurNotifier, UtilisateurState>((ref) {
+      final client = ref.watch(httpClientProvider);
+      return UtilisateurNotifier(client: client);
+    });
 
 class GroupesUtilisateursScreen extends ConsumerStatefulWidget {
   const GroupesUtilisateursScreen({super.key});
@@ -16,215 +42,28 @@ class GroupesUtilisateursScreen extends ConsumerStatefulWidget {
 
 class _GroupesUtilisateursScreenState
     extends ConsumerState<GroupesUtilisateursScreen> {
+  UtilisateurModel createModel = UtilisateurModel(
+    firstname: '',
+    lastname: '',
+    username: '',
+    phonenumber: '',
+    sex: '',
+    email: '',
+    motPasseSchema: '',
+    pwd: '',
+    dateOfBirth: '',
+    codepin: '',
+    role: 'SUPER_ADMIN',
+  );
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  TextEditingController nom = TextEditingController();
-  TextEditingController prenom = TextEditingController();
-  TextEditingController groupe = TextEditingController();
 
-  TextEditingController motPasseChiffre = TextEditingController();
-  TextEditingController qrCode = TextEditingController();
-  String role = roleList[0];
-  String group = groupeList[0];
   final _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    nom.dispose();
-    prenom.dispose();
-    groupe.dispose();
-
-    motPasseChiffre.dispose();
-    qrCode.dispose();
-    super.dispose();
-  }
-
-  Widget _buildCreateUtilisateurDrawer(BuildContext context) {
-    final utilisateurNotifier = ref.read(utilisateurRiverpod.notifier);
-
-    return Drawer(
-      width: MediaQuery.of(context).size.width * .33,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 32.0),
-                  child: Text(
-                    'Créer un nouveau utilisateur',
-                    style: AppTextStyle.indingoHeading,
-                  ),
-                ),
-
-                CustomTextField(
-                  controller: nom,
-                  label: "Nom",
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Le nom d\'utilisateur est requis';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                CustomTextField(
-                  controller: prenom,
-                  label: "Prénom",
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Le prénom d\'utilisateur est requis';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 16),
-
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 4.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade400),
-                    color: Colors.grey[50],
-                  ),
-                  child: DropdownButtonFormField<String>(
-                    value: group,
-                    decoration: const InputDecoration(
-                      labelText: 'Groupe',
-                      border: InputBorder.none,
-                    ),
-                    items:
-                        groupeList
-                            .map(
-                              (e) => DropdownMenuItem(
-                                value: e,
-                                child: Text(
-                                  e,
-                                  style: AppTextStyle.indingosubHeading,
-                                ),
-                              ),
-                            )
-                            .toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          group = value;
-                        });
-                      }
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 4.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade400),
-                    color: Colors.grey[50],
-                  ),
-                  child: DropdownButtonFormField<String>(
-                    value: role,
-                    decoration: const InputDecoration(
-                      labelText: 'Role',
-                      border: InputBorder.none,
-                    ),
-                    items:
-                        roleList
-                            .map(
-                              (e) => DropdownMenuItem(
-                                value: e,
-                                child: Text(
-                                  e,
-                                  style: AppTextStyle.indingosubHeading,
-                                ),
-                              ),
-                            )
-                            .toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          role = value;
-                        });
-                      }
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                const SizedBox(height: 16),
-
-                CustomTextField(
-                  controller: motPasseChiffre,
-                  label: "Mot de passe chiffre",
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Le mot de passe chiffre est requis';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 16),
-
-                CustomTextField(
-                  controller: qrCode,
-                  label: "QR Code",
-
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Le QR Code est requis';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 24),
-                CreateButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      utilisateurNotifier.createUtilisateur(
-                        groupe: group,
-                        motPasseChiffre: motPasseChiffre.text,
-                        nom: nom.text,
-                        prenom: prenom.text,
-                        qrCode: qrCode.text,
-                        role: role,
-                        motPasseSchema: null,
-                      );
-                      nom.clear();
-                      prenom.clear();
-                      qrCode.clear();
-
-                      _scaffoldKey.currentState?.closeEndDrawer();
-                    }
-                  },
-                  buttonText: "Ajouter",
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     final utilisateurState = ref.watch(utilisateurRiverpod);
     final utilisateurNotifier = ref.read(utilisateurRiverpod.notifier);
-
+    final roleState = ref.watch(roleRiverpood);
     return Scaffold(
       key: _scaffoldKey,
       body: Consumer(
@@ -239,83 +78,46 @@ class _GroupesUtilisateursScreenState
                       utilisateurState.utilisateurs.isNotEmpty
                           ? ListView(
                             children: [
-                              utilisateurState.utilisateurs
-                                      .where((e) => e.role == "Administrateur")
-                                      .isNotEmpty
-                                  ? Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Administrateurs',
-                                      style: AppTextStyle.greyHeading.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  )
-                                  : SizedBox.shrink(),
-                              ...utilisateurState.utilisateurs
-                                  .where((u) => u.role == roleList[0])
-                                  .map(
-                                    (utilisateur) => ListTile(
-                                      selectedTileColor: Colors.grey.shade300,
-                                      title: Text(
-                                        utilisateur.nom,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                      trailing: Icon(Icons.arrow_forward_ios),
-                                      selected:
-                                          utilisateurState
-                                                  .selectedUtilisateur !=
-                                              null &&
-                                          utilisateur.id ==
-                                              utilisateurState
-                                                  .selectedUtilisateur!
-                                                  .id,
-                                      onTap: () {
-                                        utilisateurNotifier.selectUtilisateur(
-                                          utilisateur,
-                                        );
-                                      },
-                                    ),
-                                  ),
+                              ...groupUsersByRole(
+                                utilisateurState.utilisateurs,
+                              ).entries.map((entry) {
+                                final role = entry.key;
+                                final users = entry.value;
 
-                              utilisateurState.utilisateurs
-                                      .where((e) => e.role == "Serveur")
-                                      .isNotEmpty
-                                  ? Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Serveurs',
-                                      style: AppTextStyle.greyHeading.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  )
-                                  : SizedBox.shrink(),
-                              ...utilisateurState.utilisateurs
-                                  .where((u) => u.role == roleList[1])
-                                  .map(
-                                    (utilisateur) => ListTile(
-                                      selectedTileColor: Colors.grey.shade300,
-                                      title: Text(
-                                        utilisateur.nom,
-                                        style: AppTextStyle.indingosubHeading,
-                                      ),
-                                      trailing: Icon(Icons.arrow_forward_ios),
-                                      selected:
-                                          utilisateurState
-                                                  .selectedUtilisateur !=
-                                              null &&
-                                          utilisateur.id ==
-                                              utilisateurState
-                                                  .selectedUtilisateur!
-                                                  .id,
-                                      onTap: () {
-                                        utilisateurNotifier.selectUtilisateur(
-                                          utilisateur,
-                                        );
-                                      },
-                                    ),
+                                return ExpansionTile(
+                                  title: Text(
+                                    role,
+                                    style: AppTextStyle.greyHeading,
                                   ),
+                                  children:
+                                      users.map((utilisateur) {
+                                        return ListTile(
+                                          selectedTileColor:
+                                              Colors.grey.shade300,
+                                          title: Text(
+                                            utilisateur.firstname ?? "",
+                                            style:
+                                                AppTextStyle.indingosubHeading,
+                                          ),
+                                          trailing: Icon(
+                                            Icons.arrow_forward_ios,
+                                          ),
+                                          selected:
+                                              utilisateurState
+                                                      .selectedUtilisateur !=
+                                                  null &&
+                                              utilisateur.id ==
+                                                  utilisateurState
+                                                      .selectedUtilisateur!
+                                                      .id,
+                                          onTap: () {
+                                            utilisateurNotifier
+                                                .selectUtilisateur(utilisateur);
+                                          },
+                                        );
+                                      }).toList(),
+                                );
+                              }),
                             ],
                           )
                           : Center(
@@ -326,7 +128,6 @@ class _GroupesUtilisateursScreenState
                           ),
                 ),
               ),
-
               Expanded(
                 flex: 3,
                 child:
@@ -363,7 +164,7 @@ class _GroupesUtilisateursScreenState
                                                     'nom',
                                                     utilisateurState
                                                         .selectedUtilisateur!
-                                                        .nom,
+                                                        .firstname,
                                                   );
 
                                               _scaffoldKey.currentState
@@ -376,8 +177,9 @@ class _GroupesUtilisateursScreenState
                                             ),
                                             trailingwidget: Text(
                                               utilisateurState
-                                                  .selectedUtilisateur!
-                                                  .nom,
+                                                      .selectedUtilisateur!
+                                                      .firstname ??
+                                                  "",
                                               style:
                                                   AppTextStyle
                                                       .indingosubHeading,
@@ -399,7 +201,7 @@ class _GroupesUtilisateursScreenState
                                                     'prenom',
                                                     utilisateurState
                                                         .selectedUtilisateur!
-                                                        .prenom,
+                                                        .lastname,
                                                   );
 
                                               _scaffoldKey.currentState
@@ -413,50 +215,16 @@ class _GroupesUtilisateursScreenState
                                             ),
                                             trailingwidget: Text(
                                               utilisateurState
-                                                  .selectedUtilisateur!
-                                                  .prenom,
+                                                      .selectedUtilisateur!
+                                                      .lastname ??
+                                                  "",
                                               style:
                                                   AppTextStyle
                                                       .indingosubHeading,
                                             ),
                                           ),
                                           Divider(),
-                                          CustomListTile(
-                                            onTap: () {
-                                              final container =
-                                                  ProviderScope.containerOf(
-                                                    context,
-                                                  );
-                                              container
-                                                  .read(drawerRiverpod.notifier)
-                                                  .openUpdateUtilisateurAttributeDrawer(
-                                                    utilisateurState
-                                                        .selectedUtilisateur!,
-                                                    'groupe',
-                                                    utilisateurState
-                                                        .selectedUtilisateur!
-                                                        .groupe,
-                                                  );
 
-                                              _scaffoldKey.currentState
-                                                  ?.openEndDrawer();
-                                            },
-                                            leading: null,
-                                            trailing: null,
-                                            title: Text(
-                                              'Groupe',
-                                              style: AppTextStyle.greyHeading,
-                                            ),
-                                            trailingwidget: Text(
-                                              utilisateurState
-                                                  .selectedUtilisateur!
-                                                  .groupe,
-                                              style:
-                                                  AppTextStyle
-                                                      .indingosubHeading,
-                                            ),
-                                          ),
-                                          Divider(),
                                           CustomListTile(
                                             onTap: () {
                                               final container =
@@ -485,8 +253,123 @@ class _GroupesUtilisateursScreenState
                                             ),
                                             trailingwidget: Text(
                                               utilisateurState
-                                                  .selectedUtilisateur!
-                                                  .role,
+                                                      .selectedUtilisateur!
+                                                      .role ??
+                                                  "",
+                                              style:
+                                                  AppTextStyle
+                                                      .indingosubHeading,
+                                            ),
+                                          ),
+
+                                          Divider(),
+                                          CustomListTile(
+                                            onTap: () {
+                                              final container =
+                                                  ProviderScope.containerOf(
+                                                    context,
+                                                  );
+                                              container
+                                                  .read(drawerRiverpod.notifier)
+                                                  .openUpdateUtilisateurAttributeDrawer(
+                                                    utilisateurState
+                                                        .selectedUtilisateur!,
+                                                    'phone',
+                                                    utilisateurState
+                                                        .selectedUtilisateur!
+                                                        .phonenumber,
+                                                  );
+
+                                              _scaffoldKey.currentState
+                                                  ?.openEndDrawer();
+                                            },
+                                            leading: null,
+                                            trailing: null,
+                                            title: Text(
+                                              'Téléphone',
+                                              style: AppTextStyle.greyHeading,
+                                            ),
+                                            trailingwidget: Text(
+                                              utilisateurState
+                                                      .selectedUtilisateur!
+                                                      .phonenumber ??
+                                                  "",
+                                              style:
+                                                  AppTextStyle
+                                                      .indingosubHeading,
+                                            ),
+                                          ),
+                                          Divider(),
+                                          CustomListTile(
+                                            onTap: () {
+                                              final container =
+                                                  ProviderScope.containerOf(
+                                                    context,
+                                                  );
+                                              container
+                                                  .read(drawerRiverpod.notifier)
+                                                  .openUpdateUtilisateurAttributeDrawer(
+                                                    utilisateurState
+                                                        .selectedUtilisateur!,
+                                                    'dateOfBirth',
+                                                    utilisateurState
+                                                        .selectedUtilisateur!
+                                                        .dateOfBirth,
+                                                  );
+
+                                              _scaffoldKey.currentState
+                                                  ?.openEndDrawer();
+                                            },
+                                            leading: null,
+                                            trailing: null,
+                                            title: Text(
+                                              'Age',
+                                              style: AppTextStyle.greyHeading,
+                                            ),
+                                            trailingwidget: Text(
+                                              utilisateurState
+                                                          .selectedUtilisateur!
+                                                          .dateOfBirth !=
+                                                      null
+                                                  ? "${DateTime.now().year - int.parse(utilisateurState.selectedUtilisateur!.dateOfBirth!.split('-').first)}"
+                                                  : "Non définie",
+                                              style:
+                                                  AppTextStyle
+                                                      .indingosubHeading,
+                                            ),
+                                          ),
+                                          Divider(),
+                                          CustomListTile(
+                                            onTap: () {
+                                              final container =
+                                                  ProviderScope.containerOf(
+                                                    context,
+                                                  );
+                                              container
+                                                  .read(drawerRiverpod.notifier)
+                                                  .openUpdateUtilisateurAttributeDrawer(
+                                                    utilisateurState
+                                                        .selectedUtilisateur!,
+                                                    'email',
+                                                    utilisateurState
+                                                        .selectedUtilisateur!
+                                                        .email,
+                                                  );
+
+                                              _scaffoldKey.currentState
+                                                  ?.openEndDrawer();
+                                            },
+                                            leading: null,
+                                            trailing: null,
+                                            title: Text(
+                                              'Email',
+                                              style: AppTextStyle.greyHeading,
+                                            ),
+                                            trailingwidget: Text(
+                                              utilisateurState
+                                                      .selectedUtilisateur!
+                                                      .email ??
+                                                  "",
                                               style:
                                                   AppTextStyle
                                                       .indingosubHeading,
@@ -541,7 +424,7 @@ class _GroupesUtilisateursScreenState
                                                     'motPasseChiffre',
                                                     utilisateurState
                                                         .selectedUtilisateur!
-                                                        .motPasseChiffre,
+                                                        .pwd,
                                                   );
 
                                               _scaffoldKey.currentState
@@ -555,42 +438,6 @@ class _GroupesUtilisateursScreenState
                                             ),
                                             trailingwidget: Text(
                                               "*****",
-                                              style:
-                                                  AppTextStyle
-                                                      .indingosubHeading,
-                                            ),
-                                          ),
-                                          Divider(),
-                                          CustomListTile(
-                                            onTap: () {
-                                              final container =
-                                                  ProviderScope.containerOf(
-                                                    context,
-                                                  );
-                                              container
-                                                  .read(drawerRiverpod.notifier)
-                                                  .openUpdateUtilisateurAttributeDrawer(
-                                                    utilisateurState
-                                                        .selectedUtilisateur!,
-                                                    'qrCode',
-                                                    utilisateurState
-                                                        .selectedUtilisateur!
-                                                        .qrCode,
-                                                  );
-
-                                              _scaffoldKey.currentState
-                                                  ?.openEndDrawer();
-                                            },
-                                            leading: null,
-                                            trailing: null,
-                                            title: Text(
-                                              'QR Code',
-                                              style: AppTextStyle.greyHeading,
-                                            ),
-                                            trailingwidget: Text(
-                                              utilisateurState
-                                                  .selectedUtilisateur!
-                                                  .qrCode,
                                               style:
                                                   AppTextStyle
                                                       .indingosubHeading,
@@ -626,8 +473,8 @@ class _GroupesUtilisateursScreenState
         builder: (context, drawerProvider, _) {
           final state = ref.watch(drawerRiverpod);
 
-          if (state is DrawerCreateUtilisateur) {
-            return _buildCreateUtilisateurDrawer(context);
+          if (state is DrawerCreateUtilisateur && !roleState.isLoading!) {
+            return _buildCreateUtilisateurDrawer(context, roleState);
           }
           if (state is DrawerUpdateUtilisateurAttributeState) {
             return UpdateAttributeDrawer(
@@ -638,38 +485,38 @@ class _GroupesUtilisateursScreenState
               label: state.attributeName,
               initialValue: state.currentValue as String,
               onSaved: (value) {
-                final updated = state.utilisateur.copyWith(
-                  nom:
-                      state.attributeName == 'nom'
-                          ? value
-                          : state.utilisateur.nom,
-                  prenom:
-                      state.attributeName == 'prenom'
-                          ? value
-                          : state.utilisateur.prenom,
-                  groupe:
-                      state.attributeName == 'groupe'
-                          ? value
-                          : state.utilisateur.groupe,
-                  role:
-                      state.attributeName == 'role'
-                          ? value
-                          : state.utilisateur.role,
-                  motPasseSchema:
-                      state.attributeName == 'motPasseSchema'
-                          ? value
-                          : state.utilisateur.motPasseSchema,
-                  motPasseChiffre:
-                      state.attributeName == 'motPasseChiffre'
-                          ? value
-                          : state.utilisateur.motPasseChiffre,
-                  qrCode:
-                      state.attributeName == 'qrCode'
-                          ? value
-                          : state.utilisateur.qrCode,
-                );
+                // final updated = state.utilisateur.copyWith(
+                //   nom:
+                //       state.attributeName == 'nom'
+                //           ? value
+                //           : state.utilisateur.nom,
+                //   prenom:
+                //       state.attributeName == 'prenom'
+                //           ? value
+                //           : state.utilisateur.prenom,
+                //   groupe:
+                //       state.attributeName == 'groupe'
+                //           ? value
+                //           : state.utilisateur.groupe,
+                //   role:
+                //       state.attributeName == 'role'
+                //           ? value
+                //           : state.utilisateur.role,
+                //   motPasseSchema:
+                //       state.attributeName == 'motPasseSchema'
+                //           ? value
+                //           : state.utilisateur.motPasseSchema,
+                //   motPasseChiffre:
+                //       state.attributeName == 'motPasseChiffre'
+                //           ? value
+                //           : state.utilisateur.motPasseChiffre,
+                //   qrCode:
+                //       state.attributeName == 'qrCode'
+                //           ? value
+                //           : state.utilisateur.qrCode,
+                // );
 
-                utilisateurNotifier.updateUtilisateur(updated);
+                // utilisateurNotifier.updateUtilisateur(updated);
               },
             );
           }
@@ -690,7 +537,7 @@ class _GroupesUtilisateursScreenState
               final container = ProviderScope.containerOf(context);
               container
                   .read(drawerRiverpod.notifier)
-                  .openCreateUtilisateurDrawer();
+                  .openCreateUtilisateurDrawer(createModel);
 
               _scaffoldKey.currentState?.openEndDrawer();
             },
@@ -699,5 +546,242 @@ class _GroupesUtilisateursScreenState
         ],
       ),
     );
+  }
+
+  Widget _buildCreateUtilisateurDrawer(BuildContext context, RoleState state) {
+    final drawerState = ref.watch(drawerRiverpod);
+
+    final createModel = (drawerState as DrawerCreateUtilisateur).model;
+
+    return !state.isLoading!
+        ? Drawer(
+          width: MediaQuery.of(context).size.width * .33,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 32.0),
+                      child: Text(
+                        'Créer un nouveau utilisateur',
+                        style: AppTextStyle.indingoHeading,
+                      ),
+                    ),
+
+                    TextFormField(
+                      initialValue: createModel.firstname,
+                      decoration: InputDecoration(
+                        labelStyle: AppTextStyle.indingosubHeading,
+                        labelText: 'Nom',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
+                      onChanged: (v) {
+                        final container = ProviderScope.containerOf(context);
+                        container
+                            .read(drawerRiverpod.notifier)
+                            .openCreateUtilisateurDrawer(
+                              createModel.copyWith(firstname: v),
+                            );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    TextFormField(
+                      initialValue: createModel.lastname,
+                      decoration: InputDecoration(
+                        labelStyle: AppTextStyle.indingosubHeading,
+                        labelText: 'Prénom',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
+                      onChanged: (v) {
+                        final container = ProviderScope.containerOf(context);
+                        container
+                            .read(drawerRiverpod.notifier)
+                            .openCreateUtilisateurDrawer(
+                              createModel.copyWith(lastname: v),
+                            );
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 4.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade400),
+                        color: Colors.grey[50],
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        value:
+                            createModel.role == ""
+                                ? state.roles!.first.toString()
+                                : createModel.role,
+                        decoration: const InputDecoration(
+                          labelText: 'Role',
+                          border: InputBorder.none,
+                        ),
+                        items:
+                            state.roles!
+                                .map(
+                                  (e) => DropdownMenuItem(
+                                    value: e.name,
+                                    child: Text(
+                                      e.name,
+                                      style: AppTextStyle.indingosubHeading,
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            final container = ProviderScope.containerOf(
+                              context,
+                            );
+                            container
+                                .read(drawerRiverpod.notifier)
+                                .openCreateUtilisateurDrawer(
+                                  createModel.copyWith(role: value),
+                                );
+                          }
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      initialValue: createModel.phonenumber,
+                      decoration: InputDecoration(
+                        labelStyle: AppTextStyle.indingosubHeading,
+                        labelText: 'Telephone',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
+                      onChanged: (v) {
+                        final container = ProviderScope.containerOf(context);
+                        container
+                            .read(drawerRiverpod.notifier)
+                            .openCreateUtilisateurDrawer(
+                              createModel.copyWith(phonenumber: v),
+                            );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          'Date de naicance',
+                          style: AppTextStyle.indingosubHeading,
+                        ),
+                        trailing: Text(
+                          createModel.dateOfBirth == ''
+                              ? "--:--"
+                              : createModel.dateOfBirth!,
+                          style: AppTextStyle.indingosubHeading,
+                        ),
+                        onTap: () async {
+                          final DateTime? picked = await showDatePicker(
+                            initialEntryMode: DatePickerEntryMode.inputOnly,
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime.now(),
+                          );
+                          if (picked != null && context.mounted) {
+                            final container = ProviderScope.containerOf(
+                              context,
+                            );
+                            container
+                                .read(drawerRiverpod.notifier)
+                                .openCreateUtilisateurDrawer(
+                                  createModel.copyWith(
+                                    dateOfBirth:
+                                        "${picked.year}-${picked.month}-${picked.day}",
+                                  ),
+                                );
+                          }
+                          print(createModel.dateOfBirth);
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      initialValue: createModel.pwd,
+                      decoration: InputDecoration(
+                        labelStyle: AppTextStyle.indingosubHeading,
+                        labelText: 'Mot de passe',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
+                      onChanged: (v) {
+                        final container = ProviderScope.containerOf(context);
+                        container
+                            .read(drawerRiverpod.notifier)
+                            .openCreateUtilisateurDrawer(
+                              createModel.copyWith(pwd: v),
+                            );
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      initialValue: createModel.email,
+                      decoration: InputDecoration(
+                        labelStyle: AppTextStyle.indingosubHeading,
+                        labelText: 'Email',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
+                      onChanged: (v) {
+                        final container = ProviderScope.containerOf(context);
+                        container
+                            .read(drawerRiverpod.notifier)
+                            .openCreateUtilisateurDrawer(
+                              createModel.copyWith(email: v),
+                            );
+                      },
+                    ),
+
+                    const SizedBox(height: 24),
+                    CreateButton(
+                      onPressed: () {
+                        print(createModel.toJson());
+                        _scaffoldKey.currentState?.closeEndDrawer();
+                      },
+                      buttonText: "Ajouter",
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        )
+        : Center(child: CircularProgressIndicator());
   }
 }

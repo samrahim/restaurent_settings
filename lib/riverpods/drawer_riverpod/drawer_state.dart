@@ -14,11 +14,11 @@ class DrawerInitial extends DrawerState {
 }
 
 class DrawerCreateUtilisateur extends DrawerState {
-  final bool isOpen;
-  DrawerCreateUtilisateur({required this.isOpen});
+  final UtilisateurModel model;
+  DrawerCreateUtilisateur({required this.model});
 
   @override
-  List<Object?> get props => [isOpen];
+  List<Object?> get props => [model];
 }
 
 class DrawerCreatePaiementMethode extends DrawerState {

@@ -7,3 +7,4 @@ export 'taux_tva_riverpod.dart';
 export 'utilisateur_riverpod.dart';
 export 'settings_riverpod.dart';
 export 'imprimante_riverpod.dart';
+export 'roles.dart';
