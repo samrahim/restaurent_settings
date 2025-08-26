@@ -87,7 +87,7 @@ class _GroupesUtilisateursScreenState
                                 return ExpansionTile(
                                   title: Text(
                                     role,
-                                    style: AppTextStyle.greyHeading,
+                                    style: AppTextStyle.indingoHeading,
                                   ),
                                   children:
                                       users.map((utilisateur) {
@@ -690,7 +690,7 @@ class _GroupesUtilisateursScreenState
                       ),
                       child: ListTile(
                         title: Text(
-                          'Date de naicance',
+                          'Date de naissance',
                           style: AppTextStyle.indingosubHeading,
                         ),
                         trailing: Text(
@@ -772,6 +772,10 @@ class _GroupesUtilisateursScreenState
                     CreateButton(
                       onPressed: () {
                         print(createModel.toJson());
+                        final container = ProviderScope.containerOf(context);
+                        container
+                            .read(utilisateurRiverpod.notifier)
+                            .createUtilisateur(newUser: createModel);
                         _scaffoldKey.currentState?.closeEndDrawer();
                       },
                       buttonText: "Ajouter",

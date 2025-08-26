@@ -100,6 +100,7 @@ class UtilisateurModel extends Equatable {
         'email': email,
         'role': role,
         'dateBirth': dateOfBirth,
+        "unite": {"id": "f26ede4a-025f-4fd9-bb0d-6bbe76f1d318"},
       };
     } else {
       return {
