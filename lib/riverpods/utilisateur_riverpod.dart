@@ -8,17 +8,23 @@ import 'package:restaurent/models/utilisateur_model.dart';
 class UtilisateurState {
   final List<UtilisateurModel> utilisateurs;
   final UtilisateurModel? selectedUtilisateur;
+  final String? error;
 
   const UtilisateurState({
+    required this.error,
     required this.utilisateurs,
+
     required this.selectedUtilisateur,
   });
 
   UtilisateurState copyWith({
     List<UtilisateurModel>? utilisateurs,
     UtilisateurModel? selectedUtilisateur,
+
+    String? error,
   }) {
     return UtilisateurState(
+      error: error ?? this.error,
       utilisateurs: utilisateurs ?? this.utilisateurs,
       selectedUtilisateur: selectedUtilisateur ?? this.selectedUtilisateur,
     );
@@ -30,7 +36,11 @@ class UtilisateurNotifier extends StateNotifier<UtilisateurState> {
 
   UtilisateurNotifier({required this.client})
     : super(
-        const UtilisateurState(utilisateurs: [], selectedUtilisateur: null),
+        const UtilisateurState(
+          utilisateurs: [],
+          selectedUtilisateur: null,
+          error: "",
+        ),
       ) {
     loadUtilisateurs();
   }
@@ -42,6 +52,12 @@ class UtilisateurNotifier extends StateNotifier<UtilisateurState> {
     List data = json.decode(response.body);
 
     final users = data.map((e) => UtilisateurModel.fromJson(e)).toList();
+    for (var user in users) {
+      if (user.firstname == "update firstname") {
+        print(user.dateOfBirth);
+      }
+    }
+
     final selected = users.isNotEmpty ? users.first : null;
     state = state.copyWith(utilisateurs: users, selectedUtilisateur: selected);
   }
@@ -51,31 +67,39 @@ class UtilisateurNotifier extends StateNotifier<UtilisateurState> {
   }
 
   void createUtilisateur({required UtilisateurModel newUser}) async {
+    if (newUser.role == null || newUser.role!.isEmpty) {
+      newUser = newUser.copyWith(role: "Autre");
+    }
+
     final response = await client.post(
       Uri.parse("${baseUrl}user/save"),
+
       body: json.encode(newUser.toJson()),
     );
     print(response.body);
-    if (response.statusCode == 200) {}
-
-    final updatedList = [...state.utilisateurs, newUser];
-    state = state.copyWith(
-      utilisateurs: updatedList,
-      selectedUtilisateur: newUser,
-    );
+    if (response.statusCode == 200) {
+      loadUtilisateurs();
+    } else {
+      final Map<String, dynamic> mp = json.decode(response.body);
+      if (mp["message"] == "Error : Utilisateur existe déjà!") {
+        state = state.copyWith(error: "Utilisateur existe déjà!");
+      }
+    }
   }
 
-  void updateUtilisateur(UtilisateurModel updatedUser) {
-    final idx = state.utilisateurs.indexWhere((u) => u.id == updatedUser.id);
-    if (idx != -1) {
-      final updatedList = [...state.utilisateurs];
-      updatedList[idx] = updatedUser;
+  Future<void> updateUtilisateur(UtilisateurModel updatedUser) async {
+    final response = await client.put(
+      Uri.parse("${baseUrl}user/${updatedUser.id}"),
+      body: json.encode(updatedUser.toJson()),
+    );
+    Map body = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      loadUtilisateurs();
+    } else {
       state = state.copyWith(
-        utilisateurs: updatedList,
-        selectedUtilisateur:
-            state.selectedUtilisateur?.id == updatedUser.id
-                ? updatedUser
-                : state.selectedUtilisateur,
+        error: "err",
+        selectedUtilisateur: state.utilisateurs[0],
       );
     }
   }

@@ -47,7 +47,7 @@ class DrawerCreateTauxTva extends DrawerState {
 
 class DrawerUpdateUtilisateurAttributeState extends DrawerState {
   final UtilisateurModel utilisateur;
-  final String attributeName;
+  final String? attributeName;
   final dynamic currentValue;
 
   DrawerUpdateUtilisateurAttributeState({

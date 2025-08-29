@@ -25,6 +25,29 @@ class RolesNotifier extends StateNotifier<RoleState> {
     getRoles();
   }
 
+  Future<void> addRole({
+    required String name,
+    required String description,
+  }) async {
+    state = state.copyWith(isLoading: true);
+    final map = {'name': name, 'description': description};
+    final response = await client.post(
+      Uri.parse("http://51.15.211.239:8444/api/v1/privilege"),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: json.encode(map),
+    );
+    final data = json.decode(response.body);
+    Role role = Role.fromJSon(data);
+    if (state.roles != null) {
+      state = state.copyWith(roles: [...state.roles!, role], isLoading: false);
+    } else {
+      state = state.copyWith(roles: [role], isLoading: false);
+    }
+  }
+
   Future<void> getRoles() async {
     state = state.copyWith(isLoading: true);
     final response = await client.get(Uri.parse("${baseUrl}privilege"));

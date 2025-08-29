@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:restaurent/consts.dart';
 
 class UtilisateurModel extends Equatable {
   final String? id;
@@ -7,7 +6,7 @@ class UtilisateurModel extends Equatable {
   final String? lastname;
   final String? username;
   final String? phonenumber;
-  final String? sex;
+  final int? sexe;
   final String? email;
   final String? motPasseSchema;
   final String? pwd;
@@ -21,7 +20,7 @@ class UtilisateurModel extends Equatable {
     required this.lastname,
     required this.username,
     required this.phonenumber,
-    required this.sex,
+    required this.sexe,
     required this.email,
     required this.motPasseSchema,
     required this.pwd,
@@ -37,7 +36,7 @@ class UtilisateurModel extends Equatable {
     lastname,
     username,
     phonenumber,
-    sex,
+    sexe,
     email,
     motPasseSchema,
     pwd,
@@ -50,7 +49,7 @@ class UtilisateurModel extends Equatable {
     String? lastname,
     String? username,
     String? phonenumber,
-    String? sex,
+    int? sexe,
     String? email,
     String? motPasseSchema,
     String? pwd,
@@ -64,7 +63,7 @@ class UtilisateurModel extends Equatable {
       lastname: lastname ?? this.lastname,
       username: username ?? this.username,
       phonenumber: phonenumber ?? this.phonenumber,
-      sex: sex ?? this.sex,
+      sexe: sexe ?? this.sexe,
       email: email ?? this.email,
       motPasseSchema: motPasseSchema ?? this.motPasseSchema,
       pwd: pwd ?? this.pwd,
@@ -81,7 +80,7 @@ class UtilisateurModel extends Equatable {
       lastname: map['lastname'],
       username: map['username'],
       phonenumber: map['phoneNumber'],
-      sex: map['sex'],
+      sexe: map['sexe'],
       email: map['email'],
       motPasseSchema: map['motPasseSchema'],
       pwd: map['pwd'],
@@ -101,6 +100,8 @@ class UtilisateurModel extends Equatable {
         'role': role,
         'dateBirth': dateOfBirth,
         "unite": {"id": "f26ede4a-025f-4fd9-bb0d-6bbe76f1d318"},
+        'sexe': sexe,
+        'username': username,
       };
     } else {
       return {
@@ -112,6 +113,13 @@ class UtilisateurModel extends Equatable {
         'email': email,
         'role': role,
         'dateBirth': dateOfBirth,
+        'sexe': sexe,
+        'username': username,
+        'motPasseSchema': motPasseSchema,
+        "unite": {"id": "f26ede4a-025f-4fd9-bb0d-6bbe76f1d318"},
+        "roles": [
+          {"id": "6a65191c-1d88-47d0-a7f2-82b70a8f8c31", "name": "SUPER_ADMIN"},
+        ],
       };
     }
   }

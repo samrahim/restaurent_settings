@@ -31,7 +31,7 @@ class _TauxTVAScreenState extends ConsumerState<TauxTVAScreen> {
       key: _scaffoldKey,
       endDrawer: _buildDrawerWithBloc(context),
       appBar: AppBar(
-        title: Text('Taux de TVA', style: AppTextStyle.largeindingotext),
+        title: Text('Taux de TVA', style: AppTextStyle.indingoHeading),
         centerTitle: true,
         actions: [
           ActionButton(
@@ -40,8 +40,6 @@ class _TauxTVAScreenState extends ConsumerState<TauxTVAScreen> {
               container.read(drawerRiverpod.notifier).openCreateTauxTvaDrawer();
 
               _scaffoldKey.currentState?.openEndDrawer();
-              // context.read<DrawerProvider>().openCreateTauxTvaDrawer();
-              // _scaffoldKey.currentState?.openEndDrawer();
             },
             text: 'Nouveau',
           ),
@@ -165,60 +163,38 @@ class _TauxTVAScreenState extends ConsumerState<TauxTVAScreen> {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Text(
-                    'Créer un nouvel Taux de TVA',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                ),
-
-                TextField(
-                  controller: tauxTvaController,
-                  decoration: InputDecoration(
-                    labelText: 'Taux de TVA',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[50],
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  tauxEtTvaNotifier.createTauxTva(
-                    double.parse(tauxTvaController.text),
-                    Random().nextInt(100),
-                  );
-                  tauxTvaController.clear();
-                  _scaffoldKey.currentState?.closeEndDrawer();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  "Ajouter",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.0),
+              child: Text(
+                'Créer un nouvel Taux de TVA',
+                style: AppTextStyle.indingoHeading,
               ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: tauxTvaController,
+              decoration: InputDecoration(
+                labelText: 'Taux de TVA',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                filled: true,
+                fillColor: Colors.grey[50],
+              ),
+            ),
+            const SizedBox(height: 32),
+            CreateButton(
+              onPressed: () {
+                tauxEtTvaNotifier.createTauxTva(
+                  double.parse(tauxTvaController.text),
+                  Random().nextInt(100),
+                );
+                tauxTvaController.clear();
+                _scaffoldKey.currentState?.closeEndDrawer();
+              },
+              buttonText: "Ajouter",
             ),
           ],
         ),

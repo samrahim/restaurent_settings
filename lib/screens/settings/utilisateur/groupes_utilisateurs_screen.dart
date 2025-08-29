@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent/consts.dart';
-import 'package:restaurent/models/roles.dart';
 import 'package:restaurent/models/utilisateur_model.dart';
 import 'package:restaurent/riverpods/drawer_riverpod/drawer_state.dart';
 import 'package:restaurent/riverpods/riverpods.dart';
@@ -12,19 +11,6 @@ final roleRiverpood = StateNotifierProvider<RolesNotifier, RoleState>((ref) {
   final client = ref.watch(httpClientProvider);
   return RolesNotifier(client: client);
 });
-Map<String, List<UtilisateurModel>> groupUsersByRole(
-  List<UtilisateurModel> users,
-) {
-  final Map<String, List<UtilisateurModel>> grouped = {};
-  for (var user in users) {
-    final role = user.role ?? "Autre";
-    if (!grouped.containsKey(role)) {
-      grouped[role] = [];
-    }
-    grouped[role]!.add(user);
-  }
-  return grouped;
-}
 
 final utilisateurRiverpod =
     StateNotifierProvider<UtilisateurNotifier, UtilisateurState>((ref) {
@@ -47,7 +33,7 @@ class _GroupesUtilisateursScreenState
     lastname: '',
     username: '',
     phonenumber: '',
-    sex: '',
+    sexe: 1,
     email: '',
     motPasseSchema: '',
     pwd: '',
@@ -78,44 +64,28 @@ class _GroupesUtilisateursScreenState
                       utilisateurState.utilisateurs.isNotEmpty
                           ? ListView(
                             children: [
-                              ...groupUsersByRole(
-                                utilisateurState.utilisateurs,
-                              ).entries.map((entry) {
-                                final role = entry.key;
-                                final users = entry.value;
-
-                                return ExpansionTile(
+                              ...utilisateurState.utilisateurs.map((
+                                utilisateur,
+                              ) {
+                                return ListTile(
+                                  selectedTileColor: Colors.grey.shade300,
                                   title: Text(
-                                    role,
-                                    style: AppTextStyle.indingoHeading,
+                                    utilisateur.firstname ?? "",
+                                    style: AppTextStyle.indingosubHeading,
                                   ),
-                                  children:
-                                      users.map((utilisateur) {
-                                        return ListTile(
-                                          selectedTileColor:
-                                              Colors.grey.shade300,
-                                          title: Text(
-                                            utilisateur.firstname ?? "",
-                                            style:
-                                                AppTextStyle.indingosubHeading,
-                                          ),
-                                          trailing: Icon(
-                                            Icons.arrow_forward_ios,
-                                          ),
-                                          selected:
-                                              utilisateurState
-                                                      .selectedUtilisateur !=
-                                                  null &&
-                                              utilisateur.id ==
-                                                  utilisateurState
-                                                      .selectedUtilisateur!
-                                                      .id,
-                                          onTap: () {
-                                            utilisateurNotifier
-                                                .selectUtilisateur(utilisateur);
-                                          },
-                                        );
-                                      }).toList(),
+                                  trailing: const Icon(Icons.arrow_forward_ios),
+                                  selected:
+                                      utilisateurState.selectedUtilisateur !=
+                                          null &&
+                                      utilisateur.id ==
+                                          utilisateurState
+                                              .selectedUtilisateur!
+                                              .id,
+                                  onTap: () {
+                                    utilisateurNotifier.selectUtilisateur(
+                                      utilisateur,
+                                    );
+                                  },
                                 );
                               }),
                             ],
@@ -161,7 +131,7 @@ class _GroupesUtilisateursScreenState
                                                   .openUpdateUtilisateurAttributeDrawer(
                                                     utilisateurState
                                                         .selectedUtilisateur!,
-                                                    'nom',
+                                                    'firstname',
                                                     utilisateurState
                                                         .selectedUtilisateur!
                                                         .firstname,
@@ -198,7 +168,7 @@ class _GroupesUtilisateursScreenState
                                                   .openUpdateUtilisateurAttributeDrawer(
                                                     utilisateurState
                                                         .selectedUtilisateur!,
-                                                    'prenom',
+                                                    'lastname',
                                                     utilisateurState
                                                         .selectedUtilisateur!
                                                         .lastname,
@@ -218,6 +188,47 @@ class _GroupesUtilisateursScreenState
                                                       .selectedUtilisateur!
                                                       .lastname ??
                                                   "",
+                                              style:
+                                                  AppTextStyle
+                                                      .indingosubHeading,
+                                            ),
+                                          ),
+                                          Divider(),
+
+                                          CustomListTile(
+                                            onTap: null,
+                                            leading: null,
+                                            trailing: null,
+                                            title: Text(
+                                              'Nom d\'utilisateur',
+                                              style: AppTextStyle.greyHeading,
+                                            ),
+                                            trailingwidget: Text(
+                                              utilisateurState
+                                                      .selectedUtilisateur!
+                                                      .username ??
+                                                  "",
+                                              style:
+                                                  AppTextStyle
+                                                      .indingosubHeading,
+                                            ),
+                                          ),
+                                          Divider(),
+                                          CustomListTile(
+                                            onTap: null,
+                                            leading: null,
+                                            trailing: null,
+                                            title: Text(
+                                              'Sexe',
+                                              style: AppTextStyle.greyHeading,
+                                            ),
+                                            trailingwidget: Text(
+                                              utilisateurState
+                                                          .selectedUtilisateur!
+                                                          .sexe ==
+                                                      1
+                                                  ? "Homme"
+                                                  : "Femme",
                                               style:
                                                   AppTextStyle
                                                       .indingosubHeading,
@@ -274,7 +285,7 @@ class _GroupesUtilisateursScreenState
                                                   .openUpdateUtilisateurAttributeDrawer(
                                                     utilisateurState
                                                         .selectedUtilisateur!,
-                                                    'phone',
+                                                    'phonenumber',
                                                     utilisateurState
                                                         .selectedUtilisateur!
                                                         .phonenumber,
@@ -301,25 +312,7 @@ class _GroupesUtilisateursScreenState
                                           ),
                                           Divider(),
                                           CustomListTile(
-                                            onTap: () {
-                                              final container =
-                                                  ProviderScope.containerOf(
-                                                    context,
-                                                  );
-                                              container
-                                                  .read(drawerRiverpod.notifier)
-                                                  .openUpdateUtilisateurAttributeDrawer(
-                                                    utilisateurState
-                                                        .selectedUtilisateur!,
-                                                    'dateOfBirth',
-                                                    utilisateurState
-                                                        .selectedUtilisateur!
-                                                        .dateOfBirth,
-                                                  );
-
-                                              _scaffoldKey.currentState
-                                                  ?.openEndDrawer();
-                                            },
+                                            onTap: null,
                                             leading: null,
                                             trailing: null,
                                             title: Text(
@@ -389,8 +382,9 @@ class _GroupesUtilisateursScreenState
                                                         .selectedUtilisateur!,
                                                     'motPasseSchema',
                                                     utilisateurState
-                                                        .selectedUtilisateur!
-                                                        .motPasseSchema,
+                                                            .selectedUtilisateur!
+                                                            .motPasseSchema ??
+                                                        "",
                                                   );
 
                                               _scaffoldKey.currentState
@@ -421,10 +415,11 @@ class _GroupesUtilisateursScreenState
                                                   .openUpdateUtilisateurAttributeDrawer(
                                                     utilisateurState
                                                         .selectedUtilisateur!,
-                                                    'motPasseChiffre',
+                                                    'pwd',
                                                     utilisateurState
-                                                        .selectedUtilisateur!
-                                                        .pwd,
+                                                            .selectedUtilisateur!
+                                                            .pwd ??
+                                                        "",
                                                   );
 
                                               _scaffoldKey.currentState
@@ -477,58 +472,116 @@ class _GroupesUtilisateursScreenState
             return _buildCreateUtilisateurDrawer(context, roleState);
           }
           if (state is DrawerUpdateUtilisateurAttributeState) {
-            return UpdateAttributeDrawer(
-              fieldType:
-                  state.attributeName == "motPasseSchema"
-                      ? FieldType.pattern
-                      : FieldType.string,
-              label: state.attributeName,
-              initialValue: state.currentValue as String,
-              onSaved: (value) {
-                // final updated = state.utilisateur.copyWith(
-                //   nom:
-                //       state.attributeName == 'nom'
-                //           ? value
-                //           : state.utilisateur.nom,
-                //   prenom:
-                //       state.attributeName == 'prenom'
-                //           ? value
-                //           : state.utilisateur.prenom,
-                //   groupe:
-                //       state.attributeName == 'groupe'
-                //           ? value
-                //           : state.utilisateur.groupe,
-                //   role:
-                //       state.attributeName == 'role'
-                //           ? value
-                //           : state.utilisateur.role,
-                //   motPasseSchema:
-                //       state.attributeName == 'motPasseSchema'
-                //           ? value
-                //           : state.utilisateur.motPasseSchema,
-                //   motPasseChiffre:
-                //       state.attributeName == 'motPasseChiffre'
-                //           ? value
-                //           : state.utilisateur.motPasseChiffre,
-                //   qrCode:
-                //       state.attributeName == 'qrCode'
-                //           ? value
-                //           : state.utilisateur.qrCode,
-                // );
+            switch (state.attributeName) {
+              case "motPasseSchema":
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.pattern,
+                  initialValue: state.currentValue as String,
+                  label: "mot Passe Schema",
+                  onSaved: (val) {
+                    final updated = state.utilisateur.copyWith(
+                      motPasseSchema: val,
+                    );
+                    utilisateurNotifier.updateUtilisateur(updated);
+                  },
+                );
 
-                // utilisateurNotifier.updateUtilisateur(updated);
-              },
-            );
+              case "firstname":
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.string,
+                  initialValue: state.currentValue as String,
+                  label: "Nom",
+                  onSaved: (val) {
+                    final updated = state.utilisateur.copyWith(firstname: val);
+                    utilisateurNotifier.updateUtilisateur(updated);
+                  },
+                );
+
+              case "lastname":
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.string,
+                  initialValue: state.currentValue as String,
+                  label: "Prenom",
+                  onSaved: (val) {
+                    final updated = state.utilisateur.copyWith(lastname: val);
+                    utilisateurNotifier.updateUtilisateur(updated);
+                  },
+                );
+
+              case "role":
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.dropdown,
+                  options: roleState.roles?.map((e) => e.name).toList(),
+                  initialValue: state.currentValue as String,
+                  label: "role",
+                  onSaved: (val) {
+                    final updated = state.utilisateur.copyWith(role: val);
+                    utilisateurNotifier.updateUtilisateur(updated);
+                  },
+                );
+
+              case "pwd":
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.string,
+
+                  initialValue: state.currentValue as String,
+                  label: "mot de passe",
+                  onSaved: (val) {
+                    final updated = state.utilisateur.copyWith(pwd: val);
+                    utilisateurNotifier.updateUtilisateur(updated);
+                  },
+                );
+
+              case "phonenumber":
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.string,
+                  initialValue: state.currentValue as String,
+                  label: "phonenumber",
+                  onSaved: (val) {
+                    final updated = state.utilisateur.copyWith(
+                      phonenumber: val,
+                    );
+                    utilisateurNotifier.updateUtilisateur(updated);
+                  },
+                );
+
+              case "email":
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.string,
+
+                  initialValue: state.currentValue as String,
+                  label: "email",
+                  onSaved: (val) {
+                    final updated = state.utilisateur.copyWith(email: val);
+                    utilisateurNotifier.updateUtilisateur(updated);
+                  },
+                );
+
+              case "dateOfBirth":
+                return UpdateAttributeDrawer(
+                  fieldType: FieldType.datePicker,
+
+                  initialValue: state.currentValue as String,
+                  label: "dateOfBirth",
+                  onSaved: (val) {
+                    print(val);
+                    print(val is String);
+                    final updated = state.utilisateur.copyWith(
+                      dateOfBirth: val,
+                    );
+                    utilisateurNotifier.updateUtilisateur(updated);
+                  },
+                );
+
+              default:
+            }
           }
           return const SizedBox.shrink();
         },
       ),
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text(
-          'Groupes utilisateurs',
-          style: AppTextStyle.largeindingotext,
-        ),
+        title: Text('Groupes utilisateurs', style: AppTextStyle.indingoHeading),
         centerTitle: true,
         actions: [
           ActionButton(onPressed: () {}, text: 'Reorganiser'),
@@ -617,6 +670,27 @@ class _GroupesUtilisateursScreenState
                     ),
 
                     const SizedBox(height: 16),
+                    TextFormField(
+                      initialValue: createModel.username,
+                      decoration: InputDecoration(
+                        labelStyle: AppTextStyle.indingosubHeading,
+                        labelText: 'Nom d\'utilisateur',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
+                      onChanged: (v) {
+                        final container = ProviderScope.containerOf(context);
+                        container
+                            .read(drawerRiverpod.notifier)
+                            .openCreateUtilisateurDrawer(
+                              createModel.copyWith(username: v),
+                            );
+                      },
+                    ),
+                    const SizedBox(height: 16),
 
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 4.0),
@@ -628,26 +702,81 @@ class _GroupesUtilisateursScreenState
                       child: DropdownButtonFormField<String>(
                         value:
                             createModel.role == ""
-                                ? state.roles!.first.toString()
+                                ? state.roles!.first.name
                                 : createModel.role,
                         decoration: const InputDecoration(
                           labelText: 'Role',
                           border: InputBorder.none,
                         ),
-                        items:
-                            state.roles!
-                                .map(
-                                  (e) => DropdownMenuItem(
-                                    value: e.name,
-                                    child: Text(
-                                      e.name,
-                                      style: AppTextStyle.indingosubHeading,
+                        items: [
+                          ...state.roles!.map(
+                            (e) => DropdownMenuItem(
+                              value: e.name,
+                              child: Text(
+                                e.name,
+                                style: AppTextStyle.indingosubHeading,
+                              ),
+                            ),
+                          ),
+
+                          const DropdownMenuItem(
+                            value: "__create_role__",
+                            child: Row(
+                              children: [
+                                Icon(Icons.add, color: Colors.blue),
+                                SizedBox(width: 8),
+                                Text("Create Role"),
+                              ],
+                            ),
+                          ),
+                        ],
+                        onChanged: (value) async {
+                          if (value == "__create_role__") {
+                            final newRole = await showDialog<String>(
+                              context: context,
+                              builder: (ctx) {
+                                final controller = TextEditingController();
+                                return AlertDialog(
+                                  title: const Text("Create Role"),
+                                  content: TextField(
+                                    controller: controller,
+                                    decoration: const InputDecoration(
+                                      labelText: "Role name",
                                     ),
                                   ),
-                                )
-                                .toList(),
-                        onChanged: (value) {
-                          if (value != null) {
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(ctx),
+                                      child: const Text("Cancel"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        if (controller.text.isNotEmpty) {
+                                          Navigator.pop(ctx, controller.text);
+                                        }
+                                      },
+                                      child: const Text("Save"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                            if (newRole != null) {
+                              final container = ProviderScope.containerOf(
+                                context,
+                              );
+                              container
+                                  .read(roleRiverpood.notifier)
+                                  .addRole(name: newRole, description: '');
+
+                              container
+                                  .read(drawerRiverpod.notifier)
+                                  .openCreateUtilisateurDrawer(
+                                    createModel.copyWith(role: newRole),
+                                  );
+                            }
+                          } else if (value != null) {
                             final container = ProviderScope.containerOf(
                               context,
                             );
@@ -660,6 +789,7 @@ class _GroupesUtilisateursScreenState
                         },
                       ),
                     ),
+
                     SizedBox(height: 16),
                     TextFormField(
                       initialValue: createModel.phonenumber,
@@ -720,7 +850,50 @@ class _GroupesUtilisateursScreenState
                                   ),
                                 );
                           }
-                          print(createModel.dateOfBirth);
+                        },
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 4.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade400),
+                        color: Colors.grey[50],
+                      ),
+                      child: DropdownButtonFormField(
+                        value: createModel.sexe,
+
+                        decoration: const InputDecoration(
+                          labelText: 'Sexe',
+                          border: InputBorder.none,
+                        ),
+                        items: [
+                          DropdownMenuItem(
+                            value: 1,
+                            child: Text(
+                              "Homme",
+                              style: AppTextStyle.indingosubHeading,
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: 0,
+                            child: Text(
+                              "Femme",
+                              style: AppTextStyle.indingosubHeading,
+                            ),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            final container = ProviderScope.containerOf(
+                              context,
+                            );
+                            container
+                                .read(drawerRiverpod.notifier)
+                                .openCreateUtilisateurDrawer(
+                                  createModel.copyWith(sexe: value),
+                                );
+                          }
                         },
                       ),
                     ),
@@ -771,7 +944,6 @@ class _GroupesUtilisateursScreenState
                     const SizedBox(height: 24),
                     CreateButton(
                       onPressed: () {
-                        print(createModel.toJson());
                         final container = ProviderScope.containerOf(context);
                         container
                             .read(utilisateurRiverpod.notifier)

@@ -205,7 +205,7 @@ const moyenDePaiementList = [
   'Ticket Restaurant',
 ];
 
-enum FieldType { string, boolean, dropdown, color, pattern, choice }
+enum FieldType { string, boolean, dropdown, color, pattern, choice, datePicker }
 
 const List<String> gestionDuTropPercuList = [
   'Gestion du trop perçu',

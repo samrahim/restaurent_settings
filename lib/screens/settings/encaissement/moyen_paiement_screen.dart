@@ -1010,7 +1010,7 @@ class _MoyenPaiementScreenState extends ConsumerState<MoyenPaiementScreen> {
 
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('Moyens de paiement', style: AppTextStyle.largeindingotext),
+        title: Text('Moyens de paiement', style: AppTextStyle.indingoHeading),
         centerTitle: true,
         actions: [
           ActionButton(onPressed: () {}, text: 'Reorganiser'),

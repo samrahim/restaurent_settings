@@ -36,7 +36,7 @@ class _ImprimanteScreenState extends ConsumerState<ImprimanteScreen> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('Imprimantes', style: AppTextStyle.largeindingotext),
+        title: Text('Imprimantes', style: AppTextStyle.indingoHeading),
         centerTitle: true,
         actions: [
           ActionButton(
